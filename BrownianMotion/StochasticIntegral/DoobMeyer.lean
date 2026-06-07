@@ -6,6 +6,7 @@ Authors: Rémy Degenne
 module
 
 public import BrownianMotion.StochasticIntegral.ClassD
+public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 public import Mathlib.Topology.EMetricSpace.BoundedVariation
 
 /-! # Doob-Meyer decomposition theorem
@@ -783,6 +784,302 @@ lemma _root_.MeasureTheory.Martingale.integral_mul_increment_eq_zero
     ∫ ω, (N b ω - N a ω) * (N d ω - N c ω) ∂P' = 0 := by
   exact hN.integral_increment_mul_increment_eq_zero hab hbc hcd hprod
 
+/-- A finite sum of consecutive increments telescopes. -/
+lemma _root_.Finset.sum_range_sub_consecutive {G : Type*} [AddCommGroup G]
+    (f : ℕ → G) (n : ℕ) :
+    (∑ i ∈ Finset.range n, (f (i + 1) - f i)) = f n - f 0 := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [Finset.sum_range_succ, ih]
+      abel
+
+/-- The finite partition increment sum equals the terminal value for a martingale normalized at
+the bottom time. -/
+lemma _root_.MeasureTheory.Martingale.partition_increment_sum_eq_terminal
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P') (hN_zero : ∀ ω, N ⊥ ω = 0)
+    {u : ℕ → κ} {n : ℕ} {t : κ} (hu0 : u 0 = ⊥) (hun : u n = t) :
+    (fun ω => ∑ i ∈ Finset.range n, (N (u (i + 1)) ω - N (u i) ω)) = N t := by
+  have _hN_used : Martingale N 𝓕' P' := hN
+  ext ω
+  have htel := Finset.sum_range_sub_consecutive (fun i => N (u i) ω) n
+  rw [htel, hun, hu0, hN_zero ω]
+  simp
+
+/-- Orthogonality for two distinct ordered increments in a monotone deterministic partition. -/
+lemma _root_.MeasureTheory.Martingale.integral_partition_cross_increment_eq_zero
+    {κ Ω' : Type*} [LinearOrder κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    {u : ℕ → κ} (hu : Monotone u) {i j : ℕ} (hij : i < j)
+    (hprod : Integrable (fun ω => (N (u (i + 1)) ω - N (u i) ω) *
+      (N (u (j + 1)) ω - N (u j) ω)) P') :
+    ∫ ω, (N (u (i + 1)) ω - N (u i) ω) *
+      (N (u (j + 1)) ω - N (u j) ω) ∂P' = 0 := by
+  have hab : u i ≤ u (i + 1) := hu (Nat.le_succ i)
+  have hbc : u (i + 1) ≤ u j := hu (Nat.succ_le_of_lt hij)
+  have hcd : u j ≤ u (j + 1) := hu (Nat.le_succ j)
+  exact hN.integral_increment_mul_increment_eq_zero hab hbc hcd hprod
+
+/-- A uniform bound on the partition values gives integrability of products of two adjacent
+increments.  This supplies the explicit integrability premise in the finite-partition
+orthogonality lemma after bounded localization. -/
+lemma _root_.MeasureTheory.Martingale.integrable_partition_increment_mul_increment_of_bound
+    {κ Ω' : Type*} [LinearOrder κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    {u : ℕ → κ} {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hbound : ∀ᵐ ω ∂P', ∀ k, ‖N (u k) ω‖ ≤ C) (i j : ℕ) :
+    Integrable
+      (fun ω => (N (u (i + 1)) ω - N (u i) ω) *
+        (N (u (j + 1)) ω - N (u j) ω)) P' := by
+  have hleft_sm : StronglyMeasurable
+      (fun ω => N (u (i + 1)) ω - N (u i) ω) :=
+    ((hN.stronglyMeasurable (u (i + 1))).mono (𝓕'.le (u (i + 1)))).sub
+      ((hN.stronglyMeasurable (u i)).mono (𝓕'.le (u i)))
+  have hright_sm : StronglyMeasurable
+      (fun ω => N (u (j + 1)) ω - N (u j) ω) :=
+    ((hN.stronglyMeasurable (u (j + 1))).mono (𝓕'.le (u (j + 1)))).sub
+      ((hN.stronglyMeasurable (u j)).mono (𝓕'.le (u j)))
+  refine Integrable.of_bound
+    ((hleft_sm.mul hright_sm).aestronglyMeasurable) (4 * C ^ 2) ?_
+  filter_upwards [hbound] with ω hω
+  have hleft : ‖N (u (i + 1)) ω - N (u i) ω‖ ≤ 2 * C := by
+    calc
+      ‖N (u (i + 1)) ω - N (u i) ω‖
+          ≤ ‖N (u (i + 1)) ω‖ + ‖N (u i) ω‖ := norm_sub_le _ _
+      _ ≤ C + C := add_le_add (hω (i + 1)) (hω i)
+      _ = 2 * C := by ring
+  have hright : ‖N (u (j + 1)) ω - N (u j) ω‖ ≤ 2 * C := by
+    calc
+      ‖N (u (j + 1)) ω - N (u j) ω‖
+          ≤ ‖N (u (j + 1)) ω‖ + ‖N (u j) ω‖ := norm_sub_le _ _
+      _ ≤ C + C := add_le_add (hω (j + 1)) (hω j)
+      _ = 2 * C := by ring
+  calc
+    ‖(N (u (i + 1)) ω - N (u i) ω) *
+        (N (u (j + 1)) ω - N (u j) ω)‖
+        = ‖N (u (i + 1)) ω - N (u i) ω‖ *
+          ‖N (u (j + 1)) ω - N (u j) ω‖ := norm_mul _ _
+    _ ≤ (2 * C) * (2 * C) :=
+        mul_le_mul hleft hright (norm_nonneg _) (by nlinarith)
+    _ = 4 * C ^ 2 := by ring
+
+/-- A uniform bound on partition values makes the product of a partition value and its next
+increment integrable.  This is the induction cross-term used in the terminal square identity. -/
+lemma _root_.MeasureTheory.Martingale.integrable_partition_value_mul_increment_of_bound
+    {κ Ω' : Type*} [LinearOrder κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    {u : ℕ → κ} {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hbound : ∀ᵐ ω ∂P', ∀ k, ‖N (u k) ω‖ ≤ C) (i : ℕ) :
+    Integrable
+      (fun ω => N (u i) ω * (N (u (i + 1)) ω - N (u i) ω)) P' := by
+  have hvalue_sm : StronglyMeasurable (fun ω => N (u i) ω) :=
+    ((hN.stronglyMeasurable (u i)).mono (𝓕'.le (u i)))
+  have hinc_sm : StronglyMeasurable
+      (fun ω => N (u (i + 1)) ω - N (u i) ω) :=
+    ((hN.stronglyMeasurable (u (i + 1))).mono (𝓕'.le (u (i + 1)))).sub
+      ((hN.stronglyMeasurable (u i)).mono (𝓕'.le (u i)))
+  refine Integrable.of_bound
+    ((hvalue_sm.mul hinc_sm).aestronglyMeasurable) (2 * C ^ 2) ?_
+  filter_upwards [hbound] with ω hω
+  have hinc : ‖N (u (i + 1)) ω - N (u i) ω‖ ≤ 2 * C := by
+    calc
+      ‖N (u (i + 1)) ω - N (u i) ω‖
+          ≤ ‖N (u (i + 1)) ω‖ + ‖N (u i) ω‖ := norm_sub_le _ _
+      _ ≤ C + C := add_le_add (hω (i + 1)) (hω i)
+      _ = 2 * C := by ring
+  calc
+    ‖N (u i) ω * (N (u (i + 1)) ω - N (u i) ω)‖
+        = ‖N (u i) ω‖ * ‖N (u (i + 1)) ω - N (u i) ω‖ := norm_mul _ _
+    _ ≤ C * (2 * C) :=
+        mul_le_mul (hω i) hinc (norm_nonneg _) hC_nonneg
+    _ = 2 * C ^ 2 := by ring
+
+/-- A uniform bound on the partition values gives integrability of each squared adjacent
+increment. -/
+lemma _root_.MeasureTheory.Martingale.integrable_partition_sq_increment_of_bound
+    {κ Ω' : Type*} [LinearOrder κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    {u : ℕ → κ} {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hbound : ∀ᵐ ω ∂P', ∀ k, ‖N (u k) ω‖ ≤ C) (i : ℕ) :
+    Integrable (fun ω => (N (u (i + 1)) ω - N (u i) ω) ^ 2) P' := by
+  simpa [pow_two] using
+    hN.integrable_partition_increment_mul_increment_of_bound hC_nonneg hbound i i
+
+/-- A bounded deterministic partition has an integrable finite sum of squared adjacent
+increments. -/
+lemma _root_.MeasureTheory.Martingale.integrable_partition_sq_increment_sum_of_bound
+    {κ Ω' : Type*} [LinearOrder κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    {u : ℕ → κ} {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hbound : ∀ᵐ ω ∂P', ∀ k, ‖N (u k) ω‖ ≤ C) (n : ℕ) :
+    Integrable
+      (fun ω => ∑ i ∈ Finset.range n,
+        (N (u (i + 1)) ω - N (u i) ω) ^ 2) P' := by
+  exact MeasureTheory.integrable_finset_sum (Finset.range n) fun i _ =>
+    hN.integrable_partition_sq_increment_of_bound hC_nonneg hbound i
+
+/-- The integral of a finite sum of squared partition increments is the sum of their
+integrals under the bounded-partition hypotheses. -/
+lemma _root_.MeasureTheory.Martingale.integral_partition_sq_increment_sum_of_bound
+    {κ Ω' : Type*} [LinearOrder κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    {u : ℕ → κ} {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hbound : ∀ᵐ ω ∂P', ∀ k, ‖N (u k) ω‖ ≤ C) (n : ℕ) :
+    ∫ ω, (∑ i ∈ Finset.range n,
+      (N (u (i + 1)) ω - N (u i) ω) ^ 2) ∂P' =
+      ∑ i ∈ Finset.range n,
+        ∫ ω, (N (u (i + 1)) ω - N (u i) ω) ^ 2 ∂P' := by
+  exact MeasureTheory.integral_finset_sum (Finset.range n) fun i _ =>
+    hN.integrable_partition_sq_increment_of_bound hC_nonneg hbound i
+
+/-- Bounded deterministic partitions have zero cross-integral for ordered adjacent martingale
+increments. -/
+lemma _root_.MeasureTheory.Martingale.integral_partition_cross_increment_eq_zero_of_bound
+    {κ Ω' : Type*} [LinearOrder κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    {u : ℕ → κ} (hu : Monotone u) {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hbound : ∀ᵐ ω ∂P', ∀ k, ‖N (u k) ω‖ ≤ C) {i j : ℕ} (hij : i < j) :
+    ∫ ω, (N (u (i + 1)) ω - N (u i) ω) *
+      (N (u (j + 1)) ω - N (u j) ω) ∂P' = 0 := by
+  exact hN.integral_partition_cross_increment_eq_zero hu hij
+    (hN.integrable_partition_increment_mul_increment_of_bound hC_nonneg hbound i j)
+
+/-- A bounded martingale value has an integrable square on a finite-measure space. -/
+lemma _root_.MeasureTheory.Martingale.integrable_sq_terminal_of_ae_bound
+    {κ Ω' : Type*} [LinearOrder κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P') {t : κ} {C : ℝ}
+    (hbound : ∀ᵐ ω ∂P', ‖N t ω‖ ≤ C) :
+    Integrable (fun ω => N t ω ^ 2) P' := by
+  have hsm_sq : AEStronglyMeasurable (fun ω => N t ω ^ 2) P' := by
+    have hsm : AEStronglyMeasurable (N t) P' :=
+      ((hN.stronglyMeasurable t).mono (𝓕'.le t)).aestronglyMeasurable
+    simpa [Pi.pow_apply] using hsm.pow 2
+  refine MeasureTheory.Integrable.mono'
+    (MeasureTheory.integrable_const ((max C 0) ^ 2)) hsm_sq ?_
+  filter_upwards [hbound] with ω hω
+  have hmax_nonneg : 0 ≤ max C 0 := le_max_right C 0
+  have hnorm_le : ‖N t ω‖ ≤ max C 0 := le_trans hω (le_max_left C 0)
+  have hsq_le : (N t ω) ^ 2 ≤ (max C 0) ^ 2 := by
+    rw [sq_le_sq]
+    simpa [Real.norm_eq_abs, abs_of_nonneg hmax_nonneg] using hnorm_le
+  calc
+    ‖N t ω ^ 2‖ ≤ (N t ω) ^ 2 := by
+      rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg (N t ω))]
+    _ ≤ (max C 0) ^ 2 := hsq_le
+
+/-- Integrated square expansion for a bounded monotone deterministic partition. -/
+lemma _root_.MeasureTheory.Martingale.integral_sq_terminal_eq_partition_sq_sum_of_bound
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_zero : ∀ ω, N ⊥ ω = 0)
+    {u : ℕ → κ} (hu : Monotone u) {n : ℕ} {t : κ}
+    (hu0 : u 0 = ⊥) (hun : u n = t) {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hbound : ∀ᵐ ω ∂P', ∀ k, ‖N (u k) ω‖ ≤ C) :
+    ∫ ω, N t ω ^ 2 ∂P' =
+      ∑ i ∈ Finset.range n,
+        ∫ ω, (N (u (i + 1)) ω - N (u i) ω) ^ 2 ∂P' := by
+  revert t
+  induction n with
+  | zero =>
+      intro t hun
+      have ht : t = ⊥ := by
+        rw [← hun, hu0]
+      simp [ht, hN_zero]
+  | succ n ih =>
+      intro t hun
+      have hprev :
+          ∫ ω, N (u n) ω ^ 2 ∂P' =
+            ∑ i ∈ Finset.range n,
+              ∫ ω, (N (u (i + 1)) ω - N (u i) ω) ^ 2 ∂P' :=
+        ih (t := u n) rfl
+      have hbound_un : ∀ᵐ ω ∂P', ‖N (u n) ω‖ ≤ C :=
+        hbound.mono fun ω hω => hω n
+      have hprev_sq_int : Integrable (fun ω => N (u n) ω ^ 2) P' :=
+        hN.integrable_sq_terminal_of_ae_bound hbound_un
+      have hlast_sq_int :
+          Integrable (fun ω => (N (u (n + 1)) ω - N (u n) ω) ^ 2) P' :=
+        hN.integrable_partition_sq_increment_of_bound hC_nonneg hbound n
+      have hcross_int :
+          Integrable
+            (fun ω => N (u n) ω * (N (u (n + 1)) ω - N (u n) ω)) P' :=
+        hN.integrable_partition_value_mul_increment_of_bound hC_nonneg hbound n
+      have hcross_zero :
+          ∫ ω, N (u n) ω * (N (u (n + 1)) ω - N (u n) ω) ∂P' = 0 := by
+        exact hN.integral_mul_increment_eq_zero_of_stronglyMeasurable
+          (hu (Nat.le_succ n)) (hN.stronglyMeasurable (u n)) hcross_int
+      have hintegral_add_cross :
+          ∫ ω, ((N (u n) ω ^ 2 +
+            (N (u (n + 1)) ω - N (u n) ω) ^ 2) +
+            2 * (N (u n) ω *
+              (N (u (n + 1)) ω - N (u n) ω))) ∂P' =
+            ∫ ω, (N (u n) ω ^ 2 +
+              (N (u (n + 1)) ω - N (u n) ω) ^ 2) ∂P' +
+            ∫ ω, 2 * (N (u n) ω *
+              (N (u (n + 1)) ω - N (u n) ω)) ∂P' := by
+        simpa [Pi.add_apply] using
+          (MeasureTheory.integral_add (μ := P')
+            (f := fun ω => N (u n) ω ^ 2 +
+              (N (u (n + 1)) ω - N (u n) ω) ^ 2)
+            (g := fun ω => 2 * (N (u n) ω *
+              (N (u (n + 1)) ω - N (u n) ω)))
+            (hprev_sq_int.add hlast_sq_int) (hcross_int.const_mul 2))
+      have hintegral_add_sq :
+          ∫ ω, (N (u n) ω ^ 2 +
+            (N (u (n + 1)) ω - N (u n) ω) ^ 2) ∂P' =
+            ∫ ω, N (u n) ω ^ 2 ∂P' +
+            ∫ ω, (N (u (n + 1)) ω - N (u n) ω) ^ 2 ∂P' := by
+        simpa [Pi.add_apply] using
+          (MeasureTheory.integral_add (μ := P')
+            (f := fun ω => N (u n) ω ^ 2)
+            (g := fun ω => (N (u (n + 1)) ω - N (u n) ω) ^ 2)
+            hprev_sq_int hlast_sq_int)
+      have hstep :
+          ∫ ω, N (u (n + 1)) ω ^ 2 ∂P' =
+            ∫ ω, N (u n) ω ^ 2 ∂P' +
+              ∫ ω, (N (u (n + 1)) ω - N (u n) ω) ^ 2 ∂P' := by
+        calc
+          ∫ ω, N (u (n + 1)) ω ^ 2 ∂P' =
+              ∫ ω, ((N (u n) ω ^ 2 +
+                (N (u (n + 1)) ω - N (u n) ω) ^ 2) +
+                2 * (N (u n) ω *
+                  (N (u (n + 1)) ω - N (u n) ω))) ∂P' := by
+                congr 1
+                ext ω
+                ring
+          _ = ∫ ω, N (u n) ω ^ 2 ∂P' +
+                ∫ ω, (N (u (n + 1)) ω - N (u n) ω) ^ 2 ∂P' +
+                ∫ ω, 2 * (N (u n) ω *
+                  (N (u (n + 1)) ω - N (u n) ω)) ∂P' := by
+                rw [hintegral_add_cross, hintegral_add_sq]
+          _ = ∫ ω, N (u n) ω ^ 2 ∂P' +
+                ∫ ω, (N (u (n + 1)) ω - N (u n) ω) ^ 2 ∂P' := by
+                rw [MeasureTheory.integral_const_mul, hcross_zero]
+                ring
+      calc
+        ∫ ω, N t ω ^ 2 ∂P' =
+            ∫ ω, N (u (n + 1)) ω ^ 2 ∂P' := by
+              rw [← hun]
+        _ = ∫ ω, N (u n) ω ^ 2 ∂P' +
+              ∫ ω, (N (u (n + 1)) ω - N (u n) ω) ^ 2 ∂P' := hstep
+        _ = (∑ i ∈ Finset.range n,
+              ∫ ω, (N (u (i + 1)) ω - N (u i) ω) ^ 2 ∂P') +
+              ∫ ω, (N (u (n + 1)) ω - N (u n) ω) ^ 2 ∂P' := by
+              rw [hprev]
+        _ = ∑ i ∈ Finset.range (n + 1),
+              ∫ ω, (N (u (i + 1)) ω - N (u i) ω) ^ 2 ∂P' := by
+              rw [Finset.sum_range_succ]
+
 /-- If a real random variable has zero square integral, then it is zero almost surely. -/
 lemma _root_.MeasureTheory.ae_eq_zero_of_integral_sq_eq_zero
     {Ω' : Type*} {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {X : Ω' → ℝ}
@@ -794,6 +1091,114 @@ lemma _root_.MeasureTheory.ae_eq_zero_of_integral_sq_eq_zero
       (fun ω => sq_nonneg (X ω)) hXsq_int).1 hXsq_zero
   filter_upwards [hsq_zero] with ω hω
   exact sq_eq_zero_iff.1 hω
+
+/-- Refining deterministic partitions turn the finite square expansion into a zero terminal
+square integral once the square-increment sums converge to zero and are dominated by a uniform
+variation bound. -/
+lemma _root_.MeasureTheory.Martingale.integral_sq_terminal_eq_zero_of_refining_partitions
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_zero : ∀ ω, N ⊥ ω = 0) {t : κ} {m : ℕ → ℕ} {u : ℕ → ℕ → κ}
+    (hu : ∀ n, Monotone (u n)) (hu0 : ∀ n, u n 0 = ⊥)
+    (hut : ∀ n, u n (m n) = t) (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℝ} (hC_nonneg : 0 ≤ C) (hV_nonneg : 0 ≤ V)
+    (hbound : ∀ n, ∀ᵐ ω ∂P', ∀ k, ‖N (u n k) ω‖ ≤ C)
+    (hvar_bound : ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V)
+    (hF_tendsto : ∀ᵐ ω ∂P',
+      Tendsto
+        (fun n => ∑ i ∈ Finset.range (m n),
+          (N (u n (i + 1)) ω - N (u n i) ω) ^ 2)
+        atTop (nhds 0)) :
+    Integrable (fun ω => N t ω ^ 2) P' ∧
+      ∫ ω, N t ω ^ 2 ∂P' = 0 := by
+  let F : ℕ → Ω' → ℝ := fun n ω =>
+    ∑ i ∈ Finset.range (m n), (N (u n (i + 1)) ω - N (u n i) ω) ^ 2
+  have hterminal_bound : ∀ᵐ ω ∂P', ‖N t ω‖ ≤ C := by
+    filter_upwards [hbound 0] with ω hω
+    simpa [hut 0] using hω (m 0)
+  have hterminal_int : Integrable (fun ω => N t ω ^ 2) P' :=
+    hN.integrable_sq_terminal_of_ae_bound hterminal_bound
+  have _hV_nonneg_used : 0 ≤ V := hV_nonneg
+  have hF_sm : ∀ n, AEStronglyMeasurable (F n) P' := fun n =>
+    (hN.integrable_partition_sq_increment_sum_of_bound hC_nonneg (hbound n) (m n)).1
+  have hF_integral_eq : ∀ n,
+      ∫ ω, F n ω ∂P' = ∫ ω, N t ω ^ 2 ∂P' := by
+    intro n
+    have hsq :=
+      hN.integral_sq_terminal_eq_partition_sq_sum_of_bound hN_zero (hu n) (hu0 n)
+        (hut n) hC_nonneg (hbound n)
+    have hsum :=
+      hN.integral_partition_sq_increment_sum_of_bound hC_nonneg (hbound n) (m n)
+    calc
+      ∫ ω, F n ω ∂P' =
+          ∑ i ∈ Finset.range (m n),
+            ∫ ω, (N (u n (i + 1)) ω - N (u n i) ω) ^ 2 ∂P' := hsum
+      _ = ∫ ω, N t ω ^ 2 ∂P' := hsq.symm
+  have hdom : ∀ n, ∀ᵐ ω ∂P', ‖F n ω‖ ≤ (fun _ : Ω' => 2 * C * V) ω := by
+    intro n
+    filter_upwards [hbound n, hvar_bound] with ω hω_bound hω_var
+    have hdelta_nonneg : 0 ≤ 2 * C := by nlinarith
+    have hstep : ∀ i, i ∈ Finset.range (m n) →
+        ‖N (u n (i + 1)) ω - N (u n i) ω‖ ≤ 2 * C := by
+      intro i _hi
+      calc
+        ‖N (u n (i + 1)) ω - N (u n i) ω‖
+            ≤ ‖N (u n (i + 1)) ω‖ + ‖N (u n i) ω‖ := norm_sub_le _ _
+        _ ≤ C + C := add_le_add (hω_bound (i + 1)) (hω_bound i)
+        _ = 2 * C := by ring
+    have hsumsq_le :
+        (∑ i ∈ Finset.range (m n),
+          ‖N (u n (i + 1)) ω - N (u n i) ω‖ ^ 2) ≤
+            2 * C * V := by
+      calc
+        (∑ i ∈ Finset.range (m n),
+          ‖N (u n (i + 1)) ω - N (u n i) ω‖ ^ 2)
+            ≤ (2 * C) * (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal :=
+            hω_var.1.sq_increment_sum_le_uniform_bound (hu n) (hus n)
+              hdelta_nonneg hstep
+        _ ≤ (2 * C) * V :=
+            mul_le_mul_of_nonneg_left hω_var.2 hdelta_nonneg
+        _ = 2 * C * V := by ring
+    have hnorm_le :
+        ‖F n ω‖ ≤
+          ∑ i ∈ Finset.range (m n),
+            ‖N (u n (i + 1)) ω - N (u n i) ω‖ ^ 2 := by
+      have hnorm_sum :
+          ‖∑ i ∈ Finset.range (m n),
+            (N (u n (i + 1)) ω - N (u n i) ω) ^ 2‖ ≤
+              ∑ i ∈ Finset.range (m n),
+                ‖(N (u n (i + 1)) ω - N (u n i) ω) ^ 2‖ :=
+        norm_sum_le (Finset.range (m n))
+          (fun i => (N (u n (i + 1)) ω - N (u n i) ω) ^ 2)
+      calc
+        ‖F n ω‖ =
+            ‖∑ i ∈ Finset.range (m n),
+              (N (u n (i + 1)) ω - N (u n i) ω) ^ 2‖ := by
+              rfl
+        _ ≤ ∑ i ∈ Finset.range (m n),
+              ‖(N (u n (i + 1)) ω - N (u n i) ω) ^ 2‖ := hnorm_sum
+        _ = ∑ i ∈ Finset.range (m n),
+              ‖N (u n (i + 1)) ω - N (u n i) ω‖ ^ 2 := by
+              refine Finset.sum_congr rfl fun i _hi => ?_
+              rw [pow_two, norm_mul, pow_two]
+    exact le_trans hnorm_le hsumsq_le
+  have hF_tendsto_zero : ∀ᵐ ω ∂P', Tendsto (fun n => F n ω) atTop (nhds 0) := by
+    filter_upwards [hF_tendsto] with ω hω
+    simpa [F] using hω
+  have hF_integral_tendsto :
+      Tendsto (fun n => ∫ ω, F n ω ∂P') atTop (nhds (∫ ω, (0 : ℝ) ∂P')) :=
+    MeasureTheory.tendsto_integral_of_dominated_convergence
+      (fun _ : Ω' => 2 * C * V) hF_sm
+      (MeasureTheory.integrable_const (2 * C * V)) hdom hF_tendsto_zero
+  have hconst_tendsto :
+      Tendsto (fun _ : ℕ => ∫ ω, N t ω ^ 2 ∂P') atTop (nhds 0) := by
+    simpa [hF_integral_eq] using hF_integral_tendsto
+  have hterminal_zero : ∫ ω, N t ω ^ 2 ∂P' = 0 := by
+    simpa using (tendsto_const_nhds_iff.mp hconst_tendsto)
+  exact ⟨hterminal_int, hterminal_zero⟩
 
 /-- Terminal form of the bounded continuous finite-variation martingale core.
 
