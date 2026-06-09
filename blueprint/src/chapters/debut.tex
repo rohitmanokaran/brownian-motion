@@ -48,26 +48,22 @@ We denote by $S_\delta$ the set of countable intersections of sets in $S$.
 
 \begin{lemma}\label{lem:InfClosed.mem_countableInfClosure_iff}
   \uses{def:countableInfClosure}
-  \leanok
   \lean{InfClosed.mem_countableInfClosure_iff}
 If a paving $S$ is closed under pairwise intersection, then a set $s$ is in $S_\delta$ if and only if there exists a monotone decreasing family of sets $(A_n)_{n\in\mathbb{N}}$ in $S$ such that $s = \bigcap_{n\in\mathbb{N}} A_n$.
 \end{lemma}
 
-\begin{proof}\leanok
-The ``monotone decreasing'' condition is the only non-trivial part of the statement: without it it would just be the definition of $S_\delta$.
+\begin{proof}The ``monotone decreasing'' condition is the only non-trivial part of the statement: without it it would just be the definition of $S_\delta$.
 If $s \in S_\delta$ there exists a family $(B_n)$ that satisfies the condition but may not be monotone. We can then define $A_n = \bigcap_{k \le n} B_k$, and the family $(A_n)$ is monotone decreasing and satisfies $\bigcap_{n\in\mathbb{N}} A_n = \bigcap_{n\in\mathbb{N}} B_n = s$.
 \end{proof}
 
 
 \begin{lemma}\label{lem:SupClosed.mem_countableSupClosure_iff}
   \uses{def:countableSupClosure}
-  \leanok
   \lean{SupClosed.mem_countableSupClosure_iff}
 If a paving $S$ is closed under pairwise union, then a set $s$ is in $S_\sigma$ if and only if there exists a monotone increasing family of sets $(A_n)_{n\in\mathbb{N}}$ in $S$ such that $s = \bigcup_{n\in\mathbb{N}} A_n$.
 \end{lemma}
 
-\begin{proof}\leanok
-Similar to the proof of Lemma~\ref{lem:InfClosed.mem_countableInfClosure_iff}.
+\begin{proof}Similar to the proof of Lemma~\ref{lem:InfClosed.mem_countableInfClosure_iff}.
 \end{proof}
 
 
@@ -80,39 +76,33 @@ A set of sets $K$ is a compact system if for every countable family $(C_n)_{n \i
 
 \begin{lemma}\label{lem:isCompactSystem_isCompact_isClosed}
   \uses{def:IsCompactSystem}
-  \leanok
   \lean{isCompactSystem_isCompact_isClosed}
 The family of compact closed sets of a topological space is a compact system.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{def:IsCompactSystem}
+\begin{proof}  \uses{def:IsCompactSystem}
 
 \end{proof}
 
 
 \begin{lemma}\label{lem:isCompactSystem_isCompact}
   \uses{def:IsCompactSystem}
-  \leanok
   \lean{isCompactSystem_isCompact}
 The family of compact sets of a T2 topological space is a compact system.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:isCompactSystem_isCompact_isClosed}
+\begin{proof}  \uses{lem:isCompactSystem_isCompact_isClosed}
 The T2 assumption ensures that compact sets are closed, so the family of compact sets is the family of compact closed sets, which is a compact system by Lemma~\ref{lem:isCompactSystem_isCompact_isClosed}.
 \end{proof}
 
 
 \begin{lemma}\label{lem:IsCompactSystem.mono}
   \uses{def:IsCompactSystem}
-  \leanok
   \lean{IsCompactSystem.mono}
 If $S \subseteq T$ and $T$ is a compact system, then $S$ is a compact system.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{def:IsCompactSystem}
+\begin{proof}  \uses{def:IsCompactSystem}
 Any sequence of sets in $S$ is a sequence of sets in $T$, so if the intersection of the sequence is empty, then there is a finite subset of the sequence whose intersection is empty by the compact system property of $T$.
 \end{proof}
 
@@ -154,7 +144,6 @@ The sum of a countable family of compact systems is a compact system.
 
 \begin{lemma}\label{lem:IsCompactSystem.image2_prod}
   \uses{def:IsCompactSystem}
-  \leanok
   \lean{IsCompactSystem.image2_prod}
 The product of two compact systems $S \times T$ is a compact system.
 \end{lemma}
@@ -166,7 +155,6 @@ The product of two compact systems $S \times T$ is a compact system.
 
 \begin{lemma}\label{lem:IsCompactSystem.supClosure}
   \uses{def:IsCompactSystem, def:supClosure}
-  \leanok
   \lean{IsCompactSystem.supClosure}
 If $S$ is a compact system, then $S^{\cup f}$ is a compact system.
 \end{lemma}
@@ -188,7 +176,6 @@ If $S$ is a compact system, then $S_\delta$ is a compact system.
 
 \begin{lemma}\label{lem:IsCompactSystem.infClosure}
   \uses{def:IsCompactSystem, def:infClosure}
-  \leanok
   \lean{IsCompactSystem.infClosure}
 If $S$ is a compact system, then $S^{\cap f}$ is a compact system.
 \end{lemma}
@@ -224,7 +211,6 @@ Then
 
 \begin{definition}[Analytic set]\label{def:IsPavingAnalytic}
   \uses{def:IsCompactSystem, def:countableSupClosure, def:countableInfClosure, def:image2_prod}
-  \leanok
   \lean{MeasureTheory.IsPavingAnalytic, MeasureTheory.IsPavingAnalyticFor}
 Let $F$ be a paving of a type $\mathcal{X}$.
 A set $s$ of $\mathcal{X}$ is said to be $F$-analytic if there exists a nonempty type $\mathcal{K}$ and a compact system $K$ of $\mathcal{K}$ with $\emptyset \in K$ such that $s$ is the projection on $\mathcal{X}$ of a set in $(F \times K)_{\sigma \delta}$.
@@ -273,26 +259,22 @@ If $s$ is $F$-analytic, then there exists a set $t$ in $F_\sigma$ such that $s \
 
 \begin{lemma}\label{lem:IsPavingAnalytic.iUnion}
   \uses{def:IsPavingAnalytic}
-  \leanok
   \lean{MeasureTheory.IsPavingAnalytic.iUnion, MeasureTheory.IsPavingAnalytic.union}
 A countable union of $F$-analytic sets is $F$-analytic.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:IsCompactSystem.pi}
+\begin{proof}  \uses{lem:IsCompactSystem.pi}
 
 \end{proof}
 
 
 \begin{lemma}\label{lem:IsPavingAnalytic.iInter}
   \uses{def:IsPavingAnalytic}
-  \leanok
   \lean{MeasureTheory.IsPavingAnalytic.iInter, MeasureTheory.IsPavingAnalytic.inter}
 A countable intersection of $F$-analytic sets is $F$-analytic.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:IsCompactSystem.sigma}
+\begin{proof}  \uses{lem:IsCompactSystem.sigma}
 
 \end{proof}
 
@@ -372,14 +354,12 @@ Then every set in $\sigma(F)$ is $F$-analytic: $\sigma(F) \subseteq \mathcal{A}(
 
 \begin{lemma}\label{lem:MeasurableSet.isPavingAnalytic_Icc_real}
   \uses{def:IsPavingAnalytic}
-  \leanok
   \lean{MeasurableSet.isPavingAnalytic_Icc_real}
 A measurable set of $\mathbb{R}$ is $I_{\mathbb{R}}$-analytic.
 That is, $M_{\mathbb{R}} \subseteq \mathcal{A}(I_{\mathbb{R}})$.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:isPavingAnalytic_of_measurableSet_generateFrom, lem:IsPavingAnalytic.iUnion, lem:isPavingAnalytic_of_prop}
+\begin{proof}  \uses{lem:isPavingAnalytic_of_measurableSet_generateFrom, lem:IsPavingAnalytic.iUnion, lem:isPavingAnalytic_of_prop}
 
 \end{proof}
 
@@ -399,14 +379,12 @@ A set of $\mathbb{R}$ is $M_{\mathbb{R}}$-analytic if and only if it is $I_{\mat
 
 \begin{lemma}\label{lem:MeasurableSet.isPavingAnalytic_image2_prod}
   \uses{def:IsPavingAnalytic}
-  \leanok
   \lean{MeasurableSet.isPavingAnalytic_image2_prod}
 Let $\mathcal{X}$ be a measurable space and $s$ be a measurable set of $\mathcal{X} \times \mathbb{R}$.
 Then $s$ is $(M_{\mathcal{X}} \times I_{\mathbb{R}})$-analytic.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:isPavingAnalytic_of_measurableSet_generateFrom, lem:IsPavingAnalytic.iUnion, lem:isPavingAnalytic_of_prop}
+\begin{proof}  \uses{lem:isPavingAnalytic_of_measurableSet_generateFrom, lem:IsPavingAnalytic.iUnion, lem:isPavingAnalytic_of_prop}
 
 \end{proof}
 
@@ -427,20 +405,17 @@ Then the projection $\pi_{\mathcal{X}}(s)$ is $M_{\mathcal{X}}$-analytic.
 
 \begin{lemma}\label{lem:MeasurableSet.isPavingAnalytic_fst}
   \uses{def:IsPavingAnalytic}
-  \leanok
   \lean{MeasurableSet.isPavingAnalytic_fst}
 Let $\mathcal{X}$ be a measurable space and $s$ be a measurable set of $\mathcal{X} \times \mathbb{R}$.
 Then the projection of $s$ on $\mathcal{X}$ is $M_{\mathcal{X}}$-analytic.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:MeasurableSet.isPavingAnalytic_image2_prod, lem:isPavingAnalytic_fst_of_image2_prod_measurableSet_Icc}
+\begin{proof}  \uses{lem:MeasurableSet.isPavingAnalytic_image2_prod, lem:isPavingAnalytic_fst_of_image2_prod_measurableSet_Icc}
 
 \end{proof}
 
 
 \begin{definition}\label{def:IsMeasurableAnalytic}
-  \leanok
   \lean{MeasureTheory.IsMeasurableAnalytic, MeasureTheory.IsMeasurableAnalyticFor}
 We say that a set $s$ of a measurable space $\mathcal{X}$ is measurably analytic for a measurable space $\mathcal{K}$ if it is the projection of a measurable set of $\mathcal{X} \times \mathcal{K}$.
 
@@ -653,14 +628,12 @@ A measurably analytic set of a measurable space $\mathcal{X}$ is universally mea
 
 \begin{theorem}[Measurable projection]\label{thm:MeasurableSet.nullMeasurableSet_fst}
   \uses{def:IsMeasurableAnalytic}
-  \leanok
   \lean{MeasurableSet.nullMeasurableSet_fst}
 Let $\mathcal{X}$ and $\mathcal{Y}$ be measurable spaces, with $\mathcal{Y}$ standard Borel.
 Then the projection of a measurable set of $\mathcal{X} \times \mathcal{Y}$ on $\mathcal{X}$ is universally measurable.
 \end{theorem}
 
-\begin{proof}\leanok
-  \uses{lem:IsMeasurableAnalyticFor.isMeasurableAnalytic, lem:IsMeasurableAnalytic.nullMeasurableSet}
+\begin{proof}  \uses{lem:IsMeasurableAnalyticFor.isMeasurableAnalytic, lem:IsMeasurableAnalytic.nullMeasurableSet}
 
 \end{proof}
 

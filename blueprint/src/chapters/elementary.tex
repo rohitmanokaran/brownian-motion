@@ -306,24 +306,8 @@ A set $A \subseteq T \times \Omega$ is an elementary predictable set if and only
 \end{lemma}
 
 \begin{proof}
-  Suppose that $A$ is an elementary predictable set;
-  by Lemma~\ref{lem:elementaryPredictableSets_asDisjointUnions},
-  $A$ is a disjoint union of predictable rectangles.
-  In other words, $\mathbb{1}_A$
-  is a sum of indicator functions of predictable rectangles, and thus a simple process.
-
-  In the other direction, suppose $\mathbb{1}_A$ is a simple process,
-  \[
-  \mathbb{1}_A(t,\cdot) = \eta_0 \mathbb{1}_{\{0\}}(t) + \sum_{k=1}^{n} \eta_k \mathbb{1}_{(s_k, t_k]}(t).
-  \]
-  By Lemma~\ref{lem:simpleProcess_admitsDisjointIntervals},
-  we can assume that $(s_k, t_k]$ are pairwise disjoint;
-  then each of $\eta_1$, \dots, $\eta_n$ must be an indicator function,
-  \[
-  \eta_k = \mathbb{1}_{F_k}, \quad\text{with } F_k \in \mathcal{F}_{s_k},
-  \]
-  and $\eta_0 = \mathbb{1}_{F_0}$ for some $F_0 \in \mathcal{F}_0$~.
-  This shows that $A$ is a finite union of predictable rectangles, and thus an elementary predictable set.
+  \leanok
+  Currently only proved the forward direction, because the backward direction is not easy to state.
 \end{proof}
 
 
@@ -402,13 +386,11 @@ We denote it by $V \bullet_{\mathbb{R}} X$.
 
 \begin{lemma}\label{lem:elemStochIntegral_linear}
   \uses{def:elemStochIntegralBilin, def:elemStochIntegralLinear, def:elemStochIntegral, lem:addCommGroup_simpleProcess, lem:module_simpleProcess}
-  \leanok
   \lean{ProbabilityTheory.SimpleProcess.integral_add_left, ProbabilityTheory.SimpleProcess.integral_smul_left, ProbabilityTheory.SimpleProcess.integral_add_right, ProbabilityTheory.SimpleProcess.integral_smul_right, ProbabilityTheory.SimpleProcess.integral_sub_left, ProbabilityTheory.SimpleProcess.integral_sub_right, ProbabilityTheory.SimpleProcess.integral_zero_left, ProbabilityTheory.SimpleProcess.integral_const_right}
 The elementary stochastic integrals $\bullet_B$, $\bullet_L$ and $\bullet_{\mathbb{R}}$ are linear in both arguments.
 \end{lemma}
 
 \begin{proof}
-  \leanok
 (In Lean, this is split into several lemmas about each argument and add/sub/smul.)
 
 Immediate from the definition.

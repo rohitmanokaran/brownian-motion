@@ -7,7 +7,6 @@ This section contains material taken mostly from \cite[Chapters 10 and 18]{kalle
 
 \begin{definition}\label{def:preLocalizingSequence}
   \uses{def:IsStoppingTime}
-  \leanok
   \lean{ProbabilityTheory.IsPreLocalizingSequence}
 A pre-localizing sequence is a sequence of stopping times $(\tau_n)_{n \in \mathbb{N}}$ such that $\tau_n \to \infty$ as $n \to \infty$ (a.s.).
 \end{definition}
@@ -15,7 +14,6 @@ A pre-localizing sequence is a sequence of stopping times $(\tau_n)_{n \in \math
 
 \begin{definition}[Localizing sequence]\label{def:localizingSequence}
   \uses{def:preLocalizingSequence}
-  \leanok
   \lean{ProbabilityTheory.IsLocalizingSequence}
 A localizing sequence is a sequence of stopping times $(\tau_n)_{n \in \mathbb{N}}$ such that $\tau_n$ is non-decreasing and $\tau_n \to \infty$ as $n \to \infty$ (a.s.).
 That is, it is a pre-localizing sequence that is also almost surely non-decreasing.
@@ -24,26 +22,22 @@ That is, it is a pre-localizing sequence that is also almost surely non-decreasi
 
 \begin{lemma}\label{lem:localizingSequence_const_top}
   \uses{def:localizingSequence}
-  \leanok
   \lean{ProbabilityTheory.isLocalizingSequence_const_top}
 The constant sequence $\tau_n = \infty$ is a localizing sequence.
 \end{lemma}
 
-\begin{proof}\leanok
-
+\begin{proof}
 \end{proof}
 
 
 \begin{lemma}\label{lem:localizingSequence_min}
   \uses{def:localizingSequence}
-  \leanok
   \lean{ProbabilityTheory.IsLocalizingSequence.min}
 Let $(\sigma_n), (\tau_n)$ be localizing sequences.
 Then $(\sigma_n \wedge \tau_n)$ is a localizing sequence.
 \end{lemma}
 
-\begin{proof}\leanok
-
+\begin{proof}
 \end{proof}
 
 
@@ -75,7 +69,6 @@ Then, there exists a strictly increasing sequence $(k_n)_{n \in \mathbb{N}}$ suc
 
 \begin{lemma}\label{lem:isLocalizingSequence_ae}
   \uses{def:localizingSequence}
-  \leanok
   \lean{ProbabilityTheory.isLocalizingSequence_localizingSequenceOfProp}
   Let $P$ be a predicate on paths and suppose $X$ is a stochastic process satisfying $P$ a.s. Then, defining
   $$\tau_n(\omega) =
@@ -87,8 +80,7 @@ Then, there exists a strictly increasing sequence $(k_n)_{n \in \mathbb{N}}$ suc
   for all $n \in \mathbb{N}$, the sequence $(\tau_n)_{n \in \mathbb{N}}$ is a localizing sequence.
 \end{lemma}
 
-\begin{proof}\leanok
-\end{proof}
+\begin{proof}\end{proof}
 
 
 \begin{definition}[Local property]\label{def:locally}
@@ -108,8 +100,7 @@ We denote the class of processes that are locally in $P$ by $P_{\mathrm{loc}}$.
 For any class of processes $P$, we have $P \subseteq P_{\mathrm{loc}}$.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:localizingSequence_const_top}
+\begin{proof}  \uses{lem:localizingSequence_const_top}
 Take $\tau_n = \infty$ for all $n$.
 \end{proof}
 
@@ -121,8 +112,7 @@ Take $\tau_n = \infty$ for all $n$.
 If $P \subseteq Q$ then $P_{\mathrm{loc}} \subseteq Q_{\mathrm{loc}}$.
 \end{lemma}
 
-\begin{proof}\leanok
-Let $X \in P_{\mathrm{loc}}$.
+\begin{proof}Let $X \in P_{\mathrm{loc}}$.
 Then there exists a localizing sequence $(\tau_n)_{n \in \mathbb{N}}$ such that for all $n \in \mathbb{N}$, $X^{\tau_n}\mathbb{I}_{\tau_n > 0} \in P$.
 Since $P \subseteq Q$, for all $n \in \mathbb{N}$, $X^{\tau_n}\mathbb{I}_{\tau_n > 0} \in Q$.
 Thus $X \in Q_{\mathrm{loc}}$.
@@ -144,8 +134,7 @@ A class of stochastic processes $P$ is stable if whenever $X$ is in $P$, then fo
 If $P$ is a stable class of processes, then $P_{\mathrm{loc}}$ is also stable.
 \end{lemma}
 
-\begin{proof}\leanok
-
+\begin{proof}
 \end{proof}
 
 
@@ -156,8 +145,7 @@ If $P$ is a stable class of processes, then $P_{\mathrm{loc}}$ is also stable.
 If $P, Q$ are stable classes of processes then $(P\cap Q)_{\mathrm{loc}} = P_{\mathrm{loc}}\cap Q_{\mathrm{loc}}$.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:localizingSequence_min}
+\begin{proof}  \uses{lem:localizingSequence_min}
 The forward direction is trivial so we only provide proof for the reverse.
 
 Suppose that $X \in P_{\mathrm{loc}}\cap Q_{\mathrm{loc}}$. Then, there exists localizing sequences $(\tau_n)_{n \in \mathbb{N}}$ and $(\sigma_n)_{n \in \mathbb{N}}$ such that $X^{\tau_n} \mathbb{I}_{\tau_n > 0}\in P$ and $X^{\sigma_n} \mathbb{I}_{\sigma_n > 0} \in Q$. Consequently, by the stability of $P$,
@@ -174,8 +162,7 @@ Let $P$ be a stable class of processes and let $(\tau_n)_{n \in \mathbb{N}}$ be 
 If the filtration is right-continuous, then $X$ is locally in $P$.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:isLocalizingSequence_of_isPreLocalizingSequence}
+\begin{proof}  \uses{lem:isLocalizingSequence_of_isPreLocalizingSequence}
   Using the localizing sequence defined by Lemma~\ref{lem:isLocalizingSequence_of_isPreLocalizingSequence} suffices.
 \end{proof}
 
@@ -188,8 +175,7 @@ Suppose that the filtration is right-continuous.
 For any stable class of processes $P$, we have $(P_{\mathrm{loc}})_{\mathrm{loc}} = P_{\mathrm{loc}}$.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:locally_of_isPreLocalizingSequence, lem:isStable_locally, lem:isPreLocalizingSequence_of_isLocalizingSequence}
+\begin{proof}  \uses{lem:locally_of_isPreLocalizingSequence, lem:isStable_locally, lem:isPreLocalizingSequence_of_isLocalizingSequence}
 $(P_{\mathrm{loc}})_{\mathrm{loc}} \supseteq P_{\mathrm{loc}}$ by Lemma~\ref{lem:isStable_locally} so we only prove the reverse inclusion.
 
 Let $X$ be a process in $(P_{\mathrm{loc}})_{\mathrm{loc}}$.
@@ -214,8 +200,7 @@ Then $X$ satisfies $Q$ locally.
 In short, if $P$ implies $Q$ locally, then $P$ locally implies $Q$ locally.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:locally_locally, lem:locally_mono}
+\begin{proof}  \uses{lem:locally_locally, lem:locally_mono}
 Since $X \in P_{\mathrm{loc}}$, then $X \in (Q_{\mathrm{loc}})_{\mathrm{loc}}$ by assumption and Lemma~\ref{lem:locally_mono}.
 By Lemma \ref{lem:locally_locally}, $(Q_{\mathrm{loc}})_{\mathrm{loc}} = Q_{\mathrm{loc}}$.
 Thus $X \in Q_{\mathrm{loc}}$.
@@ -398,7 +383,7 @@ The class of cadlag submartingales is stable. That is, if $M$ is a cadlag submar
 \end{proof}
 
 
-\begin{theorem}\label{thm:IsLocalMartingale.eq_zero_of_finiteVariation}
+\begin{theorem}\label{thm:IsLocalMartingale.eq_zero_of_continuous_finiteVariation}
   \uses{def:IsLocalMartingale}
 Let $M$ be a continuous local martingale with $M_0 = 0$. If $M$ is also a finite variation process, then $M_t = 0$ for all $t$.
 \end{theorem}
@@ -515,13 +500,11 @@ A progressively measurable process is of class D iff its norm is of class D.
 
 \begin{lemma}\label{lem:Submartingale.classDL}
   \uses{def:Submartingale, def:classDL, def:RightContinuous}
-  \leanok
   \lean{MeasureTheory.Submartingale.classDL}
 Every nonnegative right-continuous submartingale is of class DL.
 \end{lemma}
 
 \begin{proof}
-  \leanok
   \uses{lem:optionalSamplingSubmartingale, lem:uniformIntegrableDominated, lem:condExpUI}
 Let $t \in T$ and $\tau \le t$ be a stopping time. By Lemma~\ref{lem:optionalSamplingSubmartingale} and nonnegativity we get that $0 \le X_\tau \le P[X_t \mid X_\tau]$. As $X$ is a submartingale, $X_t$ is integrable, thus $\{X_t\}$ is uniformly integrable, and we can conclude from Lemma~\ref{lem:uniformIntegrableDominated} and Lemma~\ref{lem:condExpUI}.
 \end{proof}
@@ -529,13 +512,11 @@ Let $t \in T$ and $\tau \le t$ be a stopping time. By Lemma~\ref{lem:optionalSam
 
 \begin{lemma}\label{lem:Submartingale.classD_iff_uniformIntegrable}
   \uses{def:Submartingale, def:classD, def:RightContinuous}
-  \leanok
   \lean{MeasureTheory.Submartingale.classD_iff_uniformIntegrable}
 A nonnegative right-continuous submartingale is of class D if and only if it is uniformly integrable.
 \end{lemma}
 
 \begin{proof}
-  \leanok
   \uses{lem:optionalSamplingSubmartingale, lem:uniformIntegrable_of_tendsto_ae, lem:uniformIntegrableComp, lem:ClassD.uniformIntegrable}
 Assume that $X$ is uniformly integrable. Just like what we did in the proof of Lemma~\ref{lem:Submartingale.classDL}, we use Lemma~\ref{lem:optionalSamplingSubmartingale} and Lemma~\ref{lem:condExpUI} to deduce that $\{X_\tau|\exists t\in T, \tau\le t\}$ is uniformly integrable. Moreover, for any finite stopping time $\tau$, We have that $X_\tau = \lim_{n \to +\infty} X_{\tau \land n}$. Thanks to Lemma~\ref{lem:uniformIntegrable_of_tendsto_ae}, we deduce that $X$ is of class D.
 
@@ -545,26 +526,22 @@ Conversely, if $X$ is of class D, then it is uniformly integrable by Lemma~\ref{
 
 \begin{lemma}\label{lem:Martingale.classDL}
   \uses{def:Martingale, def:classDL, def:IsCadlag}
-  \leanok
   \lean{MeasureTheory.Martingale.classDL}
 Every càdlàg martingale is of class DL.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:Submartingale.classDL, lem:Martingale.submartingale_convex_comp, lem:uniformIntegrableIffNorm}
+\begin{proof}  \uses{lem:Submartingale.classDL, lem:Martingale.submartingale_convex_comp, lem:uniformIntegrableIffNorm}
 Let $X$ be càdlàg martingale. By Lemma~\ref{lem:Martingale.submartingale_convex_comp}, $(|X_t|)_{t \in T}$ is a nonnegative càdlàg submartingale, and the result follows from Lemma~\ref{lem:Submartingale.classDL} along with Lemma~\ref{lem:uniformIntegrableIffNorm}.
 \end{proof}
 
 
 \begin{lemma}\label{lem:Martingale.classD_iff_uniformIntegrable}
   \uses{def:Martingale, def:classD, def:RightContinuous}
-  \leanok
   \lean{MeasureTheory.Martingale.classD_iff_uniformIntegrable}
 A right-continuous martingale is of class D if and only if it is uniformly integrable.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:Submartingale.classD_iff_uniformIntegrable, lem:uniformIntegrableIffNorm, lem:classD_iff_norm, cor:Martingale.submartingale_norm}
+\begin{proof}  \uses{lem:Submartingale.classD_iff_uniformIntegrable, lem:uniformIntegrableIffNorm, lem:classD_iff_norm, cor:Martingale.submartingale_norm}
 Applying Lemma~\ref{lem:classD_iff_norm} and Lemma~\ref{lem:uniformIntegrableIffNorm}, it suffices to show the result for the norm of the martingale.
 That norm is a nonnegative right-continuous submartingale by Lemma~\ref{cor:Martingale.submartingale_norm} so this follows from Lemma~\ref{lem:Submartingale.classD_iff_uniformIntegrable}.
 \end{proof}
@@ -578,6 +555,8 @@ The class of processes for which the induced map $(t,\omega)\mapsto X_t(\omega)$
 \end{lemma}
 
 \begin{proof}
+
+\leanok
 The stopped process at $\tau$ is obtained by precomposition with $(t, \omega) \mapsto (\min (\tau(\omega), t), \omega)$.
 Precomposing a strongly measurable function with a measurable function gives a strongly measurable function.
 On a second-countable space, the minimum of two functions is measurable, and by assumption $\tau$ is measurable.
@@ -637,13 +616,11 @@ Let $X$ be a process of class DL, $\tau$ be a stopping time. Let $t \in T$. For 
 
 \begin{lemma}\label{lem:Integrable.classDL}
   \uses{def:classDL, def:HasIntegrableSup}
-  \leanok
   \lean{MeasureTheory.Integrable.classDL}
 Let $X$ be a progressively measurable stochastic process with integrable supremum (Definition~\ref{def:HasIntegrableSup}). Then $X$ is of class DL.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:uniformIntegrableDominatedSingleton}
+\begin{proof}  \uses{lem:uniformIntegrableDominatedSingleton}
 Let $t \in T$. For every stopping time $\tau$ with $\tau \le t$, we have $\|X_\tau\| \le X^*_t$.
 Measurability of $X_\tau$ follows from progressive measurability of $X$.
 Because by hypothesis $X^*_t$ is integrable, we deduce from Lemma~\ref{lem:uniformIntegrableDominatedSingleton} that $\{X_\tau \mid \tau \text{ is a stopping time with } \tau \le t\}$ is uniformly integrable.
@@ -653,13 +630,11 @@ This proves that $X$ is of class DL.
 
 \begin{lemma}\label{lem:IsStronglyProgressive.hasStronglyMeasurableSup}
   \uses{def:IsStronglyProgressive}
-  \leanok
   \lean{MeasureTheory.IsStronglyProgressive.hasStronglyMeasurableSupProcess}
   If the filtration satisfies the usual conditions, a progressively measurable process has a supremum that is jointly strongly measurable.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:isStoppingTime_leastGT}
+\begin{proof}  \uses{lem:isStoppingTime_leastGT}
 
 \end{proof}
 
@@ -736,6 +711,7 @@ If $X$ is a real-valued càdlàg and adapted process, then the sequence $\tau_n 
 
 \begin{proof}
   \uses{lem:isBounded_image_of_isCadlag_of_isCompact, cor:isStoppingTime_leastGE_of_rightContinuous}
+  \leanok
 By Corollary~\ref{cor:isStoppingTime_leastGE_of_rightContinuous}, each $\tau_n$ is a stopping time. Moreover, for all $n \in \mathbb{N}$, $X_t \ge n+1 \implies X_t \ge n$, thus $\tau_n \le \tau_{n+1}$. Finally, for every $\omega \in \Omega$ and $t_0 \in T$ there exists $N \in \mathbb{N}$ such that for all $s \le t_0$, $X_s \le N$ thanks to Lemma~\ref{lem:isBounded_image_of_isCadlag_of_isCompact}. Thus for all $n \ge N$, $\tau_n(\omega) \ge t_0$, proving that $\tau_n$ tends to infinity as n goes to infinity.
 \end{proof}
 
@@ -860,14 +836,12 @@ This follows by Lemma~\ref{lem:Submartingale.integrable_stoppedValue} as $\tau_n
 
 \begin{lemma}\label{lem:Submartingale.locally_classD}
   \uses{def:Submartingale, def:classD, def:locally, def:IsCadlag}
-  \leanok
   \lean{MeasureTheory.Submartingale.locally_classD}
 Every cadlag submartingale is locally of class D.
 \end{lemma}
 
 \begin{proof}
   \uses{lem:Submartingale.classDL, lem:locally_classD_iff_locally_classDL}
-  \leanok
 By Lemma~\ref{lem:locally_classD_iff_locally_classDL}, it suffices to show that every cadlag submartingale is locally of class DL.
 This can be proved with Lemma~\ref{lem:Submartingale.classDL}.
 \end{proof}

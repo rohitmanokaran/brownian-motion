@@ -1,3 +1,5 @@
+% archon:covers BrownianMotion/StochasticIntegral/QuadraticVariation.lean BrownianMotion/StochasticIntegral/QuadraticVariationBrownian.lean
+
 \chapter{Stochastic integral}
 
 The lecture notes at \href{https://dec41.user.srcf.net/h/III_L/stochastic_calculus_and_applications/}{this link} as well as chapter 18 of \cite{kallenberg2021} are good references for this chapter.
@@ -415,7 +417,6 @@ We say that a martingale $M : T \to \Omega \to E$ is square integrable if it is 
 
 \begin{lemma}\label{lem:IsSquareIntegrable.module}
   \uses{def:IsSquareIntegrable}
-  \leanok
   \lean{ProbabilityTheory.IsSquareIntegrable.add, ProbabilityTheory.IsSquareIntegrable.smul}
 If $M$ and $N$ are square integrable martingales and $a \in \mathbb{R}$, then $M + N$ and $a M$ are square integrable martingales.
 \end{lemma}
@@ -464,7 +465,6 @@ Thus, for $s \le t$~,
 
 \begin{lemma}\label{lem:IsSquareIntegrable.tendsto_limitProcess}
   \uses{def:IsSquareIntegrable, def:limitProcess}
-  \leanok
   \lean{ProbabilityTheory.IsSquareIntegrable.ae_tendsto_limitProcess, ProbabilityTheory.IsSquareIntegrable.tendsto_eLpNorm_two_limitProcess}
 For $M$ a square integrable martingale, we have $M_t \to M_\infty$ almost surely and in $L^2$ as $t \to \infty$~.
 \end{lemma}
@@ -629,27 +629,90 @@ For $V \in \mathcal{E}_{T, \mathbb{R}}$ and $M, N \in \mathcal{M}^2$, we have
 
 \section{Local martingales}
 
-TODO: filtrations should be assumed right-continuous and complete whenever needed.
+In the generic quadratic-variation API below, whenever the definition uses the
+normalized Doob--Meyer predictable part, the formal hypotheses are the usual
+ones needed by that normalized choice layer: the time index is a conditionally
+complete linear order with bottom, carries its Borel measurable structure and a
+Polish topology compatible with the order topology, the ambient measure is
+finite, and the filtration is approximable, complete, and right-continuous.
+The point of stating the quadratic-variation declarations under the same
+ambient assumptions is not to change the mathematical construction, but to make
+the filtration and the cadlag predicates use the same order instance as the
+normalized predictable-part API.
 
 
-\begin{lemma}\label{lem:IsLocalMartingale.isLocalSubmartingale_sq_norm}
-  \uses{def:IsLocalMartingale, def:IsLocalSubmartingale}
-  \leanok
-  \lean{ProbabilityTheory.IsLocalMartingale.isLocalSubmartingale_sq_norm}
-If $M$ is a cadlag local martingale, then $\Vert M \Vert^2$ is a cadlag local sub-martingale.
+\begin{lemma}\label{lem:stoppedProcess_indicator_sq_norm}
+  \lean{ProbabilityTheory.stoppedProcess_indicator_sq_norm}
+For any process $M$ and any stopping time $\tau$, stopping the
+indicator-truncated squared norm is the same process as taking the squared norm
+after indicator-truncating and stopping $M$:
+\[
+  \left(\|M\|^2 \mathbf{1}_{\{\tau>\bot\}}\right)^\tau_t
+  =
+  \left\| \left(M\mathbf{1}_{\{\tau>\bot\}}\right)^\tau_t \right\|^2 .
+\]
 \end{lemma}
 
 \begin{proof}
 
+This is pointwise.  Fix $t$ and $\omega$.  If \(\tau(\omega)=\bot\), both
+sides are zero because the indicator vanishes.  If \(\tau(\omega)>\bot\), the
+indicator is one and both sides reduce, by the definition of stopped process, to
+\(\|M_{t\wedge \tau(\omega)}(\omega)\|^2\).
+\end{proof}
+
+
+\begin{lemma}\label{lem:IsLocalMartingale.isLocalSubmartingale_sq_norm}
+  \uses{def:IsLocalMartingale, def:IsLocalSubmartingale, lem:stoppedProcess_indicator_sq_norm}
+  \lean{ProbabilityTheory.IsLocalMartingale.isLocalSubmartingale_sq_norm}
+Under the finite-measure and usual localization hypotheses used in this
+section, if $M$ is a cadlag local martingale, then $\Vert M \Vert^2$ is a
+cadlag local sub-martingale.
+\end{lemma}
+
+\begin{proof}
+  \uses{lem:IsSquareIntegrable.submartingale_sq, lem:stoppedProcess_indicator_sq_norm}
+Let $(\tau_n)$ be a localizing sequence for the local martingale $M$, so
+the stopped and indicator-truncated processes
+\[
+  M^n_t = M_{t \wedge \tau_n}\mathbf{1}_{\{\tau_n > 0\}}
+\]
+are càdlàg martingales.  Refine this localization once more so that each
+localized process is square integrable: on a deterministic compact time
+interval, each càdlàg path is bounded, and the measurable events on which this
+pathwise bound is at most a fixed constant increase almost surely to the whole
+space.  Intersecting these events with the original localizing sequence and
+letting both the deterministic horizon and the bound tend to infinity gives a
+new localizing sequence $(\sigma_n)$ such that every
+\[
+  \widetilde M^n_t
+  = M_{t \wedge \sigma_n}\mathbf{1}_{\{\sigma_n > 0\}}
+\]
+is still a càdlàg martingale and satisfies
+\(\sup_t \|\widetilde M^n_t\|_{L^2}<\infty\).
+The finite-measure hypothesis is what turns deterministic boundedness of the
+stopped process into square integrability; the theorem should not be used in a
+bare arbitrary-measure context without this extra localization/measure input.
+
+For each $n$, Lemma~\ref{lem:IsSquareIntegrable.submartingale_sq} applied to
+\(\widetilde M^n\) shows that
+\(\|\widetilde M^n_t\|^2\) is a submartingale.  Stopping commutes with taking
+the squared norm, so this submartingale is exactly the process obtained by
+stopping and indicator-truncating \(\|M_t\|^2\) at \(\sigma_n\).  Therefore
+\((\sigma_n)\) localizes \(\|M\|^2\) as a submartingale.  The càdlàg property
+of \(\|M\|^2\) follows by composing the càdlàg paths of \(M\) with the
+continuous map \(x \mapsto \|x\|^2\), and stability of càdlàg paths under
+stopping gives the local càdlàg component.
 \end{proof}
 
 
 \begin{definition}[Quadratic variation]\label{def:quadraticVariation}
   \uses{def:IsLocalMartingale, thm:local_doobMeyer, lem:IsLocalMartingale.isLocalSubmartingale_sq_norm}
-  \leanok
   \lean{ProbabilityTheory.quadraticVariation}
-For $M$ a local martingale, the predictable quadratic variation of $M$ is defined as the predictable part of the Doob-Meyer decomposition of the local sub-martingale $\Vert M \Vert^2$~.
-We denote it by $\langle M \rangle$~.
+Under the usual normalized Doob--Meyer hypotheses from this section, for $M$ a
+càdlàg local martingale, the predictable quadratic variation of $M$ is defined
+as the normalized predictable part of the Doob--Meyer decomposition of the
+local submartingale $\Vert M \Vert^2$.  We denote it by $\langle M \rangle$.
 \end{definition}
 
 
@@ -802,13 +865,342 @@ Let $M$ and $N$ be square integrable martingales. Then
 \end{proof}
 
 
-\begin{lemma}\label{lem:quadraticVariation_brownian}
-  \uses{def:brownian, def:quadraticVariation}
-Let $B$ be a standard Brownian motion. Then the quadratic variation of $B$ is given by $\langle B \rangle_t = t$~.
+\subsection{Brownian quadratic variation}
+
+\begin{definition}\label{def:brownianNaturalFiltration}
+  \uses{def:brownian}
+  \lean{ProbabilityTheory.brownianNaturalFiltration}
+  \leanok
+The natural filtration of the canonical Brownian motion is
+\(\mathcal F^B_t = \sigma(B_s : s \le t)\).
+\end{definition}
+
+\begin{lemma}\label{lem:brownianNaturalFiltration_approximable}
+  \uses{def:brownianNaturalFiltration}
+  \lean{ProbabilityTheory.brownianNaturalFiltration_approximable}
+  \leanok
+The Brownian natural filtration over the time index \(\mathbb R_{\ge 0}\) is
+approximable for the Gaussian limit measure: every stopping time admits a
+decreasing sequence of countable-valued stopping times above it that converges
+to it almost surely.
 \end{lemma}
 
 \begin{proof}
 
+\leanok
+This is the general dyadic approximation of nonnegative-real stopping times.
+For a stopping time \(\tau\), set
+\[
+  \tau_n(\omega)=2^{-n}\lceil 2^n\tau(\omega)\rceil
+\]
+with the value \(+\infty\) preserved.  Then \(\tau\le \tau_n\), the sequence is
+decreasing in \(n\), and \(\tau_n(\omega)\to\tau(\omega)\) for every
+\(\omega\).  The range of \(\tau_n\) is countable.  Finally,
+\[
+  \{\tau_n\le t\}
+  =
+  \{\tau\le 2^{-n}\lfloor 2^n t\rfloor\},
+\]
+so \(\tau_n\) is again a stopping time because the right-hand side is measured
+at a time not exceeding \(t\).  This gives the required discrete approximation
+sequence.
+\end{proof}
+
+\begin{lemma}\label{lem:isCadlag_brownian}
+  \uses{def:brownian}
+  \lean{ProbabilityTheory.isCadlag_brownian}
+  \leanok
+The canonical Brownian motion has càdlàg paths.
+\end{lemma}
+
+\begin{proof}
+
+
+\leanok
+The canonical Brownian paths are continuous, and every continuous path is càdlàg.
+\end{proof}
+
+\begin{lemma}\label{lem:martingale_brownian}
+  \uses{def:brownianNaturalFiltration}
+  \lean{ProbabilityTheory.martingale_brownian}
+  \leanok
+The canonical Brownian motion is a martingale with respect to its natural filtration.
+\end{lemma}
+
+\begin{proof}
+
+
+\leanok
+The Brownian motion is a filtered pre-Brownian motion for its natural filtration:
+it is adapted by definition of the natural filtration, and each future increment
+\(B_t-B_s\), \(s\le t\), is independent of \(\mathcal F^B_s\).  The increment is
+centered, so
+\[
+  \mathbb E[B_t-B_s\mid \mathcal F^B_s]=0.
+\]
+Since \(B_s\) is \(\mathcal F^B_s\)-measurable,
+\[
+  \mathbb E[B_t\mid\mathcal F^B_s]
+  =\mathbb E[B_t-B_s\mid\mathcal F^B_s]+B_s
+  =B_s.
+\]
+\end{proof}
+
+\begin{lemma}\label{lem:isLocalMartingale_brownian}
+  \uses{lem:martingale_brownian, lem:isCadlag_brownian, def:IsLocalMartingale}
+  \lean{ProbabilityTheory.isLocalMartingale_brownian}
+  \leanok
+The canonical Brownian motion is a local martingale with respect to its natural filtration.
+\end{lemma}
+
+\begin{proof}
+
+
+\leanok
+Every càdlàg martingale is a local martingale, applied to
+Lemmas~\ref{lem:martingale_brownian} and \ref{lem:isCadlag_brownian}.
+\end{proof}
+
+\begin{definition}\label{def:brownianQuadraticVariation}
+  \uses{def:brownianDeterministicTime}
+  \lean{ProbabilityTheory.brownianQuadraticVariation}
+  \leanok
+The Brownian quadratic variation process is the deterministic time process
+\[
+  \langle B\rangle_t(\omega) := t.
+\]
+This is a Brownian-specific canonical definition, not the generic choice-based
+quadratic variation from Definition~\ref{def:quadraticVariation}.  The generic
+comparison theorem, once its Doob--Meyer and finite-variation uniqueness inputs
+are available, should identify the generic choice representative with this
+explicit process.  Until then, the Brownian process itself is defined by the
+known formula.
+\end{definition}
+
+\begin{lemma}\label{lem:martingale_brownian_sq_sub_time}
+  \uses{def:brownianNaturalFiltration}
+  \lean{ProbabilityTheory.martingale_brownian_sq_sub_time}
+  \leanok
+The process \(B_t^2-t\) is a martingale with respect to the natural Brownian filtration.
+\end{lemma}
+
+\begin{proof}
+
+
+\leanok
+It is adapted because \(B_t\) is \(\mathcal F^B_t\)-measurable and \(t\) is
+deterministic.  It is integrable because \(B_t\) is Gaussian with finite second
+moment.
+
+Fix \(s\le t\) and write \(\Delta_{s,t}=B_t-B_s\).  Then
+\[
+  B_t^2-t
+  = B_s^2-s + 2B_s\Delta_{s,t}
+    +\bigl(\Delta_{s,t}^2-(t-s)\bigr).
+\]
+The increment \(\Delta_{s,t}\) is independent of \(\mathcal F^B_s\), centered,
+and has law \(N(0,t-s)\).  Therefore
+\[
+  \mathbb E[\Delta_{s,t}\mid\mathcal F^B_s]=0,
+  \qquad
+  \mathbb E[\Delta_{s,t}^2\mid\mathcal F^B_s]=t-s.
+\]
+Since \(B_s\) is \(\mathcal F^B_s\)-measurable, the mixed term has conditional
+expectation
+\[
+  \mathbb E[B_s\Delta_{s,t}\mid\mathcal F^B_s]
+  = B_s\,\mathbb E[\Delta_{s,t}\mid\mathcal F^B_s]=0.
+\]
+Taking conditional expectations in the displayed expansion gives
+\[
+  \mathbb E[B_t^2-t\mid\mathcal F^B_s]=B_s^2-s,
+\]
+which is the martingale property.
+\end{proof}
+
+\begin{lemma}\label{lem:isCadlag_brownian_sq_sub_time}
+  \uses{def:brownian, lem:isCadlag_brownian}
+  \lean{ProbabilityTheory.isCadlag_brownian_sq_sub_time}
+  \leanok
+The process \(t\mapsto B_t^2-t\) has càdlàg paths.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+For each sample point \(\omega\), the Brownian path \(t\mapsto B_t(\omega)\)
+is continuous.  Squaring and subtracting the continuous deterministic map
+\(t\mapsto t\) preserves continuity, hence the resulting path is càdlàg.
+\end{proof}
+
+\begin{definition}\label{def:brownianDeterministicTime}
+  \lean{ProbabilityTheory.brownianDeterministicTime}
+  \leanok
+The deterministic time process is
+\[
+  T_t(\omega)=(t:\mathbb R).
+\]
+\end{definition}
+
+\begin{lemma}\label{lem:brownianDeterministicTime_predictable}
+  \uses{def:brownianNaturalFiltration, def:brownianDeterministicTime}
+  \lean{ProbabilityTheory.isStronglyPredictable_brownianDeterministicTime}
+  \leanok
+The deterministic time process is strongly predictable with respect to the
+Brownian natural filtration.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+The process is strongly adapted because, for every \(t\), the random variable
+\(\omega\mapsto t\) is constant.  Its paths are left-continuous, since
+\(t\mapsto (t:\mathbb R)\) is continuous on \(\mathbb R_{\ge 0}\).  The
+project's predictable-process API says that a left-continuous strongly adapted
+process on the nonnegative real time line is strongly predictable, so the
+claim follows.
+\end{proof}
+
+\begin{lemma}\label{lem:brownianDeterministicTime_progressive}
+  \uses{def:brownianDeterministicTime, lem:Adapted.isStronglyProgressive_of_rightContinuous}
+  \lean{ProbabilityTheory.isStronglyProgressive_brownianDeterministicTime}
+  \leanok
+The deterministic time process is strongly progressive with respect to the
+Brownian natural filtration.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+The process is strongly adapted because each fixed-time random variable is
+constant.  Its paths are right-continuous because
+\(t\mapsto(t:\mathbb R)\) is continuous.  Apply the project's
+right-continuous strongly adapted process criterion for strong
+progressiveness.
+\end{proof}
+
+\begin{lemma}\label{lem:brownianDeterministicTime_cadlag}
+  \uses{def:brownianDeterministicTime}
+  \lean{ProbabilityTheory.isCadlag_brownianDeterministicTime}
+  \leanok
+The deterministic time process has càdlàg paths.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+Every path is the continuous map \(t\mapsto (t:\mathbb R)\), and every
+continuous path is càdlàg.
+\end{proof}
+
+\begin{lemma}\label{lem:brownianDeterministicTime_hasLocallyIntegrableSup}
+  \uses{def:brownianDeterministicTime}
+  \lean{ProbabilityTheory.hasLocallyIntegrableSup_brownianDeterministicTime}
+  \leanok
+The deterministic time process has locally integrable running supremum.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+First prove the global running-sup condition.  For fixed \(t\) and every
+\(\omega\),
+\[
+  \sup_{s\le t} \|T_s(\omega)\| = \sup_{s\le t} s = t,
+\]
+because \(s\mapsto s\) is monotone and nonnegative on \(\mathbb R_{\ge 0}\).
+Thus the running-sup random variable is the constant \(t\), hence is strongly
+measurable and integrable under the finite Brownian measure.  The product
+strong measurability of \((t,\omega)\mapsto\sup_{s\le t}\|T_s(\omega)\|\)
+comes from the measurable map \(t\mapsto t\).  The local version follows by
+using the constant-\(\top\) localizing sequence, i.e. by viewing a global
+`HasIntegrableSup` proof as a local one.
+\end{proof}
+
+\begin{lemma}\label{lem:brownianDeterministicTime_monotone}
+  \uses{def:brownianDeterministicTime}
+  \lean{ProbabilityTheory.monotone_brownianDeterministicTime}
+  \leanok
+The deterministic time process is pathwise monotone.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+If \(s\le t\) in \(\mathbb R_{\ge 0}\), then \((s:\mathbb R)\le(t:\mathbb R)\).
+\end{proof}
+
+\begin{lemma}\label{lem:brownianDeterministicTime_bot_eq_zero}
+  \uses{def:brownianDeterministicTime}
+  \lean{ProbabilityTheory.brownianDeterministicTime_bot_eq_zero}
+  \leanok
+The deterministic time process starts from zero:
+\[
+  T_0(\omega)=0.
+\]
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+This is immediate from the definition and the fact that the bottom element of
+\(\mathbb R_{\ge 0}\) is \(0\).
+\end{proof}
+
+\begin{lemma}\label{lem:brownianQuadraticVariation_normalized_decomposition}
+  \uses{def:brownianQuadraticVariation, lem:martingale_brownian_sq_sub_time, lem:isCadlag_brownian_sq_sub_time, lem:brownianDeterministicTime_predictable, lem:brownianDeterministicTime_progressive, lem:brownianDeterministicTime_cadlag, lem:brownianDeterministicTime_hasLocallyIntegrableSup, lem:brownianDeterministicTime_monotone, lem:brownianDeterministicTime_bot_eq_zero}
+  \lean{ProbabilityTheory.brownianQuadraticVariation_normalized_decomposition}
+  \leanok
+The explicit Brownian quadratic variation has the normalized Brownian
+Doob--Meyer shape: the squared Brownian process decomposes as
+\[
+  B_t^2 = (B_t^2-t) + \langle B\rangle_t,
+\]
+where \(B_t^2-t\) is a càdlàg local martingale and
+\(\langle B\rangle\) is strongly predictable, strongly progressive, càdlàg,
+locally integrable, nondecreasing, and starts from zero.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+The pathwise identity follows from the definition
+\(\langle B\rangle_t=t\) and elementary algebra.  The first summand is a
+martingale by Lemma~\ref{lem:martingale_brownian_sq_sub_time}, hence a local
+martingale, and has càdlàg paths by
+Lemma~\ref{lem:isCadlag_brownian_sq_sub_time}.  The deterministic-time lemmas
+prove the remaining normalized predictable-part properties of
+\(\langle B\rangle\).
+\end{proof}
+
+\begin{lemma}\label{lem:quadraticVariation_brownian}
+  \uses{def:brownianQuadraticVariation, lem:brownianQuadraticVariation_normalized_decomposition}
+  \lean{ProbabilityTheory.quadraticVariation_brownian}
+  \leanok
+Let \(B\) be the canonical Brownian motion. Its Brownian quadratic variation is
+the deterministic time process at every deterministic time: for every
+\(t\in\mathbb R_{\ge 0}\),
+\[
+  \langle B\rangle_t = t
+\]
+almost surely.  Formally, the statement is
+\[
+  \texttt{brownianQuadraticVariation t =ᵐ[gaussianLimit] fun \_ => (t : ℝ)}.
+\]
+When the available equality notion is upgraded from fixed-time modification
+to indistinguishability for càdlàg processes, this fixed-time statement
+promotes to \(\mathbb P\)-almost sure equality of the whole paths.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+By definition, the Brownian quadratic variation is the deterministic time
+process, so for every sample point \(\omega\) its value at time \(t\) is
+\((t:\mathbb R)\).  This pointwise identity gives the stated almost-sure
+equality.  Lemma~\ref{lem:brownianQuadraticVariation_normalized_decomposition}
+records the nontrivial semantic content: the same explicit process is the
+predictable finite-variation part of the Brownian square decomposition.
 \end{proof}
 
 
@@ -845,13 +1237,11 @@ If we also vary $t$, we get a stochastic process.
 
 \begin{lemma}\label{lem:Filtration.predictable_le_prod}
   \uses{def:predictableMeasurableSpace}
-  \leanok
   \lean{MeasureTheory.Filtration.predictable_le_prod}
 The predictable $\sigma$-algebra on $T \times \Omega$ is a sub-$\sigma$-algebra of the product $\sigma$-algebra $\mathcal{B}(T) \otimes \mathcal{F}$~.
 \end{lemma}
 
-\begin{proof}\leanok
-
+\begin{proof}
 \end{proof}
 
 
@@ -1027,9 +1417,9 @@ Let $X \in L^2(M)$ such that $\langle X, V\rangle = 0$ for any simple process $V
 \end{lemma}
 
 \begin{proof}
-  \uses{thm:IsLocalMartingale.eq_zero_of_finiteVariation, lem:martingale_integral_of_forall_eq_zero, lem:Martingale.IsLocalMartingale}
+  \uses{thm:IsLocalMartingale.eq_zero_of_predictable_finiteVariation, lem:martingale_integral_of_forall_eq_zero, lem:Martingale.IsLocalMartingale}
 $A_t := \int_0^t X_s \: d\langle M \rangle_s$ is a finite variation process such that $A_t$ is integrable for all $t \ge 0$~.
-By Theorem~\ref{thm:IsLocalMartingale.eq_zero_of_finiteVariation}, it is enough to show that $A$ is a local martingale. We have by Lemma~\ref{lem:martingale_integral_of_forall_eq_zero} that $A$ is a martingale, and hence a local martingale (Lemma~\ref{lem:Martingale.IsLocalMartingale}).
+By Theorem~\ref{thm:IsLocalMartingale.eq_zero_of_predictable_finiteVariation}, it is enough to show that $A$ is a predictable finite-variation local martingale. We have by Lemma~\ref{lem:martingale_integral_of_forall_eq_zero} that $A$ is a martingale, and hence a local martingale (Lemma~\ref{lem:Martingale.IsLocalMartingale}); predictability follows from the construction of the stochastic integral against the predictable quadratic variation.
 \end{proof}
 
 

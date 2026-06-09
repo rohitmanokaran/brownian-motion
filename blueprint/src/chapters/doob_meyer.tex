@@ -141,8 +141,7 @@ Let $(\lambda^{k,n}_\cdot)_{k, n \in \mathbb{N}}$ be convex weights satisfying t
 Then for every $k \ge i$, the sequence $\left(\sum_{m \ge n} \left((\lambda^{k,n}_\cdot) * \ldots * (\lambda^{1,\cdot}_\cdot)\right)_m x_m^{(i)}\right)_{n \in \mathbb{N}}$ converges to $g^i$, uniformly in $k$.
 \end{lemma}
 
-\begin{proof} \leanok
-  \uses{lem:convex_of_converg_seq_is_converg}
+\begin{proof}  \uses{lem:convex_of_converg_seq_is_converg}
 Let $i \in \mathbb{N}$.
 By Lemma~\ref{lem:convex_of_converg_seq_is_converg}, there is uniform convergence over all convex combinations of the sequence $\left(\sum_{m \ge n} \left((\lambda^{i,n}_\cdot) * \ldots * (\lambda^{1,\cdot}_\cdot)\right)_m x_m^{(i)}\right)_{n \in \mathbb{N}}$ to $g^i$.
 All sums $\sum_{m \ge n} \left((\lambda^{k,n}_\cdot) * \ldots * (\lambda^{1,\cdot}_\cdot)\right)_m x_m^{(i)}$ for $k \ge i$ are convex combinations of $\sum_{m \ge n} \left((\lambda^{i,n}_\cdot) * \ldots * (\lambda^{1,\cdot}_\cdot)\right)_m x_m^{(i)}$, hence they converge to $g^i$ uniformly in $k$.
@@ -300,8 +299,7 @@ In what follows, we fix a process $X : \mathbb{N} \to \Omega \to E$ and a filtra
 We have $A_0 = 0$.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{def:predictablePart}
+\begin{proof}  \uses{def:predictablePart}
 By definition.
 \end{proof}
 
@@ -313,8 +311,7 @@ By definition.
 $M_0 = X_0$.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{def:martingalePart, lem:predictablePart_zero}
+\begin{proof}  \uses{def:martingalePart, lem:predictablePart_zero}
 By definition of the martingale part, $M = X - A$. By Lemma~\ref{lem:predictablePart_zero}, $A_0 = 0$, thus $M_0 = X_0 - A_0 = X_0$.
 \end{proof}
 
@@ -326,8 +323,7 @@ By definition of the martingale part, $M = X - A$. By Lemma~\ref{lem:predictable
 For any integer $n \ge 0$, $A_{n+1} = A_n + \mathbb{E}[X_{n+1} - X_n \mid \mathcal{F}_n]$.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{def:predictablePart}
+\begin{proof}  \uses{def:predictablePart}
 Let $n \in \mathbb{N}$. Then
 \begin{align*}
   A_{n+1}
@@ -364,8 +360,7 @@ Using Lemma~\ref{lem:predictablePart_add_one}, we have for $n \in \mathbb{N}$,
 If $X$ is a martingale, then $A = 0$ almost surely.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{def:predictablePart, def:Martingale}
+\begin{proof}  \uses{def:predictablePart, def:Martingale}
 By the martingale property, each conditional expectation in the definition of $A$ is zero.
 \end{proof}
 
@@ -377,8 +372,7 @@ By the martingale property, each conditional expectation in the definition of $A
 If $X$ is predictable, then $A = X - X_0$ almost surely.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{def:predictablePart, def:predictable}
+\begin{proof}  \uses{def:predictablePart, def:predictable}
 Since $X$ is predictable, for all $n \in \mathbb{N}$, $X_{n+1}$ is $\mathcal{F}_n$-measurable and thus $\mathbb{E}[X_{n+1} - X_n \mid \mathcal{F}_n] = X_{n+1} - X_n$ a.s..
 We get a telescoping sum in the definition of $A$ and thus $A_n = X_n - X_0$ a.s. for all $n \in \mathbb{N}$.
 \end{proof}
@@ -391,8 +385,7 @@ We get a telescoping sum in the definition of $A$ and thus $A_n = X_n - X_0$ a.s
 If $X$ is predictable, then $M = X_0$ almost surely.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:isStronglyPredictable.predictablePart_eq}
+\begin{proof}  \uses{lem:isStronglyPredictable.predictablePart_eq}
 By definition of the martingale part, $M = X - A$. By Lemma~\ref{lem:isStronglyPredictable.predictablePart_eq}, $A = X - X_0$ almost surely, thus $M = X_0$ almost surely.
 \end{proof}
 
@@ -404,8 +397,7 @@ By definition of the martingale part, $M = X - A$. By Lemma~\ref{lem:isStronglyP
 If $X$ is a martingale, then $M = X$ almost surely.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:Martingale.predictablePart_eq_zero}
+\begin{proof}  \uses{lem:Martingale.predictablePart_eq_zero}
 By definition of the martingale part, $M = X - A$. By Lemma~\ref{lem:Martingale.predictablePart_eq_zero}, $A = 0$ almost surely, thus $M = X$ almost surely.
 \end{proof}
 
@@ -417,8 +409,7 @@ By definition of the martingale part, $M = X - A$. By Lemma~\ref{lem:Martingale.
 For any scalar $c$, the predictable part of $c X$ is $c A$.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{def:predictablePart}
+\begin{proof}  \uses{def:predictablePart}
 Linearity of the conditional expectation.
 \end{proof}
 
@@ -430,8 +421,7 @@ Linearity of the conditional expectation.
 For any scalar $c$, the martingale part of $c X$ is $c M$.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{def:martingalePart, lem:predictablePart_smul}
+\begin{proof}  \uses{def:martingalePart, lem:predictablePart_smul}
 By definition of the martingale part, $M = X - A$. By Lemma~\ref{lem:predictablePart_smul}, the predictable part of $c X$ is $c A$. Therefore, the martingale part of $c X$ is $c X - c A = c M$.
 \end{proof}
 
@@ -443,8 +433,7 @@ By definition of the martingale part, $M = X - A$. By Lemma~\ref{lem:predictable
 The predictable part of $X + Y$ is the sum of the predictable part of $X$ and the predictable part of $Y$.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{def:predictablePart}
+\begin{proof}  \uses{def:predictablePart}
 Linearity of the conditional expectation.
 \end{proof}
 
@@ -456,8 +445,7 @@ Linearity of the conditional expectation.
 The martingale part of $X + Y$ is the sum of the martingale part of $X$ and the martingale part of $Y$.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{def:martingalePart, lem:predictablePart_add}
+\begin{proof}  \uses{def:martingalePart, lem:predictablePart_add}
 By definition of the martingale part, $M = X - A$. By Lemma~\ref{lem:predictablePart_add}, the predictable part of $X + Y$ is $A + B$. Therefore, the martingale part of $X + Y$ is $(X + Y) - (A + B) = M + N$.
 \end{proof}
 
@@ -481,8 +469,7 @@ The predictable part $A$ is adapted to the filtration $(\mathcal{F}_{n+1})_{n \i
 The predictable part of a process is predictable.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:predictable_nat_iff, lem:predictablePart_zero, lem:adapted_predictablePart}
+\begin{proof}  \uses{lem:predictable_nat_iff, lem:predictablePart_zero, lem:adapted_predictablePart}
 By Lemma~\ref{lem:predictable_nat_iff}, the process $A$ is predictable if $A_0$ is $\mathcal{F}_0$-measurable and for all integer $n$, $A_{n+1}$ is $\mathcal{F}_n$-measurable. As $A_0 = 0$ from Lemma~\ref{lem:predictablePart_zero}, it is $\mathcal{F}_0$-measurable. Lemma~\ref{lem:adapted_predictablePart} allows to conclude the proof.
 \end{proof}
 
@@ -495,8 +482,7 @@ Suppose that the filtration is $\sigma$-finite and that $X$ is adapted, with $X_
 Then the martingale part of $X$ is a martingale.
 \end{lemma}
 
-\begin{proof}\leanok
-
+\begin{proof}
 \end{proof}
 
 
@@ -507,8 +493,7 @@ Then the martingale part of $X$ is a martingale.
 The predictable part of a real-valued submartingale is an almost surely nondecreasing process.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{def:Submartingale, lem:condExp_sub_nonneg, lem:predictablePart_add_one}
+\begin{proof}  \uses{def:Submartingale, lem:condExp_sub_nonneg, lem:predictablePart_add_one}
 Let $X$ be a submartingale and let $A$ be its predictable part. Then for all $n \geq 0$, from Lemma~\ref{lem:condExp_sub_nonneg} we have that almost surely
 \begin{align*}
   A_{n+1} &= A_n + \mathbb{E}\left[ X_{n+1} - X_n | \mathcal{F}_n \right]
@@ -527,8 +512,7 @@ Thus, $(A_n)_{n \in \mathbb{N}}$ is almost surely nondecreasing.
 The predictable part of a real-valued submartingale is almost surely nonnegative.
 \end{lemma}
 
-\begin{proof}\leanok
-  \uses{lem:Submartingale.monotone_predictablePart, lem:predictablePart_zero}
+\begin{proof}  \uses{lem:Submartingale.monotone_predictablePart, lem:predictablePart_zero}
 By Lemma~\ref{lem:Submartingale.monotone_predictablePart}, the predictable part $A$ is almost surely nondecreasing. By Lemma~\ref{lem:predictablePart_zero}, $A_0 = 0$. Therefore, $A_n \ge 0$ almost surely for all $n \in \mathbb{N}$.
 \end{proof}
 
@@ -540,7 +524,7 @@ Fake lemma: import this lemma when using the basic properties of the Doob decomp
 \end{lemma}
 
 \begin{proof}\leanok
-  \uses{lem:predictablePart_zero, lem:martingalePart_zero, lem:predictablePart_add, lem:martingalePart_add, lem:predictablePart_smul, lem:martingalePart_smul, lem:Martingale.predictablePart_eq_zero, lem:isPredictable.predictablePart_eq, lem:martingalePart_eq_zero, lem:Martingale.martingalePart_eq, lem:Submartingale.monotone_predictablePart, lem:Submartingale.predictablePart_nonneg, lem:predictable_predictablePart, lem:martingale_martingalePart}
+  \uses{lem:predictablePart_zero, lem:martingalePart_zero, lem:predictablePart_add, lem:martingalePart_add, lem:predictablePart_smul, lem:martingalePart_smul, lem:Martingale.predictablePart_eq_zero, lem:isStronglyPredictable.predictablePart_eq, lem:martingalePart_eq_zero, lem:Martingale.martingalePart_eq, lem:Submartingale.monotone_predictablePart, lem:Submartingale.predictablePart_nonneg, lem:predictable_predictablePart, lem:martingale_martingalePart}
 
 \end{proof}
 
@@ -728,7 +712,8 @@ Starting with Lemma~\ref{lem:predictablePart_gt_iff_leastGT_lt},
 
 
 
-For uniqueness of Doob-Meyer Decomposition we will need theorem \ref{thm:IsLocalMartingale.eq_zero_of_finiteVariation}.
+For uniqueness of Doob-Meyer Decomposition we will need theorem
+\ref{thm:IsLocalMartingale.eq_zero_of_predictable_finiteVariation}.
 
 We now start the construction for the existence part.
 
@@ -1167,4 +1152,3245 @@ The processes $M$ and $A$ are uniquely determined by $X$ a.s.
 \begin{proof}
   \uses{lem:IsLocalSubmartingale.locally_classD, thm:Doob_Meyer}
 
+
+\leanok
+\end{proof}
+
+
+\begin{lemma}[Adding a bottom-measurable constant to a martingale]
+  \label{lem:Martingale.add_const_fun}
+  \lean{MeasureTheory.Martingale.add_const_fun}
+Let \(Z\) be an integrable \(\mathcal F_0\)-measurable random variable.
+Assume the filtration is sigma-finite for the measure \(P\).  If \(M\)
+is a martingale with respect to \(\mathcal F\) and \(P\), then the shifted
+process \(t \mapsto M_t+Z\) is again a martingale.
+\end{lemma}
+
+\begin{proof}
+The time-constant process \(t\mapsto Z\) is a martingale under the
+sigma-finite-filtration hypothesis: adaptedness is exactly the
+\(\mathcal F_0\)-measurability of \(Z\) transported along
+\(\mathcal F_0\subseteq\mathcal F_t\), integrability is the assumed
+integrability of \(Z\), and its conditional expectations are unchanged.
+Adding this constant martingale to \(M\) preserves the martingale
+property.
+\end{proof}
+
+\begin{lemma}\leanok
+[Running supremum after subtracting a time-constant random variable]
+  \label{lem:runningSup_norm_sub_const_le}
+  \lean{ProbabilityTheory.runningSup_norm_sub_const_le}
+For any process \(A\), random variable \(Z\), time \(t\), and sample
+point \(\omega\),
+\[
+  \sup_{s\le t}\|A_s(\omega)-Z(\omega)\|_e
+  \le
+  \sup_{s\le t}\|A_s(\omega)\|_e+\|Z(\omega)\|_e .
+\]
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+For each \(s\le t\), the triangle inequality gives
+\[
+  \|A_s(\omega)-Z(\omega)\|_e
+  \le \|A_s(\omega)\|_e+\|Z(\omega)\|_e .
+\]
+Taking the supremum over all \(s\le t\) on the left and bounding each
+\(\|A_s(\omega)\|_e\) by the running supremum of \(A\) gives the claimed
+inequality.
+\end{proof}
+
+\begin{lemma}\leanok
+[Integrable running supremum after subtracting a bottom-measurable random variable]
+  \label{lem:HasIntegrableSup.sub_const_fun}
+  \uses{lem:runningSup_norm_sub_const_le}
+  \lean{ProbabilityTheory.HasIntegrableSup.sub_const_fun}
+Assume the time index and filtration satisfy the usual hypotheses needed
+to turn strong progressivity into strong measurability of the running
+supremum process.  Let \(A\) have integrable running supremum, and let
+\(Z\) be an \(\mathcal F_0\)-measurable random variable such that
+\(\|Z\|_e\) is integrable.  If \(A\) is strongly progressive, then
+\(t\mapsto A_t-Z\) also has integrable running supremum.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+The constant process \(t\mapsto Z\) is strongly progressive because
+\(\mathcal F_0\subseteq\mathcal F_t\) for every \(t\).  Hence
+\(A-Z\) is strongly progressive.  Under the usual hypotheses, strong
+progressivity gives strong measurability of the running-supremum process
+for \(A-Z\).
+
+For each \(t\) and \(\omega\), Lemma~\ref{lem:runningSup_norm_sub_const_le}
+gives
+\[
+  \sup_{s\le t}\|A_s(\omega)-Z(\omega)\|_e
+  \le
+  \sup_{s\le t}\|A_s(\omega)\|_e+\|Z(\omega)\|_e .
+\]
+The right-hand side is integrable by the integrable running supremum of
+\(A\) and the assumed integrability of \(\|Z\|_e\).  Domination therefore
+gives integrability of the running supremum of \(A-Z\).
+\end{proof}
+
+\begin{lemma}\leanok
+[Locally integrable running supremum after subtracting the initial value]
+  \label{lem:HasLocallyIntegrableSup.sub_initial}
+  \uses{lem:HasIntegrableSup.sub_const_fun}
+  \lean{ProbabilityTheory.HasLocallyIntegrableSup.sub_initial}
+Assume the same usual hypotheses as
+Lemma~\ref{lem:HasIntegrableSup.sub_const_fun}.  If \(A\) is strongly
+progressive and has locally integrable running supremum, then
+\(t\mapsto A_t-A_0\) has locally integrable running supremum.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+Let \((\tau_n)\) be a localizing sequence witnessing that \(A\) has locally
+integrable running supremum.  For each \(n\), set
+\[
+  Z_n(\omega)=\mathbf 1_{\{0<\tau_n(\omega)\}} A_0(\omega).
+\]
+Strong progressivity of \(A\) implies that \(Z_n\) is
+\(\mathcal F_0\)-measurable.  Its norm is integrable because, at time
+\(0\), it is exactly the running supremum of the stopped localized process
+for \(A\).
+
+Apply Lemma~\ref{lem:HasIntegrableSup.sub_const_fun} to the \(n\)-th
+stopped process and \(Z_n\).  Pointwise, the stopped version of
+\(A-A_0\) is the stopped process for \(A\) shifted by this \(Z_n\), after
+splitting according to whether \(0<\tau_n(\omega)\).  Therefore the same
+localizing sequence witnesses locally integrable running supremum for
+\(A-A_0\).
+\end{proof}
+
+\begin{lemma}
+
+\leanok
+[Adding the initial value of a locally integrable process to a local martingale]
+  \label{lem:IsLocalMartingale.add_initial_of_hasLocallyIntegrableSup}
+  \uses{lem:Martingale.add_const_fun}
+  \lean{ProbabilityTheory.IsLocalMartingale.add_initial_of_hasLocallyIntegrableSup}
+Assume the time index is second countable, Borel, and pseudo-metrizable,
+the measure is finite, and the filtration admits the approximating
+sequences needed for optional stopping.  If \(M\) is a local martingale
+and \(A\) is strongly progressive with locally integrable running
+supremum, then \(t\mapsto M_t+A_0\) is a local martingale.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+Choose a localizing sequence for \(M\) and a localizing sequence for the
+locally integrable running supremum of \(A\), and localize by their
+pointwise minimum.  For the \(n\)-th stopped process let
+\[
+  S_n=\{0<\tau_n\}, \qquad
+  Z_n(\omega)=\mathbf 1_{S_n}(\omega)A_0(\omega).
+\]
+Stability of martingales under stopping by the second localizing sequence
+shows that the stopped and truncated version of \(M\) is a martingale.
+The random variable \(Z_n\) is \(\mathcal F_0\)-measurable because \(A\)
+is strongly progressive, and it is integrable because the stopped
+localized running supremum of \(A\) is integrable at time \(0\).
+
+By Lemma~\ref{lem:Martingale.add_const_fun}, adding the time-constant
+process \(Z_n\) preserves the martingale property for this stopped
+process.  The stopped process for \(M+A_0\) is pointwise equal to this
+sum, after splitting according to whether \(0<\tau_n(\omega)\).  Hence
+the minimum localizing sequence witnesses that \(M+A_0\) is a local
+martingale.
+\end{proof}
+
+\begin{theorem}\leanok
+[Normalized local Doob-Meyer decomposition]\label{thm:local_doobMeyer_normalized}
+  \uses{thm:local_doobMeyer, lem:IsLocalMartingale.add_initial_of_hasLocallyIntegrableSup, lem:HasLocallyIntegrableSup.sub_initial}
+  \lean{ProbabilityTheory.IsLocalSubmartingale.doob_meyer_normalized}
+Assume the usual finite-measure and time-index hypotheses needed by the
+two normalization closure lemmas: the local-martingale shift hypotheses
+from Lemma~\ref{lem:IsLocalMartingale.add_initial_of_hasLocallyIntegrableSup}
+and the running-supremum measurability hypotheses from
+Lemma~\ref{lem:HasLocallyIntegrableSup.sub_initial}.  If \(X\) is a
+càdlàg local submartingale, then there exist processes \(M\) and \(A\)
+such that \(X=M+A\), \(M\) is a càdlàg local martingale, and \(A\) is
+strongly predictable, strongly progressive, càdlàg, locally integrable,
+nondecreasing, and satisfies \(A_0=0\).
+\end{theorem}
+
+\begin{proof}
+
+\leanok
+Apply the local Doob--Meyer decomposition to get \(X=M+A\), where \(M\)
+is a càdlàg local martingale and \(A\) is strongly predictable, hence
+strongly progressive, càdlàg, locally integrable, and nondecreasing.
+Define the time-constant process \(C_t(\omega)=A_0(\omega)\), then set
+\[
+  \widetilde A_t=A_t-C_t,
+  \qquad
+  \widetilde M_t=M_t+C_t .
+\]
+Then \(X=\widetilde M+\widetilde A\) by pointwise algebra and
+\(\widetilde A_0=0\).  Subtracting the same random variable from every
+time does not change monotonicity of the paths, and subtracting a
+time-constant càdlàg path from a càdlàg path is again càdlàg.  The
+time-constant process \(C\) is strongly predictable because it is
+\(\mathcal F_0\)-measurable, and the predictable sigma-algebra contains
+sets of the form \(T\times B\) for \(B\in\mathcal F_0\).  Therefore
+\(\widetilde A=A-C\) is strongly predictable.  Its strong progressivity is
+then either inherited from predictability or obtained by subtracting the
+corresponding strongly progressive processes.
+
+It remains to justify two closure facts.  First, \(\widetilde M=M+C\) is a
+local martingale by
+Lemma~\ref{lem:IsLocalMartingale.add_initial_of_hasLocallyIntegrableSup},
+applied to \(M\), \(A\), strong progressivity of \(A\), and the locally
+integrable running supremum of \(A\).
+
+Second, \(\widetilde A=A-C\) has locally integrable running supremum by
+Lemma~\ref{lem:HasLocallyIntegrableSup.sub_initial}.  This is the
+formal version of using the same localizing sequence as for \(A\), bounding
+the shifted running supremum by
+Lemma~\ref{lem:runningSup_norm_sub_const_le}, and transporting strong
+measurability of the running-supremum process through subtraction of the
+time-constant initial value.  Under the usual hypotheses stated in the
+theorem, these two closure facts are available in the ambient context, and
+the normalized decomposition follows.
+\end{proof}
+
+
+\begin{lemma}\label{lem:isStronglyPredictable_predictablePart}
+  \uses{thm:local_doobMeyer_normalized}
+  \lean{ProbabilityTheory.IsLocalSubmartingale.isStronglyPredictable_predictablePart}
+  \leanok
+For the normalized choice of Doob--Meyer decomposition, the predictable
+part is strongly predictable.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+Define the choice-based martingale and predictable parts using the
+normalized existence theorem.  The assertion is the strongly predictable
+component of the chosen witness.
+\end{proof}
+
+
+\begin{lemma}\label{lem:predictablePart_bot_eq_zero}
+  \uses{thm:local_doobMeyer_normalized}
+  \lean{ProbabilityTheory.IsLocalSubmartingale.predictablePart_bot_eq_zero}
+  \leanok
+For the normalized choice of Doob--Meyer decomposition, the predictable
+part satisfies \(A_0=0\).
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+Define the choice-based martingale and predictable parts using the
+normalized existence theorem.  The assertion is then the final component
+of the chosen witness.
+\end{proof}
+
+
+\begin{lemma}\label{lem:IsStronglyPredictable_stoppedProcess_indicator}
+  \uses{def:IsStoppingTime}
+  \lean{MeasureTheory.IsStronglyPredictable.stoppedProcess_indicator}
+Let \(U\) be a strongly predictable real-valued process and let \(\tau\) be
+a stopping time.  Then the stopped process
+\[
+  (t,\omega)\longmapsto
+  \mathbf 1_{\{\tau(\omega)>0\}}\,U_{t\wedge\tau(\omega)}(\omega)
+\]
+is strongly predictable.
+\end{lemma}
+
+\begin{proof}
+It is enough to show that the map
+\[
+  \Phi(t,\omega)=(t\wedge\tau(\omega),\omega)
+\]
+is measurable from the predictable sigma-algebra to itself and that
+indicator truncation by \(\{\tau>0\}\) preserves predictable measurability.
+For the stopping map, check the generators of the predictable
+sigma-algebra.  The preimage of \((i,\infty)\times A\), with
+\(A\in\mathcal F_i\), is
+\[
+  (i,\infty)\times \bigl(A\cap\{i<\tau\}\bigr),
+\]
+which is predictable because \(\{i<\tau\}\in\mathcal F_i\).  The preimage of
+\(\{0\}\times A\), with \(A\in\mathcal F_0\), is the union of
+\(\{0\}\times A\) and \(\iota\times(A\cap\{\tau=0\})\); this is predictable
+because \(\{\tau=0\}\in\mathcal F_0\) and rectangles over
+\(\mathcal F_0\) are predictable.  Composing the predictable version of
+\(U\) with \(\Phi\) gives predictability of \(U^\tau\).  Finally,
+\(\{\tau>0\}\in\mathcal F_0\), so multiplying by its indicator is
+multiplication by the predictable set \(\iota\times\{\tau>0\}\).
+\end{proof}
+
+
+\begin{lemma}\label{lem:LocallyBoundedVariationOn_stoppedProcess_indicator}
+  \uses{def:LocallyBoundedVariationOn}
+  \lean{ProbabilityTheory.locallyBoundedVariationOn_stoppedProcess_indicator}
+  \leanok
+Let \(f:\iota\to\mathbb R\) have locally bounded variation on all compact
+intervals, and let \(a\in\iota_\infty\).  Then the path
+\[
+  t\longmapsto
+  \mathbf 1_{\{0<a\}}\,f(t\wedge a)
+\]
+also has locally bounded variation on all compact intervals.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+If \(a\le 0\), the stopped-indicator path is identically zero.  Otherwise,
+on a compact interval \([r,s]\) the stopped path is obtained from \(f\) by
+reading \(f\) along the monotone map \(t\mapsto t\wedge a\), and then
+remaining constant after \(a\).  Every partition of \([r,s]\) is sent to an
+ordered finite list of points in \([r,s]\), with possible repetitions.
+Deleting repetitions can only remove zero increments.  Hence the variation
+of the stopped path on \([r,s]\) is bounded by the variation of \(f\) on
+\([r,s]\), which is finite by the locally bounded-variation hypothesis.
+\end{proof}
+
+
+\begin{lemma}\label{lem:stoppedProcess_indicator_bound_on_Icc}
+  \uses{def:stoppedProcess}
+  \lean{MeasureTheory.stoppedProcess_indicator_bound_on_Icc}
+Let \(N\) be a real-valued process, let \(\tau\) be a stopping time candidate
+with values in \(\iota_\infty\), and fix a deterministic horizon
+\([\bot,t]\).  Suppose that a sample path is bounded on this horizon by a
+nonnegative deterministic constant \(C\):
+\[
+  \|N_s(\omega)\|\le C\qquad(s\in[\bot,t]).
+\]
+Then the stopped/indicator path
+\[
+  s\longmapsto
+  \mathbf 1_{\{\bot<\tau(\omega)\}}\,
+  N_{s\wedge\tau(\omega)}(\omega)
+\]
+is also bounded by \(C\) on \([\bot,t]\).
+\end{lemma}
+
+\begin{proof}
+Fix \(s\in[\bot,t]\).  If \(\bot<\tau(\omega)\), then
+\((s\wedge\tau(\omega))\) lies between \(\bot\) and \(t\): the lower bound
+uses both \(\bot\le s\) and \(\bot<\tau(\omega)\), while the upper bound
+comes from \(s\le t\).  The original path bound applies at this stopped
+time.  If \(\bot<\tau(\omega)\) fails, the indicator is zero, so the
+conclusion is \(0\le C\).
+\end{proof}
+
+
+\begin{lemma}\label{lem:stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound}
+  \uses{def:stoppedProcess}
+  \lean{MeasureTheory.stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound}
+Let \(N\) be a real-valued process and let \(\tau\) be an
+\(\iota_\infty\)-valued cutoff.  Fix a deterministic horizon \([\bot,t]\)
+and a constant \(C\ge0\).  Suppose that for a fixed sample point \(\omega\),
+the original path is bounded by \(C\) at every horizon time strictly before
+\(\tau(\omega)\), and that the stop value is also bounded by \(C\) whenever
+the indicator branch is active and \(\tau(\omega)\) is finite and lies at or
+before \(t\):
+\[
+  r\in[\bot,t],\quad r<\tau(\omega)
+  \quad\Longrightarrow\quad
+  \|N_r(\omega)\|\le C,
+\]
+and
+\[
+  \bot<\tau(\omega),\quad \tau(\omega)\ne\top,\quad
+  \tau(\omega)\le (t:\iota_\infty)
+  \quad\Longrightarrow\quad
+  \|N_{\tau(\omega)}(\omega)\|\le C .
+\]
+Then the stopped/indicator path
+\[
+  s\longmapsto
+  \mathbf 1_{\{\bot<\tau(\omega)\}}\,
+  N_{s\wedge\tau(\omega)}(\omega)
+\]
+is bounded by \(C\) on \([\bot,t]\).
+\end{lemma}
+
+\begin{proof}
+Fix \(s\in[\bot,t]\).  If \(\bot<\tau(\omega)\) is false, then the indicator
+is zero and the conclusion follows from \(0\le C\).
+
+Assume \(\bot<\tau(\omega)\).  If \(s<\tau(\omega)\), stopping has not yet
+occurred at \(s\), the indicator is one, and the pre-stop bound applies to
+\(s\).  If \(s\ge\tau(\omega)\), the stopped coordinate is \(\tau(\omega)\).
+Since \(s\le t\), this gives \(\tau(\omega)\le t\); since
+\(\tau(\omega)\le s<\top\), the stopping value is finite.  The stop-value
+bound therefore applies.  The equality case \(s=\tau(\omega)\) is covered by
+the same stop-value bound.  These cases prove the bound for every
+\(s\in[\bot,t]\).
+\end{proof}
+
+\begin{lemma}\label{lem:ae_stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound}
+  \uses{lem:stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound}
+  \lean{MeasureTheory.ae_stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound}
+Let \(N\), \(\tau\), \(t\), and \(C\ge0\) be as in the preceding lemma.  If
+the pre-stop bound and the stop-value bound hold almost surely, then the
+stopped/indicator process is bounded by \(C\) on \([\bot,t]\) almost surely:
+\[
+  \forall s\in[\bot,t],\quad
+  \bigl\|
+    \mathbf 1_{\{\bot<\tau\}}N_{s\wedge\tau}
+  \bigr\|\le C
+  \quad\text{a.s.}
+\]
+\end{lemma}
+
+\begin{proof}
+Intersect the almost-sure event carrying the pre-stop bound with the
+almost-sure event carrying the stop-value bound.  On a sample point in this
+intersection, apply
+Lemma~\ref{lem:stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound}.
+This gives the stopped/indicator horizon bound pointwise on that full-measure
+event, which is exactly the desired almost-sure conclusion.
+\end{proof}
+
+\begin{lemma}\label{lem:leastGT_norm_pre_stop_bound_on_Icc}
+  \uses{def:leastGT}
+  \lean{MeasureTheory.leastGT_norm_pre_stop_bound_on_Icc}
+Let \(N\) be a real-valued process and fix a sample point \(\omega\), a
+deterministic horizon \([\bot,t]\), and a level \(C\).  Put
+\[
+  \tau_C(\omega)=\inf\{s:\|N_s(\omega)\|>C\}.
+\]
+Then before this first strict crossing, the path is bounded by \(C\): if
+\(r\in[\bot,t]\) and \(r<\tau_C(\omega)\), then
+\[
+  \|N_r(\omega)\|\le C .
+\]
+\end{lemma}
+
+\begin{proof}
+The definition of \(\tau_C\) is the hitting time `leastGT` of the open set
+\((C,\infty)\) by the process \(s\mapsto\|N_s\|\), started at \(\bot\).
+If \(r<\tau_C(\omega)\), then \(r\) is not a hitting time witness; otherwise
+the hitting time would be at most \(r\).  Hence it is not true that
+\(C<\|N_r(\omega)\|\), and linearity of the real order gives
+\(\|N_r(\omega)\|\le C\).
+\end{proof}
+
+\begin{lemma}\label{lem:leastGT_norm_stop_value_bound_on_Icc_of_continuousOn}
+  \uses{def:leastGT, lem:leastGT_lt_iff, lem:Filter.nhdsWithin_Iio_self_neBot_of_bot_lt}
+  \lean{MeasureTheory.leastGT_norm_stop_value_bound_on_Icc_of_continuousOn}
+Assume now that the time index is densely ordered with the order topology.
+Let \(N(\cdot,\omega)\) be continuous on \([\bot,t]\), and put
+\(\tau_C(\omega)=\inf\{s:\|N_s(\omega)\|>C\}\).  If
+\(\bot<\tau_C(\omega)\), \(\tau_C(\omega)\ne\top\), and
+\(\tau_C(\omega)\le t\), then the finite stopped value does not overshoot:
+\[
+  \|N_{\tau_C(\omega)}(\omega)\|\le C .
+\]
+\end{lemma}
+
+\begin{proof}
+Let \(a=\tau_C(\omega)\), viewed as a finite time.  Suppose, for contradiction,
+that \(C<\|N_a(\omega)\|\).  By continuity of the path on \([\bot,t]\), the
+strict inequality holds throughout a sufficiently small neighborhood of \(a\)
+inside the horizon.  Since the order is dense and \(\bot<a\),
+Lemma~\ref{lem:Filter.nhdsWithin_Iio_self_neBot_of_bot_lt} gives a point
+\(s<a\) in this neighborhood.  Then \(C<\|N_s(\omega)\|\), so
+Lemma~\ref{lem:leastGT_lt_iff} implies \(\tau_C(\omega)<a\), contradicting
+the equality \(a=\tau_C(\omega)\).  Therefore the stopped value is at most
+\(C\).
+\end{proof}
+
+\begin{lemma}\label{lem:ae_leastGT_norm_pre_stop_stop_value_bound_on_Icc_of_continuousOn}
+  \uses{lem:leastGT_norm_pre_stop_bound_on_Icc, lem:leastGT_norm_stop_value_bound_on_Icc_of_continuousOn}
+  \lean{MeasureTheory.ae_leastGT_norm_pre_stop_stop_value_bound_on_Icc_of_continuousOn}
+Let \(N\) be a real-valued process with every sample path continuous on
+\([\bot,t]\), and let
+\[
+  \tau_C(\omega)=\inf\{s:\|N_s(\omega)\|>C\}.
+\]
+Then the two bound hypotheses needed by
+Lemma~\ref{lem:ae_stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound}
+hold almost surely for this stopping level: before \(\tau_C\) the path is
+bounded by \(C\), and at any active finite stopped value lying before \(t\)
+the stopped value is also bounded by \(C\).
+\end{lemma}
+
+\begin{proof}
+Both conclusions are pointwise in \(\omega\).  The pre-stop bound is
+Lemma~\ref{lem:leastGT_norm_pre_stop_bound_on_Icc}.  The stop-value bound is
+Lemma~\ref{lem:leastGT_norm_stop_value_bound_on_Icc_of_continuousOn}, applied
+to the pathwise continuity hypothesis at the same sample point.  Turning these
+pointwise implications into almost-sure statements uses the full-measure event
+containing every sample point.
+\end{proof}
+
+
+\begin{lemma}\label{lem:eVariationOn_stoppedProcess_indicator_le_Icc}
+  \uses{def:stoppedProcess}
+  \lean{BoundedVariationOn.eVariationOn_stoppedProcess_indicator_le_Icc}
+For a real-valued path \(f\), a level \(a\in\iota_\infty\), and a
+deterministic ordered interval \([\bot,t]\), the total variation of the stopped/indicator
+path
+\[
+  s\longmapsto \mathbf 1_{\{\bot<a\}} f(s\wedge a)
+\]
+on \([\bot,t]\) is at most the total variation of \(f\) on \([\bot,t]\).
+\end{lemma}
+
+\begin{proof}
+If \(\bot<a\) is false, the stopped/indicator path is identically zero and
+the inequality is immediate.  Otherwise every monotone finite partition of
+\([\bot,t]\) is sent by \(s\mapsto s\wedge a\) to a monotone finite list of
+points still lying in \([\bot,t]\).  The sum of stopped increments along the
+original partition is therefore bounded by the variation sum of \(f\) along
+that image partition.  Taking the supremum over partitions gives the stated
+inequality.
+\end{proof}
+
+
+\begin{lemma}\label{lem:stoppedProcess_indicator_variation_bound_on_Icc}
+  \uses{def:stoppedProcess, lem:eVariationOn_stoppedProcess_indicator_le_Icc}
+  \lean{BoundedVariationOn.stoppedProcess_indicator_variation_bound_on_Icc}
+Let \(N\) be a real-valued process and assume that, for a fixed sample point
+\(\omega\), \(N(\cdot,\omega)\) has bounded variation on \([\bot,t]\) with
+total variation at most \(V\).  Then the stopped/indicator path
+\[
+  s\longmapsto
+  \mathbf 1_{\{\bot<\tau(\omega)\}}\,
+  N_{s\wedge\tau(\omega)}(\omega)
+\]
+also has bounded variation on \([\bot,t]\), and its total variation on this
+interval is at most \(V\).
+\end{lemma}
+
+\begin{proof}
+Apply
+Lemma~\ref{lem:eVariationOn_stoppedProcess_indicator_le_Icc}.  Since the
+original variation on \([\bot,t]\) is finite, the stopped variation is finite
+as well.  The same inequality, followed by monotonicity of
+\(\mathrm{toReal}\) for finite extended nonnegative reals, transfers the
+deterministic real bound \(V\).
+\end{proof}
+
+\begin{lemma}\label{lem:eVariationOn_stoppedProcess_indicator_le_closed_pre_stop_Icc}
+  \uses{def:stoppedProcess}
+  \lean{BoundedVariationOn.eVariationOn_stoppedProcess_indicator_le_closed_pre_stop_Icc}
+Fix a sample point \(\omega\), a cutoff \(\tau(\omega)\in\iota_\infty\),
+and a deterministic horizon \([\bot,t]\).  Let
+\[
+  S_{\tau,t}(\omega)
+  =
+  \{r\in[\bot,t] : (r:\iota_\infty)\le \tau(\omega)\}
+\]
+be the closed pre-stop part of the horizon, including the finite stopping
+value when it lies before \(t\).  Then the total variation on \([\bot,t]\)
+of the stopped/indicator path
+\[
+  s\longmapsto
+  \mathbf 1_{\{\bot<\tau(\omega)\}}\,
+  N_{s\wedge\tau(\omega)}(\omega)
+\]
+is at most the total variation of the original path on
+\(S_{\tau,t}(\omega)\).
+\end{lemma}
+
+\begin{proof}
+If \(\bot<\tau(\omega)\) is false, the indicator is zero and the stopped path
+has zero variation, so the claim follows from nonnegativity of variation.
+
+Assume \(\bot<\tau(\omega)\).  Given a monotone finite partition of
+\([\bot,t]\), map every partition time \(s\) to
+\[
+  g(s)=(s\wedge\tau(\omega))_{\mathrm{finite}}.
+\]
+The map \(g\) is monotone.  For \(s\in[\bot,t]\), the point \(g(s)\) still
+belongs to \([\bot,t]\), because it is no larger than \(s\le t\) and no
+smaller than \(\bot\); moreover \((g(s):\iota_\infty)\le\tau(\omega)\).
+Thus the image partition lies in \(S_{\tau,t}(\omega)\).  On the active
+indicator branch the stopped/indicator increment along the original
+partition is exactly the original-path increment along the image partition.
+The variation sum of the stopped path is therefore bounded by the variation
+of the original path on \(S_{\tau,t}(\omega)\).  Taking the supremum over all
+partitions gives the result.
+\end{proof}
+
+\begin{lemma}\label{lem:stoppedProcess_indicator_variation_bound_on_Icc_of_closed_pre_stop_bound}
+  \uses{def:stoppedProcess, lem:eVariationOn_stoppedProcess_indicator_le_closed_pre_stop_Icc}
+  \lean{BoundedVariationOn.stoppedProcess_indicator_variation_bound_on_Icc_of_closed_pre_stop_bound}
+Assume that, for a fixed sample point \(\omega\), the original path has
+bounded variation on the closed pre-stop horizon set
+\[
+  S_{\tau,t}(\omega)
+  =
+  \{r\in[\bot,t] : (r:\iota_\infty)\le \tau(\omega)\}
+\]
+and that this variation is at most \(V\).  Then the stopped/indicator path
+has bounded variation on \([\bot,t]\), and its variation on \([\bot,t]\) is
+also at most \(V\).
+\end{lemma}
+
+\begin{proof}
+Apply
+Lemma~\ref{lem:eVariationOn_stoppedProcess_indicator_le_closed_pre_stop_Icc}.
+Finiteness of the original variation on \(S_{\tau,t}(\omega)\) implies
+finiteness of the stopped variation.  Monotonicity of
+\(\mathrm{toReal}\) for finite extended nonnegative reals then transfers the
+real bound \(V\).
+\end{proof}
+
+\begin{lemma}\label{lem:ae_stoppedProcess_indicator_bound_variation_on_Icc_of_pre_stop_bound}
+  \uses{lem:ae_stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound, lem:stoppedProcess_indicator_variation_bound_on_Icc_of_closed_pre_stop_bound}
+  \lean{MeasureTheory.ae_stoppedProcess_indicator_bound_variation_on_Icc_of_pre_stop_bound}
+Let \(N\), \(\tau\), \(t\), \(C\), and \(V\) be fixed.  Suppose \(C\ge0\).
+Assume the pre-stop horizon bound and finite stop-value bound from
+Lemma~\ref{lem:ae_stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound}
+hold almost surely.  Also assume that almost surely the original path has
+bounded variation at most \(V\) on the closed pre-stop horizon set
+\[
+  S_{\tau,t}(\omega)
+  =
+  \{r\in[\bot,t] : (r:\iota_\infty)\le \tau(\omega)\}.
+\]
+Then the stopped/indicator process has, almost surely, both the horizon bound
+by \(C\) and the variation bound by \(V\) on \([\bot,t]\).
+\end{lemma}
+
+\begin{proof}
+For the horizon bound, apply
+Lemma~\ref{lem:ae_stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound}
+to the almost-sure pre-stop and stop-value bounds.  For the variation bound,
+intersect the almost-sure event carrying the closed pre-stop variation input
+and apply
+Lemma~\ref{lem:stoppedProcess_indicator_variation_bound_on_Icc_of_closed_pre_stop_bound}
+pointwise.  The two almost-sure conclusions form exactly the desired pair of
+stopped/indicator bounds.
+\end{proof}
+
+\begin{lemma}\label{lem:ae_stoppedProcess_indicator_bound_variation_on_Icc}
+  \uses{lem:stoppedProcess_indicator_bound_on_Icc, lem:stoppedProcess_indicator_variation_bound_on_Icc}
+  \lean{MeasureTheory.ae_stoppedProcess_indicator_bound_variation_on_Icc}
+Let \(N\) be a real-valued process, let \(\tau\) be an
+\(\iota_\infty\)-valued time, and fix a deterministic horizon \([\bot,t]\).
+Assume that \(C\ge0\), that \(N\) is bounded by \(C\) on \([\bot,t]\) almost
+surely, and that \(N\) has bounded variation on \([\bot,t]\) with total
+variation at most \(V\) almost surely.  Then the stopped/indicator process
+\[
+  s\longmapsto
+  \mathbf 1_{\{\bot<\tau(\omega)\}}\,
+  N_{s\wedge\tau(\omega)}(\omega)
+\]
+has the corresponding almost-sure horizon bound by \(C\) and almost-sure
+variation bound by \(V\) on \([\bot,t]\).
+\end{lemma}
+
+\begin{proof}
+Intersect the two almost-sure events carrying the original horizon bound and
+the original variation bound.  On a sample point in the first event, apply
+Lemma~\ref{lem:stoppedProcess_indicator_bound_on_Icc}.  On a sample point in
+the second event, apply
+Lemma~\ref{lem:stoppedProcess_indicator_variation_bound_on_Icc}.  These two
+pointwise conclusions are exactly the two almost-sure stopped/indicator
+hypotheses.
+\end{proof}
+
+\begin{lemma}\label{lem:stoppedProcess_indicator_continuousOn_Icc}
+  \lean{MeasureTheory.stoppedProcess_indicator_continuousOn_Icc}
+Let \(N\) be a real-valued process, let \(\tau\) be an
+\(\iota_\infty\)-valued time, fix a sample point \(\omega\), and fix a
+deterministic horizon \([\bot,t]\).  If the path
+\(s\mapsto N_s(\omega)\) is continuous on \([\bot,t]\), then the
+stopped/indicator path
+\[
+  s\longmapsto
+  \mathbf 1_{\{\bot<\tau(\omega)\}}\,
+  N_{s\wedge\tau(\omega)}(\omega)
+\]
+is continuous on \([\bot,t]\).
+\end{lemma}
+
+\begin{proof}
+Split according to whether \(\bot<\tau(\omega)\).  If not, the indicator is
+identically zero, so the stopped/indicator path is continuous.
+
+Assume \(\bot<\tau(\omega)\).  If \(\tau(\omega)=\top\), then stopping does
+nothing on the deterministic horizon and the stopped path is just the
+original continuous path.  Otherwise write \(\tau(\omega)=a\) with
+\(\bot<a\).  On \([\bot,t]\), the stopped time coordinate is the continuous
+order map \(s\mapsto \min(s,a)\).  This map sends \([\bot,t]\) into itself
+when \(a\ge t\), and sends \([\bot,t]\) into \([\bot,a]\subseteq[\bot,t]\)
+when \(a\le t\).  Composing the assumed continuity of
+\(s\mapsto N_s(\omega)\) on \([\bot,t]\) with this stopped-coordinate map
+therefore gives continuity of the stopped path.  The indicator is the
+constant value \(1\) on this branch, so it does not affect continuity.
+\end{proof}
+
+
+\begin{lemma}\label{lem:Filtration.measurable_prod_mk_predictable_past}
+  \lean{MeasureTheory.Filtration.measurable_prod_mk_predictable_past}
+Let \((\mathcal F_s)_{s\in\iota}\) be a filtration on \(\Omega\).  If
+\(t>0\), then the deterministic section map
+\[
+  \Omega\longrightarrow \iota\times\Omega,\qquad
+  \omega\longmapsto (t,\omega)
+\]
+from \(\Omega\) equipped with the sigma-algebra
+\(\bigvee_{s<t}\mathcal F_s\) to \(\iota\times\Omega\) equipped with the
+predictable sigma-algebra is measurable.
+\end{lemma}
+
+\begin{proof}
+Unfold the predictable sigma-algebra as the sigma-algebra generated by the
+sets \(\{0\}\times A\), with \(A\in\mathcal F_0\), and
+\((r,\infty)\times A\), with \(A\in\mathcal F_r\).  It is enough to check
+the inverse image of each generator under \(\omega\mapsto(t,\omega)\).
+Since \(t>0\), the section of \(\{0\}\times A\) is empty.  For
+\((r,\infty)\times A\), the section is empty if \(t\le r\), and is exactly
+\(A\) if \(r<t\).  In the nonempty case \(A\in\mathcal F_r\), and
+\(\mathcal F_r\) is one of the sigma-algebras included in
+\(\bigvee_{s<t}\mathcal F_s\).  Thus every generator has a measurable
+section, proving the claimed measurability.
+\end{proof}
+
+
+\begin{lemma}\label{lem:IsStronglyPredictable.stronglyMeasurable_past}
+  \uses{lem:Filtration.measurable_prod_mk_predictable_past}
+  \lean{MeasureTheory.IsStronglyPredictable.stronglyMeasurable_past}
+Let \(X\) be a strongly predictable real-valued process.  For every
+deterministic time \(t>0\), the random variable \(X_t\) is strongly
+measurable with respect to the past sigma-algebra
+\(\bigvee_{s<t}\mathcal F_s\).
+\end{lemma}
+
+\begin{proof}
+Strong predictability says that the uncurried map
+\((s,\omega)\mapsto X_s(\omega)\) is strongly measurable for the predictable
+sigma-algebra on \(\iota\times\Omega\).  Compose this map with the
+deterministic section \(\omega\mapsto(t,\omega)\).  By
+Lemma~\ref{lem:Filtration.measurable_prod_mk_predictable_past}, the section
+is measurable from \(\bigvee_{s<t}\mathcal F_s\) into the predictable
+sigma-algebra.  The composition is precisely \(\omega\mapsto X_t(\omega)\),
+so \(X_t\) is strongly measurable with respect to the past sigma-algebra.
+\end{proof}
+
+
+\begin{theorem}\label{thm:Martingale.eq_zero_of_predictable_finiteVariation_discrete}
+  \uses{def:Martingale}
+  \lean{MeasureTheory.Martingale.eq_zero_of_predictable_finiteVariation_discrete}
+Let \(M\) be a martingale indexed by \(\mathbb N\), with \(M_0=0\).
+Assume that \(M\) is strongly predictable.  Then \(M_n=0\) almost surely
+for every \(n\).
+\end{theorem}
+
+\begin{proof}
+This is the discrete predictable-martingale uniqueness theorem.  A strongly
+predictable process indexed by \(\mathbb N\) has \(M_{n+1}\)
+\(\mathcal F_n\)-measurable for every \(n\), and the martingale identity gives
+\[
+  \mathbb E[M_{n+1}\mid\mathcal F_n]=M_n .
+\]
+Since \(M_{n+1}\) is already \(\mathcal F_n\)-measurable, the conditional
+expectation is \(M_{n+1}\).  Hence \(M_{n+1}=M_n\) almost surely, and induction
+from \(M_0=0\) gives the result.  In Lean this is exactly the Mathlib theorem
+\(\mathrm{MeasureTheory.Martingale.eq\_zero\_of\_predictable'}\), followed by
+the normalization \(M_0=0\).
+\end{proof}
+
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_predictable_finiteVariation_past_measurable_value}
+  \uses{def:Martingale}
+  \lean{MeasureTheory.Martingale.eq_zero_of_predictable_finiteVariation_past_measurable_value}
+Let \(M\) be a true martingale and fix a deterministic time \(t\).  Suppose
+that \(M_t\) is strongly measurable with respect to the past sigma-algebra
+\(\bigvee_{s<t}\mathcal F_s\).  If
+\[
+  \mathbb E[M_t\mid \bigvee_{s<t}\mathcal F_s]=0
+\]
+almost surely, then \(M_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+The past sigma-algebra is a sub-sigma-algebra of the ambient measurable
+space, because every \(\mathcal F_s\) is.  Since \(M_t\) is integrable and
+strongly measurable with respect to this sub-sigma-algebra, the conditional
+expectation of \(M_t\) onto the past sigma-algebra is \(M_t\) itself.  The
+assumed conditional-expectation equality is therefore exactly the desired
+almost-sure equality \(M_t=0\).
+\end{proof}
+
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_predictable_finiteVariation_past_measurable_zero_increment}
+  \uses{def:Martingale}
+  \lean{MeasureTheory.Martingale.eq_zero_of_predictable_finiteVariation_past_measurable_zero_increment}
+Let \(M\) be a true martingale.  If \(s\le t\) and the increment
+\(M_t-M_s\) is strongly \(\mathcal F_s\)-measurable, then
+\(M_t-M_s=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+The martingale identity gives
+\[
+  \mathbb E[M_t\mid\mathcal F_s]=M_s
+\]
+almost surely.  Also \(M_s\) is already \(\mathcal F_s\)-measurable, so its
+conditional expectation onto \(\mathcal F_s\) is \(M_s\).  By linearity of
+conditional expectation,
+\[
+  \mathbb E[M_t-M_s\mid\mathcal F_s]=0
+\]
+almost surely.  Since the increment \(M_t-M_s\) is itself strongly
+\(\mathcal F_s\)-measurable and integrable, this conditional expectation is
+the increment.  Hence \(M_t-M_s=0\) almost surely.
+\end{proof}
+
+
+\begin{lemma}\label{lem:condExp_ae_eq_zero_of_ae_eq_zero}
+  \lean{MeasureTheory.condExp_ae_eq_zero_of_ae_eq_zero}
+If a real random variable \(X\) is zero almost surely, then its conditional
+expectation onto any sub-\(\sigma\)-algebra is zero almost surely.
+\end{lemma}
+
+\begin{proof}
+Replace \(X\) by the zero random variable inside conditional expectation using
+almost-sure congruence of conditional expectation.  The conditional
+expectation of the zero random variable is zero.
+\end{proof}
+
+
+\begin{lemma}\label{lem:LocallyBoundedVariationOn.exists_tendsto_left_univ}
+  \uses{def:LocallyBoundedVariationOn}
+  \lean{LocallyBoundedVariationOn.exists_tendsto_left_univ}
+Let the time index have a bottom element and the order topology.  If a path
+\(f\) has locally bounded variation on all of time, then for every
+deterministic time \(t\) the left limit of \(f\) at \(t\) exists; equivalently,
+there is an \(l\) such that \(f(s)\to l\) as \(s\uparrow t\).
+\end{lemma}
+
+\begin{proof}
+Apply the local bounded-variation hypothesis to the compact interval
+\([0,t]\).  A bounded-variation function on an ordered interval has a left
+limit at the right endpoint.  The left-neighborhood of \(t\) inside
+\((-\infty,t]\) is the same as the left-neighborhood of \(t\), so this gives
+the desired limit.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.stronglyMeasurable_leftLim_past_of_left_approach}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:LocallyBoundedVariationOn.exists_tendsto_left_univ}
+  \lean{MeasureTheory.Martingale.stronglyMeasurable_leftLim_past_of_left_approach}
+Let \(M\) be a real-valued true martingale and fix a deterministic time
+\(t\).  Suppose each sample path has locally bounded variation.  Let
+\((u_n)\) be deterministic times with \(u_n<t\) and \(u_n\to t\) from the
+left.  Then the left-limit random variable
+\[
+  \omega\longmapsto M_{t-}(\omega)
+\]
+is strongly measurable with respect to the past sigma-algebra
+\(\bigvee_{s<t}\mathcal F_s\).
+\end{lemma}
+
+\begin{proof}
+For each \(n\), the martingale is strongly adapted, so \(M_{u_n}\) is
+strongly \(\mathcal F_{u_n}\)-measurable.  Since \(u_n<t\),
+\(\mathcal F_{u_n}\) is one of the sigma-algebras included in
+\(\bigvee_{s<t}\mathcal F_s\), hence every \(M_{u_n}\) is strongly
+measurable with respect to the past sigma-algebra.
+
+For a fixed sample point \(\omega\), local bounded variation gives a left
+limit at \(t\), and the theorem
+Lemma~\ref{lem:LocallyBoundedVariationOn.exists_tendsto_left_univ} identifies
+the Lean left-limit \(M_{t-}(\omega)\).  Composing this left-limit convergence
+with \(u_n\to t\) from the left gives
+\[
+  M_{u_n}(\omega)\to M_{t-}(\omega).
+\]
+Thus the random variables \(M_{u_n}\) converge pointwise to
+\(\omega\mapsto M_{t-}(\omega)\).  A pointwise sequential limit of strongly
+measurable real random variables is strongly measurable, so the left-limit
+random variable is past-measurable.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.stronglyMeasurable_jump_leftLim_past_of_left_approach}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:IsStronglyPredictable.stronglyMeasurable_past, lem:Martingale.stronglyMeasurable_leftLim_past_of_left_approach}
+  \lean{MeasureTheory.Martingale.stronglyMeasurable_jump_leftLim_past_of_left_approach}
+Let \(M\) be a strongly predictable real-valued true martingale with locally
+bounded-variation paths.  Fix \(t>\bot\), and let \(u_n<t\) tend to \(t\)
+from the left.  Then the jump random variable
+\[
+  \omega\longmapsto M_t(\omega)-M_{t-}(\omega)
+\]
+is strongly measurable with respect to the past sigma-algebra
+\(\bigvee_{s<t}\mathcal F_s\).
+\end{lemma}
+
+\begin{proof}
+Strong predictability gives strong measurability of \(M_t\) with respect to
+the past sigma-algebra by
+Lemma~\ref{lem:IsStronglyPredictable.stronglyMeasurable_past}.  The preceding
+lemma gives strong measurability of the left-limit random variable
+\(M_{t-}\) with respect to the same sigma-algebra.  Strong measurability is
+stable under subtraction for real-valued functions, so their difference is
+past-measurable.
+\end{proof}
+
+\begin{lemma}\label{lem:Filtration.ae_eq_zero_of_past_setIntegral_eq_zero}
+  \lean{MeasureTheory.Filtration.ae_eq_zero_of_past_setIntegral_eq_zero}
+Let \((\mathcal F_s)\) be a linearly ordered filtration with bottom time, and
+fix \(t>\bot\).  Let \(X\) be an integrable real random variable which is
+strongly measurable with respect to the past sigma-algebra
+\[
+  \mathcal F_{t-}:=\bigvee_{s<t}\mathcal F_s .
+\]
+Assume that for every \(s<t\) and every \(A\in\mathcal F_s\),
+\[
+  \int_A X\,dP=0 .
+\]
+Then \(X=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+Let
+\[
+  \mathcal C=\{A:\exists s<t,\ A\in\mathcal F_s\}.
+\]
+Because the time index is linearly ordered, \(\mathcal C\) is a
+\(\pi\)-system: if \(A\in\mathcal F_s\) and \(B\in\mathcal F_r\), then
+\(A\cap B\) is measurable in \(\mathcal F_{\max(s,r)}\), and
+\(\max(s,r)<t\).  Moreover
+\(\mathcal F_{t-}\) is exactly the sigma-algebra generated by
+\(\mathcal C\).
+
+First extend the zero-integral hypothesis from \(\mathcal C\) to every
+\(\mathcal F_{t-}\)-measurable set by Dynkin's \(\pi\)-\(\lambda\)
+induction.  The empty set is immediate.  For complements, use
+\(\int_{A^c}X\,dP=\int X\,dP-\int_A X\,dP\); the total integral is zero
+because \(\Omega\in\mathcal F_\bot\) and \(\bot<t\).  For pairwise disjoint
+countable unions, countable additivity of the Bochner integral gives the sum
+of the zero integrals.
+
+Now \(X\) is integrable and \(\mathcal F_{t-}\)-strongly measurable, and its
+integral over every \(\mathcal F_{t-}\)-measurable set is zero.  The standard
+uniqueness theorem for Bochner integrals on a sub-sigma-algebra therefore
+gives \(X=0\) almost surely.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.stronglyMeasurable_jump_leftLim_past_of_left_approach, lem:Filtration.ae_eq_zero_of_past_setIntegral_eq_zero}
+  \lean{MeasureTheory.Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero}
+Let \(M\) be a strongly predictable true martingale with locally
+bounded-variation paths.  Fix \(t>\bot\), and let \(u_n<t\) tend to \(t\)
+from the left.  Suppose the jump
+\[
+  J_t:=M_t-M_{t-}
+\]
+is integrable, and suppose that for every \(s<t\) and every
+\(A\in\mathcal F_s\),
+\[
+  \int_A J_t\,dP=0 .
+\]
+Then the deterministic jump at \(t\) vanishes:
+\[
+  M_t=M_{t-}
+\]
+almost surely.
+\end{lemma}
+
+\begin{proof}
+By
+Lemma~\ref{lem:Martingale.stronglyMeasurable_jump_leftLim_past_of_left_approach},
+the jump \(J_t\) is strongly measurable with respect to
+\(\bigvee_{s<t}\mathcal F_s\).  Apply
+Lemma~\ref{lem:Filtration.ae_eq_zero_of_past_setIntegral_eq_zero} to
+\(X=J_t\), using the assumed integrability and zero integrals on every
+earlier-filtration set.  This gives \(J_t=0\) almost surely, which is exactly
+\(M_t=M_{t-}\) after rewriting the definition of \(J_t\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.setIntegral_increment_eq_zero_of_measurableSet}
+  \uses{def:Martingale}
+  \lean{MeasureTheory.Martingale.setIntegral_increment_eq_zero_of_measurableSet}
+Let \(M\) be a real-valued martingale.  If \(s\le u\le v\) and
+\(A\in\mathcal F_s\), then
+\[
+  \int_A (M_v-M_u)\,dP=0 .
+\]
+\end{lemma}
+
+\begin{proof}
+The martingale identity gives
+\[
+  \mathbf E[M_v-M_u\mid\mathcal F_s]=0
+\]
+because \(s\le u\le v\).  Equivalently, multiply the future increment
+\(M_v-M_u\) by the bounded \(\mathcal F_s\)-measurable random variable
+\(\mathbf 1_A\).  The product is integrable since \(M_v-M_u\) is integrable
+and \(\mathbf 1_A\) is bounded.  The conditional-expectation pull-out
+identity then gives
+\[
+  \int \mathbf 1_A(M_v-M_u)\,dP=0 .
+\]
+This is the same as the set integral over \(A\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.setIntegral_jump_leftLim_eq_zero_of_left_approach_of_dominated}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:LocallyBoundedVariationOn.exists_tendsto_left_univ, lem:Martingale.setIntegral_increment_eq_zero_of_measurableSet}
+  \lean{MeasureTheory.Martingale.setIntegral_jump_leftLim_eq_zero_of_left_approach_of_dominated}
+Let \(M\) be a real-valued martingale whose paths have locally bounded
+variation.  Fix \(t\), a deterministic sequence \(u_n<t\) tending to \(t\)
+from the left, a strict-past time \(s<t\), and \(A\in\mathcal F_s\).
+Assume \(u_n\ge s\) eventually.  Assume also that, on the restricted measure
+\(P|_A\), the increments \(M_t-M_{u_n}\) are dominated by an integrable real
+bound.  Then
+\[
+  \int_A (M_t-M_{t-})\,dP=0 .
+\]
+\end{lemma}
+
+\begin{proof}
+Work with the restricted measure \(P|_A\).  For every sample point, local
+bounded variation gives a left limit at \(t\), and composing the left-limit
+convergence with \(u_n\to t\) from the left gives
+\[
+  M_t(\omega)-M_{u_n}(\omega)\longrightarrow M_t(\omega)-M_{t-}(\omega).
+\]
+The assumed integrable domination lets us apply dominated convergence on
+\(P|_A\), hence
+\[
+  \int_A (M_t-M_{u_n})\,dP
+    \longrightarrow
+  \int_A (M_t-M_{t-})\,dP .
+\]
+On the other hand, for all sufficiently large \(n\) we have \(s\le u_n<t\).
+Lemma~\ref{lem:Martingale.setIntegral_increment_eq_zero_of_measurableSet}
+therefore gives
+\[
+  \int_A (M_t-M_{u_n})\,dP=0
+\]
+eventually.  The same sequence of real numbers has limit \(0\) and the
+displayed jump integral, so uniqueness of limits gives the desired zero
+set integral.
+\end{proof}
+
+\begin{lemma}\label{lem:Tendsto.eventually_const_le_of_nhdsWithin_Iio}
+  \lean{Filter.Tendsto.eventually_const_le_of_nhdsWithin_Iio}
+Let \(u_n\) be a deterministic sequence tending to \(t\) from the left.
+If \(s<t\), then \(s\le u_n\) for all sufficiently large \(n\).
+\end{lemma}
+
+\begin{proof}
+The interval \((s,\infty)\) is a neighbourhood of \(t\) in the order
+topology.  Since the within-neighbourhood filter at \(t\) along
+\((-\infty,t)\) is finer than the ordinary neighbourhood filter, the
+left-convergence of \(u_n\) implies \(u_n\in(s,\infty)\) eventually.  This
+is stronger than the required eventual inequality \(s\le u_n\).
+\end{proof}
+
+\begin{lemma}\label{lem:norm_sub_le_two_mul_of_Icc_bound}
+  \lean{MeasureTheory.norm_sub_le_two_mul_of_Icc_bound}
+Fix a deterministic horizon \([\bot,t]\).  Suppose a path of \(M\) is bounded
+there by a constant \(C\):
+\[
+  \|M_r(\omega)\|\le C \qquad (r\in[\bot,t]).
+\]
+If \(u\in[\bot,t]\), then
+\[
+  \|M_t(\omega)-M_u(\omega)\|\le 2C .
+\]
+\end{lemma}
+
+\begin{proof}
+Both \(t\) and \(u\) belong to \([\bot,t]\), so the horizon bound gives
+\(\|M_t(\omega)\|\le C\) and \(\|M_u(\omega)\|\le C\).  The triangle
+inequality gives
+\[
+  \|M_t(\omega)-M_u(\omega)\|
+    \le \|M_t(\omega)\|+\|M_u(\omega)\|
+    \le C+C=2C .
+\]
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Tendsto.eventually_const_le_of_nhdsWithin_Iio, lem:norm_sub_le_two_mul_of_Icc_bound, lem:Martingale.setIntegral_jump_leftLim_eq_zero_of_left_approach_of_dominated, lem:Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero}
+  \lean{MeasureTheory.Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound}
+Let \(M\) be a strongly predictable true martingale whose paths have locally
+bounded variation.  Fix \(t>\bot\), and let \(u_n<t\) tend to \(t\) from the
+left.  Assume the jump \(M_t-M_{t-}\) is integrable.  Assume also that, almost
+surely, \(M\) is bounded by a deterministic constant \(C\) on the horizon
+\([\bot,t]\).  Then the deterministic jump at \(t\) vanishes:
+\[
+  M_t=M_{t-}
+\]
+almost surely.
+\end{lemma}
+
+\begin{proof}
+Apply
+Lemma~\ref{lem:Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero}.
+It remains to prove that for every \(s<t\) and every
+\(A\in\mathcal F_s\),
+\[
+  \int_A (M_t-M_{t-})\,dP=0 .
+\]
+
+Fix such \(s\) and \(A\).  By
+Lemma~\ref{lem:Tendsto.eventually_const_le_of_nhdsWithin_Iio}, the
+left-approaching sequence is eventually after \(s\).  On the restricted
+measure \(P|_A\), use the constant function \(2C\) as a dominator.  It is
+integrable because \(P\) is finite, hence so is the restricted measure.  The
+pathwise bound follows from
+Lemma~\ref{lem:norm_sub_le_two_mul_of_Icc_bound}: for each \(n\), the time
+\(u_n\) lies in \([\bot,t]\) because \(\bot\le u_n\) and \(u_n<t\), so the
+assumed horizon bound gives
+\[
+  \|M_t-M_{u_n}\|\le 2C
+\]
+almost surely, and therefore also almost surely under \(P|_A\).
+
+Now
+Lemma~\ref{lem:Martingale.setIntegral_jump_leftLim_eq_zero_of_left_approach_of_dominated}
+applies with this eventual ordering and this constant dominator.  It gives
+the required zero set integral for the fixed \(s\) and \(A\).  Since \(s\)
+and \(A\) were arbitrary, the generated-past jump-removal wrapper gives
+\(M_t=M_{t-}\) almost surely.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integrable_jump_leftLim_of_left_approach_of_bound}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.stronglyMeasurable_jump_leftLim_past_of_left_approach, lem:norm_sub_le_two_mul_of_Icc_bound}
+  \lean{MeasureTheory.Martingale.integrable_jump_leftLim_of_left_approach_of_bound}
+Let \(M\) be a strongly predictable true martingale whose paths have locally
+bounded variation.  Fix \(t>\bot\), and let \(u_n<t\) tend to \(t\) from the
+left.  Suppose that, almost surely, \(M\) is bounded by a deterministic
+constant \(C\ge0\) on the horizon \([\bot,t]\).  Then the deterministic jump
+\[
+  \omega\longmapsto M_t(\omega)-M_{t-}(\omega)
+\]
+is integrable.
+\end{lemma}
+
+\begin{proof}
+Let \(J_t=M_t-M_{t-}\).  By
+Lemma~\ref{lem:Martingale.stronglyMeasurable_jump_leftLim_past_of_left_approach},
+the random variable \(J_t\) is strongly measurable with respect to the
+generated strict-past sigma-algebra, hence it is a.e. strongly measurable for
+the ambient measure.
+
+It remains to dominate its norm by an integrable constant.  Work on the
+almost-sure event on which the horizon bound holds.  For each \(n\), the time
+\(u_n\) belongs to \([\bot,t]\), so
+Lemma~\ref{lem:norm_sub_le_two_mul_of_Icc_bound} gives
+\[
+  \|M_t-M_{u_n}\|\le 2C .
+\]
+Local bounded variation gives the left limit at \(t\), and composing that
+left-limit convergence with \(u_n\to t\) from the left gives
+\[
+  M_t-M_{u_n}\longrightarrow M_t-M_{t-}=J_t .
+\]
+Taking norms preserves convergence.  Since the closed interval
+\((-\infty,2C]\) is closed in \(\mathbb R\), the limit also satisfies
+\(\|J_t\|\le 2C\).
+
+The constant function \(2C\) is integrable because the measure is finite.
+The a.e. strong measurability of \(J_t\) and the a.e. bound
+\(\|J_t\|\le 2C\) therefore imply that \(J_t\) is integrable.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound_no_integrability}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.integrable_jump_leftLim_of_left_approach_of_bound, lem:Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound}
+  \lean{MeasureTheory.Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound_no_integrability}
+Let \(M\) be a strongly predictable true martingale whose paths have locally
+bounded variation.  Fix \(t>\bot\), and let \(u_n<t\) tend to \(t\) from the
+left.  Suppose that, almost surely, \(M\) is bounded by a deterministic
+constant \(C\ge0\) on the horizon \([\bot,t]\).  Then the deterministic jump
+at \(t\) vanishes:
+\[
+  M_t=M_{t-}
+\]
+almost surely.
+\end{lemma}
+
+\begin{proof}
+First apply
+Lemma~\ref{lem:Martingale.integrable_jump_leftLim_of_left_approach_of_bound}
+to obtain integrability of \(M_t-M_{t-}\) from the same horizon bound and the
+same left-approaching sequence.  Then all hypotheses of
+Lemma~\ref{lem:Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound}
+are available, so that lemma gives \(M_t=M_{t-}\) almost surely.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_bound}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound_no_integrability, lem:stoppedProcess_indicator_bound_on_Icc}
+  \lean{MeasureTheory.Martingale.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_bound}
+Let \(M\) be a strongly predictable true martingale with cadlag paths and
+locally bounded variation.  Let \(\tau\) be a stopping time, and form the
+usual stopped/indicator localization
+\[
+  Z_s(\omega)
+  =
+  \mathbf 1_{\{\bot<\tau(\omega)\}}
+  M_{s\wedge\tau(\omega)}(\omega).
+\]
+Fix \(t>\bot\), and let \(u_n<t\) tend to \(t\) from the left.  Suppose that,
+almost surely, the original process \(M\) is bounded by a deterministic
+constant \(C\ge0\) on \([\bot,t]\).  Then the stopped process has no
+deterministic jump at \(t\):
+\[
+  Z_t = Z_{t-}
+\]
+almost surely.
+\end{lemma}
+
+\begin{proof}
+The stopped/indicator process \(Z\) is again a true martingale: apply the
+stopped-process martingale theorem to \(M\), using right-continuity from the
+cadlag-path hypothesis and the stopping-time property of \(\tau\).  It is
+strongly predictable by the stopped-process predictability lemma.  Its paths
+have locally bounded variation because stopping and multiplying by the
+localizing indicator preserve locally bounded variation pathwise.
+
+The deterministic horizon bound transfers from \(M\) to \(Z\) on the same
+almost-sure event.  Indeed, for \(s\in[\bot,t]\), either
+\(\bot<\tau(\omega)\), in which case \(Z_s(\omega)\) is an original value of
+\(M\) at a time \(s\wedge\tau(\omega)\le t\), or the indicator is zero.  This
+is precisely Lemma~\ref{lem:stoppedProcess_indicator_bound_on_Icc}.
+
+All hypotheses of
+Lemma~\ref{lem:Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound_no_integrability}
+are therefore available for \(Z\), with the same left-approaching sequence
+and constant \(C\).  Applying that lemma gives \(Z_t=Z_{t-}\) almost surely.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.ae_eq_leftLim_localizingSequence_stoppedProcess_indicator_of_left_approach_of_bound}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_bound}
+  \lean{MeasureTheory.Martingale.ae_eq_leftLim_localizingSequence_stoppedProcess_indicator_of_left_approach_of_bound}
+Let \(M\) be as in the preceding lemma, and let \((\tau_n)\) be a localizing
+sequence.  Fix \(t>\bot\), a deterministic sequence \(u_k<t\) tending to \(t\)
+from the left, and deterministic constants \(C_n\ge0\).  Assume that, for
+each \(n\), \(M\) is bounded by \(C_n\) on \([\bot,t]\) almost surely.  Then
+for every \(n\), the stopped/indicator localization at \(\tau_n\) has no
+deterministic jump at \(t\):
+\[
+  Z^n_t = Z^n_{t-}
+\]
+almost surely, where
+\[
+  Z^n_s(\omega)
+  =
+  \mathbf 1_{\{\bot<\tau_n(\omega)\}}
+  M_{s\wedge\tau_n(\omega)}(\omega).
+\]
+\end{lemma}
+
+\begin{proof}
+Fix \(n\).  The localizing-sequence hypothesis says that \(\tau_n\) is a
+stopping time.  Apply
+Lemma~\ref{lem:Martingale.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_bound}
+with \(\tau=\tau_n\), the bound \(C_n\), and the \(n\)-th almost-sure horizon
+bound.  Since \(n\) was arbitrary, this proves the asserted family of
+almost-sure jump-removal statements.
+\end{proof}
+
+\begin{lemma}\label{lem:stoppedProcess_indicator_eventuallyEq_left_of_lt}
+  \uses{def:stoppedProcess}
+  \lean{MeasureTheory.stoppedProcess_indicator_eventuallyEq_left_of_lt}
+Let \(M\) be a real-valued process and let \(\tau\) be a stopping time value.
+Fix a sample point \(\omega\) and a deterministic time \(t\).  If
+\((t:\overline{\kappa})<\tau(\omega)\), then the stopped/indicator process
+\[
+  Z_s(\omega)
+  =
+  \mathbf 1_{\{\bot<\tau(\omega)\}}M_{s\wedge\tau(\omega)}(\omega)
+\]
+agrees with the original path \(s\mapsto M_s(\omega)\) eventually in the
+left-neighborhood filter of \(t\):
+\[
+  Z_s(\omega)=M_s(\omega)
+  \qquad\text{for all \(s<t\) sufficiently close to \(t\).}
+\]
+\end{lemma}
+
+\begin{proof}
+Let
+\[
+  S=\{s:\kappa\mid (s:\overline{\kappa})<\tau(\omega)\}.
+\]
+This set is an open neighborhood of \(t\), because it is the preimage of an
+open lower interval in \(\overline{\kappa}\) under the continuous coercion
+\(\kappa\to\overline{\kappa}\), and the hypothesis puts \(t\) in it.  Hence
+\(S\) belongs to the left-neighborhood filter \(\mathcal N[<]t\).  For any
+\(s\in S\), the stopped time is still after \(s\), so
+\[
+  s\wedge\tau(\omega)=s .
+\]
+Also \(\bot<\tau(\omega)\), since \(\bot\le t\) and \(t<\tau(\omega)\).
+Thus the indicator is one and the stopped/indicator value is exactly
+\(M_s(\omega)\).  This proves the eventual equality in
+\(\mathcal N[<]t\).
+\end{proof}
+
+\begin{lemma}\label{lem:leftLim_stoppedProcess_indicator_eq_of_lt}
+  \uses{def:stoppedProcess, def:LocallyBoundedVariationOn, lem:stoppedProcess_indicator_eventuallyEq_left_of_lt}
+  \lean{MeasureTheory.leftLim_stoppedProcess_indicator_eq_of_lt}
+In the setting of the preceding lemma, suppose additionally that the original
+sample path has locally bounded variation.  If
+\((t:\overline{\kappa})<\tau(\omega)\), then the left limit of the
+stopped/indicator path at \(t\) is the original left limit:
+\[
+  Z_{t-}(\omega)=M_{t-}(\omega).
+\]
+\end{lemma}
+
+\begin{proof}
+Local bounded variation of the original path gives a left limit at \(t\), and
+the project's left-limit choice theorem identifies
+\(\operatorname{leftLim}(s\mapsto M_s(\omega),t)\) as the limit of the
+original path along \(\mathcal N[<]t\).  By
+Lemma~\ref{lem:stoppedProcess_indicator_eventuallyEq_left_of_lt}, the stopped
+path and the original path are eventually equal along that same filter.
+Therefore the stopped path also tends to the original left limit.
+
+The same eventual convergence gives existence of a left limit for the stopped
+path.  Applying the left-limit choice theorem to the stopped path gives
+convergence to
+\(\operatorname{leftLim}(s\mapsto Z_s(\omega),t)\).  Limits in \(\mathbb R\)
+are unique, so the stopped left limit equals the original left limit.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.ae_eq_leftLim_on_event_of_left_approach_of_bound}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_bound, lem:leftLim_stoppedProcess_indicator_eq_of_lt}
+  \lean{MeasureTheory.Martingale.ae_eq_leftLim_on_event_of_left_approach_of_bound}
+Let \(M\) be a strongly predictable true martingale with cadlag paths and
+locally bounded variation, and let \(\tau\) be a stopping time.  Fix
+\(t>\bot\) and a deterministic sequence \(u_n<t\) tending to \(t\) from the
+left.  Suppose that, almost surely, \(M\) is bounded by a deterministic
+constant \(C\ge0\) on \([\bot,t]\).  Then on the event where the stopping time
+lies strictly after \(t\), the original process has no deterministic jump:
+\[
+  (t:\overline{\kappa})<\tau(\omega)
+  \quad\Longrightarrow\quad
+  M_t(\omega)=M_{t-}(\omega)
+\]
+almost surely.
+\end{lemma}
+
+\begin{proof}
+Apply
+Lemma~\ref{lem:Martingale.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_bound}
+to the stopped/indicator process \(Z\).  Work on the full-measure event where
+that stopped jump-removal identity holds.  Now fix a sample point with
+\((t:\overline{\kappa})<\tau(\omega)\).  At the terminal time \(t\), stopping
+does nothing and the indicator is one, so \(Z_t(\omega)=M_t(\omega)\).  By
+Lemma~\ref{lem:leftLim_stoppedProcess_indicator_eq_of_lt}, the stopped left
+limit \(Z_{t-}(\omega)\) is the original left limit \(M_{t-}(\omega)\).  The
+stopped jump-removal identity \(Z_t=Z_{t-}\) therefore rewrites to
+\(M_t=M_{t-}\) on the event \(\{t<\tau\}\).
+\end{proof}
+
+\begin{lemma}\label{lem:ProbabilityTheory.IsLocalizingSequence.eventually_exists_gt}
+  \lean{ProbabilityTheory.IsLocalizingSequence.eventually_exists_gt}
+Let \((\tau_n)\) be a localizing sequence.  For every deterministic time
+\(t\), almost surely there exists \(n\) such that
+\[
+  (t:\overline{\kappa})<\tau_n(\omega).
+\]
+\end{lemma}
+
+\begin{proof}
+The definition of a localizing sequence includes
+\(\tau_n(\omega)\to\top\) along \(n\to\infty\), almost surely.  Work on this
+full-measure convergence event.  The set
+\[
+  \{a:\overline{\kappa}\mid (t:\overline{\kappa})<a\}
+\]
+is an open neighborhood of \(\top\) in \(\overline{\kappa}\).  Therefore, for
+all sufficiently large \(n\), \(\tau_n(\omega)\) belongs to this set.  Choosing
+one such \(n\) gives \((t:\overline{\kappa})<\tau_n(\omega)\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.ae_eq_leftLim_localizingSequence_of_left_approach_of_bound}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.ae_eq_leftLim_on_event_of_left_approach_of_bound, lem:ProbabilityTheory.IsLocalizingSequence.eventually_exists_gt}
+  \lean{MeasureTheory.Martingale.ae_eq_leftLim_localizingSequence_of_left_approach_of_bound}
+Let \(M\) be as in the preceding lemma, and let \((\tau_n)\) be a localizing
+sequence.  Fix \(t>\bot\), a deterministic sequence \(u_k<t\) tending to \(t\)
+from the left, and deterministic constants \(C_n\ge0\).  Assume that, for
+each \(n\), \(M\) is bounded by \(C_n\) on \([\bot,t]\) almost surely.  Then
+the original process has no deterministic jump at \(t\):
+\[
+  M_t=M_{t-}
+\]
+almost surely.
+\end{lemma}
+
+\begin{proof}
+For each \(n\), apply
+Lemma~\ref{lem:Martingale.ae_eq_leftLim_on_event_of_left_approach_of_bound}
+with the stopping time \(\tau_n\), the constant \(C_n\), and the corresponding
+almost-sure horizon bound.  This gives, for each \(n\), an almost-sure
+implication
+\[
+  (t:\overline{\kappa})<\tau_n(\omega)
+  \Longrightarrow
+  M_t(\omega)=M_{t-}(\omega).
+\]
+Intersect these countably many full-measure events.  The localizing-sequence
+cover lemma says that almost surely there exists some \(n\) with
+\((t:\overline{\kappa})<\tau_n(\omega)\).  On that sample point, use the
+corresponding implication to obtain \(M_t(\omega)=M_{t-}(\omega)\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.ae_eq_leftLim_of_left_approach_past_measurable_increments}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.eq_zero_of_predictable_finiteVariation_past_measurable_zero_increment, lem:LocallyBoundedVariationOn.exists_tendsto_left_univ}
+  \lean{MeasureTheory.Martingale.ae_eq_leftLim_of_left_approach_past_measurable_increments}
+Let \(M\) be a real-valued true martingale.  Fix a deterministic time \(t\),
+and suppose each sample path has locally bounded variation.  Let
+\((u_n)\) be deterministic times tending to \(t\) from the left.  Assume
+\(u_n<t\) for every \(n\), and assume that each increment
+\(M_t-M_{u_n}\) is strongly \(\mathcal F_{u_n}\)-measurable.  Then the jump
+at \(t\) vanishes along this announcing sequence:
+\[
+  M_t=M_{t-}
+\]
+almost surely, where \(M_{t-}\) is represented in Lean by the left limit
+\(\operatorname{leftLim}(s\mapsto M_s(\omega),t)\).
+\end{lemma}
+
+\begin{proof}
+For each \(n\), apply
+Lemma~\ref{lem:Martingale.eq_zero_of_predictable_finiteVariation_past_measurable_zero_increment}
+to the increment \(M_t-M_{u_n}\).  The hypotheses \(u_n<t\) and strong
+\(\mathcal F_{u_n}\)-measurability give
+\[
+  M_t-M_{u_n}=0
+\]
+almost surely.  Since there are only countably many \(n\), intersect these
+almost-sure events and work on the event where \(M_{u_n}=M_t\) for every
+\(n\).
+
+On that event, the sequence \(M_{u_n}(\omega)\) is the constant sequence with
+value \(M_t(\omega)\).  On the other hand,
+Lemma~\ref{lem:LocallyBoundedVariationOn.exists_tendsto_left_univ} gives the
+left limit of the path \(s\mapsto M_s(\omega)\), and composing this left-limit
+convergence with \(u_n\to t\) from the left shows
+\[
+  M_{u_n}(\omega)\to M_{t-}(\omega).
+\]
+Uniqueness of limits in \(\mathbb R\) therefore gives
+\(M_t(\omega)=M_{t-}(\omega)\).  This proves the asserted almost-sure
+equality.
+\end{proof}
+
+
+\begin{lemma}\label{lem:BoundedVariationOn.sum_norm_sub_le_toReal_eVariationOn}
+  \uses{def:LocallyBoundedVariationOn}
+  \lean{BoundedVariationOn.sum_norm_sub_le_toReal_eVariationOn}
+Let \(f\) be a real-valued function of bounded variation on a set \(S\).
+For every finite nondecreasing chain \(u_0,\ldots,u_n\) in \(S\),
+\[
+  \sum_{k<n}|f(u_{k+1})-f(u_k)|
+  \le \operatorname{Var}_S(f).
+\]
+\end{lemma}
+
+\begin{proof}
+The extended variation \(\operatorname{eVariationOn}(f,S)\) is the supremum
+over all such finite ordered chains of the sum of the corresponding
+extended distances.  The chosen chain is one admissible term in that
+supremum, so its extended-distance sum is bounded by the extended variation.
+Since \(f\) has bounded variation, the extended variation is finite; passing
+to real values identifies each extended distance with
+\(|f(u_{k+1})-f(u_k)|\) and gives the stated inequality.
+\end{proof}
+
+
+\begin{lemma}\label{lem:BoundedVariationOn.sq_increment_sum_le_uniform_bound}
+  \uses{lem:BoundedVariationOn.sum_norm_sub_le_toReal_eVariationOn}
+  \lean{BoundedVariationOn.sq_increment_sum_le_uniform_bound}
+Let \(f\) have bounded variation on \(S\).  If along a finite ordered chain
+all increments satisfy
+\[
+  |f(u_{k+1})-f(u_k)|\le \delta
+\]
+with \(\delta\ge0\), then
+\[
+  \sum_{k<n}|f(u_{k+1})-f(u_k)|^2
+  \le
+  \delta\,\operatorname{Var}_S(f).
+\]
+\end{lemma}
+
+\begin{proof}
+Each summand satisfies
+\[
+  |f(u_{k+1})-f(u_k)|^2
+  \le
+  \delta\,|f(u_{k+1})-f(u_k)|
+\]
+by the uniform increment bound and nonnegativity of the absolute value.
+Summing and applying
+Lemma~\ref{lem:BoundedVariationOn.sum_norm_sub_le_toReal_eVariationOn}
+gives the result.
+\end{proof}
+
+
+\begin{lemma}\label{lem:BoundedVariationOn.sq_increment_sum_tendsto_zero_of_uniform_bound}
+  \uses{lem:BoundedVariationOn.sq_increment_sum_le_uniform_bound}
+  \lean{BoundedVariationOn.sq_increment_sum_tendsto_zero_of_uniform_bound}
+Let \(f\) have bounded variation on \(S\).  Along a sequence of finite
+ordered chains, suppose the largest increment is bounded by deterministic
+numbers \(\delta_n\ge0\) with \(\delta_n\to0\).  Then the corresponding
+square-increment sums tend to \(0\).
+\end{lemma}
+
+\begin{proof}
+The square-increment sums are nonnegative.  By
+Lemma~\ref{lem:BoundedVariationOn.sq_increment_sum_le_uniform_bound}, the
+\(n\)-th sum is bounded above by
+\(\delta_n\operatorname{Var}_S(f)\).  Since the variation is a fixed finite
+real number and \(\delta_n\to0\), the upper bound tends to \(0\).  The squeeze
+theorem gives the conclusion.
+\end{proof}
+
+
+\begin{lemma}\label{lem:Martingale.integral_mul_increment_eq_zero_of_stronglyMeasurable}
+  \uses{def:Martingale}
+  \lean{MeasureTheory.Martingale.integral_mul_increment_eq_zero_of_stronglyMeasurable}
+Let \(M\) be a true martingale.  If \(s\le t\), \(Z\) is a real random
+variable strongly measurable with respect to \(\mathcal F_s\), and
+\(Z(M_t-M_s)\) is integrable, then
+\[
+  \mathbb E[Z(M_t-M_s)] = 0.
+\]
+\end{lemma}
+
+\begin{proof}
+The martingale property gives
+\(\mathbb E[M_t-M_s\mid\mathcal F_s]=0\).  Since \(Z\) is
+\(\mathcal F_s\)-measurable, it can be pulled out of conditional expectation:
+\[
+  \mathbb E[Z(M_t-M_s)\mid\mathcal F_s]
+  =
+  Z\,\mathbb E[M_t-M_s\mid\mathcal F_s]
+  =
+  0.
+\]
+Integrating both sides gives the result.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integral_increment_mul_increment_eq_zero}
+  \uses{def:Martingale, lem:Martingale.integral_mul_increment_eq_zero_of_stronglyMeasurable}
+  \lean{MeasureTheory.Martingale.integral_increment_mul_increment_eq_zero}
+Let \(M\) be a true martingale.  For deterministic times
+\(a\le b\le c\le d\), assume
+\((M_b-M_a)(M_d-M_c)\) is integrable.  Then
+\[
+  \mathbb E[(M_b-M_a)(M_d-M_c)] = 0.
+\]
+\end{lemma}
+
+\begin{proof}
+The earlier increment \(M_b-M_a\) is \(\mathcal F_c\)-measurable because
+\(a,b\le c\) and \(M\) is adapted.  Apply
+Lemma~\ref{lem:Martingale.integral_mul_increment_eq_zero_of_stronglyMeasurable}
+to the later increment \(M_d-M_c\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integral_mul_increment_eq_zero}
+  \uses{lem:Martingale.integral_increment_mul_increment_eq_zero}
+  \lean{MeasureTheory.Martingale.integral_mul_increment_eq_zero}
+Under the same hypotheses as
+Lemma~\ref{lem:Martingale.integral_increment_mul_increment_eq_zero}, disjoint
+deterministic martingale increments are orthogonal in expectation.
+\end{lemma}
+
+\begin{proof}
+This is the convenient named wrapper used by later arguments.  It is exactly
+Lemma~\ref{lem:Martingale.integral_increment_mul_increment_eq_zero} with the
+product-integrability hypothesis kept explicit.
+\end{proof}
+
+\begin{lemma}\label{lem:Finset.sum_range_sub_consecutive}
+  \lean{Finset.sum_range_sub_consecutive}
+Let \(f:\mathbb N\to G\) be a sequence in an additive commutative group.
+For every \(n\),
+\[
+  \sum_{i=0}^{n-1} (f_{i+1}-f_i)=f_n-f_0 .
+\]
+\end{lemma}
+
+\begin{proof}
+Induct on \(n\).  The case \(n=0\) is empty.  In the successor step, split
+off the last summand and use the induction hypothesis; the remaining group
+identity is \((f_n-f_0)+(f_{n+1}-f_n)=f_{n+1}-f_0\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.partition_increment_sum_eq_terminal}
+  \uses{lem:Finset.sum_range_sub_consecutive}
+  \lean{MeasureTheory.Martingale.partition_increment_sum_eq_terminal}
+Let \(M\) be a martingale with \(M_\bot=0\).  If a deterministic finite
+partition \(u_0,\ldots,u_n\) satisfies \(u_0=\bot\) and \(u_n=t\), then
+\[
+  \sum_{i=0}^{n-1} (M_{u_{i+1}}-M_{u_i}) = M_t
+\]
+as random variables.
+\end{lemma}
+
+\begin{proof}
+Apply Lemma~\ref{lem:Finset.sum_range_sub_consecutive} pointwise to
+\(f_i=M_{u_i}(\omega)\).  The endpoint assumptions rewrite
+\(f_n-f_0\) as \(M_t(\omega)-M_\bot(\omega)=M_t(\omega)\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integral_partition_cross_increment_eq_zero}
+  \uses{lem:Martingale.integral_increment_mul_increment_eq_zero}
+  \lean{MeasureTheory.Martingale.integral_partition_cross_increment_eq_zero}
+Let \(M\) be a true martingale and let \(u:\mathbb N\to\kappa\) be a
+monotone deterministic partition.  If \(i<j\) and the product of adjacent
+increments is integrable, then
+\[
+  \int (M_{u_{i+1}}-M_{u_i})(M_{u_{j+1}}-M_{u_j})\,dP=0 .
+\]
+\end{lemma}
+
+\begin{proof}
+Monotonicity gives
+\(u_i\le u_{i+1}\le u_j\le u_{j+1}\).  Apply
+Lemma~\ref{lem:Martingale.integral_increment_mul_increment_eq_zero} to the
+two disjoint deterministic increments.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integrable_partition_increment_mul_increment_of_bound}
+  \uses{def:Martingale}
+  \lean{MeasureTheory.Martingale.integrable_partition_increment_mul_increment_of_bound}
+Assume \(P\) is finite and \(M\) is a real-valued true martingale.  If
+\(0\le C\) and, almost surely, \(|M_{u_k}|\le C\) for every partition index
+\(k\), then every product
+\[
+  (M_{u_{i+1}}-M_{u_i})(M_{u_{j+1}}-M_{u_j})
+\]
+of adjacent partition increments is integrable.
+\end{lemma}
+
+\begin{proof}
+The martingale's adapted strongly measurable values make each increment
+strongly measurable, hence so is the product.  On the almost-sure bounded
+event, every adjacent increment has norm at most \(2C\), so the product has
+norm at most \(4C^2\).  A strongly measurable random variable bounded by a
+constant on a finite measure space is integrable.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integrable_partition_value_mul_increment_of_bound}
+  \uses{def:Martingale}
+  \lean{MeasureTheory.Martingale.integrable_partition_value_mul_increment_of_bound}
+Assume \(P\) is finite and \(M\) is a real-valued true martingale.  If
+\(0\le C\) and, almost surely, \(|M_{u_k}|\le C\) for every partition index
+\(k\), then each product of a partition value with the next adjacent increment,
+\[
+  M_{u_i}(M_{u_{i+1}}-M_{u_i}),
+\]
+is integrable.
+\end{lemma}
+
+\begin{proof}
+The martingale's adapted strongly measurable values make both
+\(M_{u_i}\) and \(M_{u_{i+1}}-M_{u_i}\) strongly measurable, hence their
+product is a.e. strongly measurable.  On the almost-sure bounded event,
+\(|M_{u_i}|\le C\) and
+\(|M_{u_{i+1}}-M_{u_i}|\le |M_{u_{i+1}}|+|M_{u_i}|\le 2C\).  The product is
+therefore bounded by \(2C^2\), an integrable constant on a finite measure
+space.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integrable_partition_sq_increment_of_bound}
+  \uses{lem:Martingale.integrable_partition_increment_mul_increment_of_bound}
+  \lean{MeasureTheory.Martingale.integrable_partition_sq_increment_of_bound}
+Under the same bounded-partition hypotheses, each squared adjacent increment
+\((M_{u_{i+1}}-M_{u_i})^2\) is integrable.
+\end{lemma}
+
+\begin{proof}
+This is the previous product-integrability lemma with the two increment
+indices both equal to \(i\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integrable_partition_sq_increment_sum_of_bound}
+  \uses{lem:Martingale.integrable_partition_sq_increment_of_bound}
+  \lean{MeasureTheory.Martingale.integrable_partition_sq_increment_sum_of_bound}
+Under the same bounded-partition hypotheses, every finite sum of squared
+adjacent increments is integrable.
+\end{lemma}
+
+\begin{proof}
+Finite sums of integrable random variables are integrable, and each summand is
+integrable by Lemma~\ref{lem:Martingale.integrable_partition_sq_increment_of_bound}.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integral_partition_sq_increment_sum_of_bound}
+  \uses{lem:Martingale.integrable_partition_sq_increment_of_bound}
+  \lean{MeasureTheory.Martingale.integral_partition_sq_increment_sum_of_bound}
+Under the same bounded-partition hypotheses,
+\[
+  \int \sum_{i=0}^{n-1}(M_{u_{i+1}}-M_{u_i})^2\,dP
+  =
+  \sum_{i=0}^{n-1}\int (M_{u_{i+1}}-M_{u_i})^2\,dP .
+\]
+\end{lemma}
+
+\begin{proof}
+Use linearity of the Bochner integral over a finite sum.  The integrability
+side conditions are supplied by
+Lemma~\ref{lem:Martingale.integrable_partition_sq_increment_of_bound}.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integral_partition_cross_increment_eq_zero_of_bound}
+  \uses{lem:Martingale.integral_partition_cross_increment_eq_zero, lem:Martingale.integrable_partition_increment_mul_increment_of_bound}
+  \lean{MeasureTheory.Martingale.integral_partition_cross_increment_eq_zero_of_bound}
+Under the same bounded-partition hypotheses, all ordered mixed terms in a
+monotone deterministic partition have zero integral:
+\[
+  \int (M_{u_{i+1}}-M_{u_i})(M_{u_{j+1}}-M_{u_j})\,dP=0
+  \qquad (i<j).
+\]
+\end{lemma}
+
+\begin{proof}
+The boundedness lemma gives the product-integrability hypothesis required by
+Lemma~\ref{lem:Martingale.integral_partition_cross_increment_eq_zero}, and
+that orthogonality lemma gives the zero integral.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integrable_sq_terminal_of_ae_bound}
+  \uses{def:Martingale}
+  \lean{MeasureTheory.Martingale.integrable_sq_terminal_of_ae_bound}
+Assume \(P\) is finite and \(M\) is a real-valued true martingale.  If
+\(|M_t|\le C\) almost surely, then \(M_t^2\) is integrable.
+\end{lemma}
+
+\begin{proof}
+The terminal value \(M_t\) is strongly measurable by the martingale
+hypotheses, so \(M_t^2\) is a.e. strongly measurable.  Replace \(C\) by
+\(\max(C,0)\); the square is then pointwise bounded by this constant square on
+the almost-sure event.  Boundedness by an integrable constant on a finite
+measure space gives integrability.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integral_sq_terminal_eq_partition_sq_sum_of_bound}
+  \uses{lem:Martingale.integrable_partition_value_mul_increment_of_bound, lem:Martingale.integral_mul_increment_eq_zero_of_stronglyMeasurable, lem:Martingale.integrable_sq_terminal_of_ae_bound}
+  \lean{MeasureTheory.Martingale.integral_sq_terminal_eq_partition_sq_sum_of_bound}
+Let \(M\) be a real-valued true martingale with \(M_\bot=0\), and let
+\(u_0,\ldots,u_n\) be a monotone deterministic finite partition from
+\(\bot\) to \(t\).  If the partition values are uniformly bounded almost
+surely, then
+\[
+  \int M_t^2\,dP
+  =
+  \sum_{i=0}^{n-1}\int (M_{u_{i+1}}-M_{u_i})^2\,dP .
+\]
+\end{lemma}
+
+\begin{proof}
+Induct on the number \(n\) of adjacent increments.  The case \(n=0\) follows
+from \(u_0=t=\bot\) and \(M_\bot=0\).  In the successor step write
+\[
+  M_{u_{n+1}} = M_{u_n} + (M_{u_{n+1}}-M_{u_n}).
+\]
+After squaring and integrating, the first two terms are integrable by the
+terminal-square and squared-increment integrability lemmas, while the cross
+term
+\[
+  M_{u_n}(M_{u_{n+1}}-M_{u_n})
+\]
+is integrable by
+Lemma~\ref{lem:Martingale.integrable_partition_value_mul_increment_of_bound}
+and has zero integral by
+Lemma~\ref{lem:Martingale.integral_mul_increment_eq_zero_of_stronglyMeasurable},
+because \(M_{u_n}\) is measurable with respect to the earlier filtration and
+\(u_n\le u_{n+1}\).  The induction hypothesis identifies the integral of
+\(M_{u_n}^2\) with the sum of the previous squared-increment integrals, and
+the successor partition sum is obtained by adding the last diagonal term.
+\end{proof}
+
+\begin{lemma}\label{lem:MeasureTheory.ae_eq_zero_of_integral_sq_eq_zero}
+  \lean{MeasureTheory.ae_eq_zero_of_integral_sq_eq_zero}
+If a real random variable \(X\) has integrable square and
+\(\int X^2\,dP=0\), then \(X=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+The function \(X^2\) is nonnegative.  The nonnegative-integral criterion
+therefore gives \(X^2=0\) almost surely, and then \(X=0\) almost surely
+pointwise on that event.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integral_sq_terminal_eq_zero_of_refining_partitions}
+  \uses{lem:Martingale.integral_sq_terminal_eq_partition_sq_sum_of_bound, lem:BoundedVariationOn.sq_increment_sum_le_uniform_bound}
+  \lean{MeasureTheory.Martingale.integral_sq_terminal_eq_zero_of_refining_partitions}
+Let \(M\) be a real-valued true martingale with \(M_\bot=0\), and fix
+\(t>\bot\).  Suppose that for each \(n\) we have a monotone deterministic
+partition \(u^n_0,\ldots,u^n_{m_n}\) of \([\bot,t]\).  Assume \(0\le C\)
+and \(0\le V\), assume that \(|M_s|\le C\) almost surely for every partition
+point, and assume that, almost surely, the total variation of each path on
+\([\bot,t]\) is bounded by the deterministic constant \(V\).  If the
+pathwise square-increment sums
+\[
+  F_n(\omega)=\sum_{i=0}^{m_n-1}
+    (M_{u^n_{i+1}}(\omega)-M_{u^n_i}(\omega))^2
+\]
+tend to \(0\) almost surely, then \(M_t^2\) is integrable and
+\[
+  \int M_t^2\,dP=0 .
+\]
+\end{lemma}
+
+\begin{proof}
+For every \(n\), apply
+Lemma~\ref{lem:Martingale.integral_sq_terminal_eq_partition_sq_sum_of_bound}
+to the partition \(u^n\).  This gives
+\[
+  \int M_t^2\,dP = \int F_n\,dP
+\]
+for all \(n\).  The finite sum \(F_n\) is a.e. strongly measurable because its
+summands are squared martingale increments.  On the almost-sure event where
+the values are bounded by \(C\) and the variation is bounded by \(V\), every
+increment has norm at most \(2C\), and
+Lemma~\ref{lem:BoundedVariationOn.sq_increment_sum_le_uniform_bound} gives a
+uniform deterministic bound \(F_n\le 2CV\).  The constant \(2CV\) is integrable
+on a finite measure space.  Dominated convergence applied to the a.e. limit
+\(F_n\to0\) therefore gives \(\int F_n\,dP\to0\).  Since the left-hand side
+\(\int M_t^2\,dP\) is independent of \(n\), it must be \(0\).  Integrability of
+\(M_t^2\) follows from the same bounded-terminal-value hypothesis.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound}
+  \uses{def:Martingale, lem:Martingale.integral_sq_terminal_eq_zero_of_refining_partitions, lem:BoundedVariationOn.sq_increment_sum_tendsto_zero_of_uniform_bound}
+  \lean{MeasureTheory.Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound}
+Let \(M\) be a real-valued true martingale with \(M_\bot=0\), and fix
+\(t>\bot\).  Suppose that \(M\) is bounded by a deterministic constant \(C\)
+on the deterministic horizon \([\bot,t]\), and suppose that the total
+variation of each path on \([\bot,t]\) is almost surely bounded by a
+deterministic constant \(V\).  Suppose moreover that there are deterministic
+monotone partitions
+\[
+  \bot=u^n_0\le u^n_1\le\cdots\le u^n_{m_n}=t
+\]
+and nonnegative numbers \(\delta_n\to0\) such that, almost surely, every
+partition increment of every path satisfies
+\[
+  |M_{u^n_{i+1}}-M_{u^n_i}|\le \delta_n
+  \qquad (0\le i<m_n).
+\]
+Then \(M_t^2\) is integrable and
+\[
+  \int M_t^2\,dP=0 .
+\]
+\end{lemma}
+
+\begin{proof}
+Apply
+Lemma~\ref{lem:BoundedVariationOn.sq_increment_sum_tendsto_zero_of_uniform_bound}
+pathwise on the almost-sure event where the variation is bounded by \(V\) and
+where the partition increment bound holds.  This gives almost-sure convergence
+of the square-increment sums along the chosen deterministic partitions.  The
+bounded-value hypothesis gives the a.e. partition-value bound required by
+Lemma~\ref{lem:Martingale.integral_sq_terminal_eq_zero_of_refining_partitions},
+and the deterministic variation bound supplies its domination constant.  That
+lemma then yields both integrability of \(M_t^2\) and the identity
+\(\int M_t^2\,dP=0\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_eventual_modulus}
+  \uses{def:Martingale, lem:Martingale.integral_sq_terminal_eq_zero_of_refining_partitions, lem:BoundedVariationOn.sq_increment_sum_tendsto_zero_of_uniform_bound}
+  \lean{MeasureTheory.Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_eventual_modulus}
+Let \(M\) be a real-valued true martingale with \(M_\bot=0\), and fix
+\(t>\bot\).  Suppose \(M\) is bounded by a deterministic constant \(C\) on
+\([\bot,t]\), and suppose the total variation of each path on \([\bot,t]\) is
+almost surely bounded by a deterministic constant \(V\).  Let
+\(\bot=u^n_0\le\cdots\le u^n_{m_n}=t\) be deterministic monotone partitions.
+Assume that, for almost every sample point \(\omega\), there is a
+nonnegative sequence \(\delta^\omega_n\to0\) such that
+\[
+  |M_{u^n_{i+1}}(\omega)-M_{u^n_i}(\omega)|
+  \le \delta^\omega_n
+  \qquad (0\le i<m_n)
+\]
+for every \(n\).  Then \(M_t^2\) is integrable and
+\[
+  \int M_t^2\,dP=0 .
+\]
+\end{lemma}
+
+\begin{proof}
+Work on the almost-sure event where the horizon bound, the deterministic
+variation bound, and the pathwise increment modulus all hold.  For a fixed
+sample point in this event, apply
+Lemma~\ref{lem:BoundedVariationOn.sq_increment_sum_tendsto_zero_of_uniform_bound}
+with the sample-point dependent sequence \(\delta^\omega_n\).  This proves
+that the square-increment sums along the deterministic partitions converge to
+zero almost surely.  The horizon bound still gives the partition-value bound
+needed by
+Lemma~\ref{lem:Martingale.integral_sq_terminal_eq_zero_of_refining_partitions},
+and the deterministic variation bound supplies the dominated-convergence
+constant.  Applying that refining-partition lemma gives the desired
+integrability and zero integral.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_sup_modulus}
+  \uses{def:Martingale, lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_eventual_modulus}
+  \lean{MeasureTheory.Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_sup_modulus}
+Let \(M\) be a real-valued true martingale with \(M_\bot=0\), and fix
+\(t>\bot\).  Suppose \(M\) is bounded by a deterministic constant \(C\) on
+\([\bot,t]\), and suppose the total variation of each path on \([\bot,t]\) is
+almost surely bounded by a deterministic constant \(V\).  Let
+\(\bot=u^n_0\le\cdots\le u^n_{m_n}=t\) be deterministic monotone partitions.
+Assume that, for almost every sample point \(\omega\), the finite maximum
+\[
+  \max_{0\le i<m_n}
+  |M_{u^n_{i+1}}(\omega)-M_{u^n_i}(\omega)|
+\]
+tends to \(0\) as \(n\to\infty\).  Then \(M_t^2\) is integrable and
+\[
+  \int M_t^2\,dP=0 .
+\]
+\end{lemma}
+
+\begin{proof}
+For each sample point in the almost-sure event where the maximum-increment
+convergence holds, use that finite maximum as the modulus
+\(\delta^\omega_n\).  It is nonnegative, tends to \(0\) by hypothesis, and
+every partition increment is bounded by it by the defining property of a
+finite maximum.  Hence the hypotheses of
+Lemma~\ref{lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_eventual_modulus}
+hold, and that lemma gives the required integrability and zero integral.
+\end{proof}
+
+\begin{lemma}\label{lem:UniformContinuousOn.finite_partition_sup_nnnorm_sub_tendsto_zero}
+  \lean{UniformContinuousOn.finite_partition_sup_nnnorm_sub_tendsto_zero}
+Let \(S\) be a subset of a uniform time space, and let \(f:S\to\mathbb R\)
+be represented by a function \(f\) that is uniformly continuous on \(S\).
+Let \(u^n_0,\ldots,u^n_{m_n}\) be finite deterministic point families in
+\(S\).  Assume their adjacent-pair mesh tends to zero in the entourage sense:
+for every entourage \(U\) of the time space, eventually in \(n\),
+\[
+  (u^n_i,u^n_{i+1})\in U
+  \qquad (0\le i<m_n).
+\]
+Then
+\[
+  \max_{0\le i<m_n}|f(u^n_{i+1})-f(u^n_i)| \longrightarrow 0 .
+\]
+\end{lemma}
+
+\begin{proof}
+Fix \(\varepsilon>0\).  Uniform continuity of \(f\) on \(S\) gives an
+entourage \(U\) of the time space such that whenever \(x,y\in S\) and
+\((x,y)\in U\), one has \(|f(x)-f(y)|<\varepsilon\).  By the mesh hypothesis,
+eventually every adjacent pair of the \(n\)-th partition lies in \(U\).  Since
+all partition points lie in \(S\), every adjacent increment of \(f\) is then
+strictly smaller than \(\varepsilon\).  The finite maximum of those increments
+is therefore at most \(\varepsilon\) eventually.  This is exactly convergence
+of the finite maximum to \(0\).
+\end{proof}
+
+\begin{lemma}\label{lem:ContinuousOn.uniformContinuousOn_Icc}
+  \lean{ContinuousOn.uniformContinuousOn_Icc}
+Let \(f\) be a real-valued function on a compact ordered time interval
+\([a,b]\).  If \(f\) is continuous on \([a,b]\), then \(f\) is uniformly
+continuous on \([a,b]\).
+\end{lemma}
+
+\begin{proof}
+The interval \([a,b]\) is compact.  Apply the Heine--Cantor theorem for
+continuous maps on compact sets: the restriction of \(f\) to \([a,b]\) is
+uniformly continuous.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_uniformContinuousOn}
+  \uses{def:Martingale, lem:UniformContinuousOn.finite_partition_sup_nnnorm_sub_tendsto_zero, lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_sup_modulus}
+  \lean{MeasureTheory.Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_uniformContinuousOn}
+Let \(M\) be a real-valued true martingale with \(M_\bot=0\), and fix
+\(t>\bot\).  Suppose \(M\) is bounded by a deterministic constant \(C\) on
+\([\bot,t]\), and suppose the total variation of each path on \([\bot,t]\) is
+almost surely bounded by a deterministic constant \(V\).  Let
+\(\bot=u^n_0\le\cdots\le u^n_{m_n}=t\) be deterministic monotone partitions
+whose adjacent-pair mesh tends to zero in the entourage sense.  If every path
+\(s\mapsto M_s(\omega)\) is uniformly continuous on \([\bot,t]\), then
+\(M_t^2\) is integrable and
+\[
+  \int M_t^2\,dP=0 .
+\]
+\end{lemma}
+
+\begin{proof}
+Apply
+Lemma~\ref{lem:UniformContinuousOn.finite_partition_sup_nnnorm_sub_tendsto_zero}
+to each sample path \(s\mapsto M_s(\omega)\) on \(S=[\bot,t]\).  The
+deterministic mesh hypothesis is independent of \(\omega\), while uniform
+continuity may vary with the sample point.  Thus, for every \(\omega\), the
+finite maximum of the partition increments tends to \(0\).  This gives the
+almost-sure maximum-increment hypothesis required by
+Lemma~\ref{lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_sup_modulus}.
+The remaining boundedness, variation, partition, and martingale hypotheses
+are unchanged, so that lemma yields the desired terminal square-integral
+identity.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+  \uses{def:Martingale, lem:ContinuousOn.uniformContinuousOn_Icc, lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_uniformContinuousOn}
+  \lean{MeasureTheory.Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+Let \(M\) be a real-valued true martingale with \(M_\bot=0\), and fix
+\(t>\bot\).  Suppose the time interval \([\bot,t]\) is compact in the time
+uniformity.  Suppose \(M\) is bounded by a deterministic constant \(C\) on
+\([\bot,t]\), and suppose the total variation of each path on \([\bot,t]\) is
+almost surely bounded by a deterministic constant \(V\).  Let
+\(\bot=u^n_0\le\cdots\le u^n_{m_n}=t\) be deterministic monotone partitions
+whose adjacent-pair mesh tends to zero in the entourage sense.  If every path
+\(s\mapsto M_s(\omega)\) is continuous on \([\bot,t]\), then \(M_t^2\) is
+integrable and
+\[
+  \int M_t^2\,dP=0 .
+\]
+\end{lemma}
+
+\begin{proof}
+For each sample point \(\omega\), apply
+Lemma~\ref{lem:ContinuousOn.uniformContinuousOn_Icc} to the continuous path
+\(s\mapsto M_s(\omega)\) on \([\bot,t]\).  This gives the pathwise uniform
+continuity hypothesis required by
+Lemma~\ref{lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_uniformContinuousOn}.
+All partition, mesh, boundedness, and deterministic variation-bound
+hypotheses are unchanged, so that lemma gives the stated integrability and
+zero square-integral identity.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+  \uses{def:Martingale, lem:MeasureTheory.ae_eq_zero_of_integral_sq_eq_zero, lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+  \lean{MeasureTheory.Martingale.eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+Under the hypotheses of
+Lemma~\ref{lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn},
+the terminal value vanishes almost surely:
+\[
+  M_t=0 \quad\text{almost surely.}
+\]
+\end{lemma}
+
+\begin{proof}
+First apply
+Lemma~\ref{lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+to obtain integrability of \(M_t^2\) and the identity
+\(\int M_t^2\,dP=0\).  Then apply
+Lemma~\ref{lem:MeasureTheory.ae_eq_zero_of_integral_sq_eq_zero} to the
+integrable terminal random variable \(M_t\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_on_event_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+  \uses{def:Martingale, lem:Martingale.eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+  \lean{MeasureTheory.Martingale.eq_zero_on_event_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+Let \(Z\) be a real-valued true martingale with \(Z_\bot=0\).  Fix
+\(t>\bot\), deterministic monotone partitions of \([\bot,t]\) whose
+adjacent-pair mesh tends to zero, a deterministic bound \(C\), and a
+deterministic variation bound \(V\).  Assume \(Z\) satisfies the hypotheses of
+Lemma~\ref{lem:Martingale.eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}:
+it is pathwise continuous on \([\bot,t]\), bounded by \(C\) there almost
+surely, and has total variation at most \(V\) there almost surely.
+
+Let \(M\) be another process and let \(E\) be an event.  If, almost surely,
+\(Z_t(\omega)=M_t(\omega)\) for every \(\omega\in E\), then
+\[
+  \omega\in E \Longrightarrow M_t(\omega)=0
+\]
+almost surely.
+\end{lemma}
+
+\begin{proof}
+Apply
+Lemma~\ref{lem:Martingale.eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+to the localized martingale \(Z\).  This gives \(Z_t=0\) almost surely.  On
+the almost-sure event where \(Z_t=0\) and where \(Z_t=M_t\) on \(E\), every
+\(\omega\in E\) satisfies \(M_t(\omega)=Z_t(\omega)=0\).
+\end{proof}
+
+\begin{lemma}\label{lem:MeasureTheory.ae_eq_zero_of_eventually_event_zero_exhaustion}
+  \lean{MeasureTheory.ae_eq_zero_of_eventually_event_zero_exhaustion}
+Let \(f\) be a real-valued random variable and let \((E_n)_{n\ge 0}\) be
+events.  Suppose that almost every sample point belongs to some \(E_n\), and
+suppose that for every \(n\), \(f=0\) almost surely on \(E_n\).  Then
+\(f=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+Intersect the countably many almost-sure statements \(f=0\) on \(E_n\) over
+all \(n\), and also intersect the almost-sure exhaustion event
+\(\{\omega:\exists n,\omega\in E_n\}\).  For any sample point in this
+intersection choose an index \(n\) with \(\omega\in E_n\), then apply the
+\(n\)-th local zero statement.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_localized_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+  \uses{def:Martingale, lem:Martingale.eq_zero_on_event_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn, lem:MeasureTheory.ae_eq_zero_of_eventually_event_zero_exhaustion}
+  \lean{MeasureTheory.Martingale.eq_zero_of_localized_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+Let \(N\) be a process and let \((Z_n)_{n\ge 0}\) be a countable family of
+real-valued true martingales with \(Z_n(\bot)=0\).  Fix a deterministic time
+\(t\), deterministic monotone partitions of \([\bot,t]\) whose adjacent-pair
+mesh tends to zero, and events \(E_n\) which cover almost every sample point.
+For each \(n\), assume \(Z_n\) is bounded on \([\bot,t]\) by a deterministic
+constant \(C_n\), has total variation on \([\bot,t]\) bounded by a deterministic
+constant \(V_n\), and is pathwise continuous on \([\bot,t]\).  Assume also that,
+on \(E_n\), \(Z_n(t)\) agrees with \(N(t)\) almost surely.  Then
+\[
+  N_t=0
+\]
+almost surely.
+\end{lemma}
+
+\begin{proof}
+For each fixed \(n\), apply
+Lemma~\ref{lem:Martingale.eq_zero_on_event_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+to the martingale \(Z_n\), the event \(E_n\), and the deterministic bounds
+\(C_n,V_n\).  This gives
+\[
+  \omega\in E_n \Longrightarrow N_t(\omega)=0
+\]
+almost surely, for every \(n\).  Since the events \(E_n\) cover almost every
+sample point, Lemma~\ref{lem:MeasureTheory.ae_eq_zero_of_eventually_event_zero_exhaustion}
+applied to the terminal random variable \(N_t\) gives \(N_t=0\) almost surely.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_stoppedProcess_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+  \uses{def:Martingale, lem:Martingale.eq_zero_of_localized_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+  \lean{MeasureTheory.Martingale.eq_zero_of_stoppedProcess_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+Let \(N\) be a process with \(N_\bot=0\), and let \(\tau_n\) be a sequence of
+extended-time cutoffs such that for almost every sample point there is an
+index \(n\) with \(t<\tau_n(\omega)\).  Put
+\[
+  Z^n_s(\omega)
+  =
+  \mathbf 1_{\{\bot<\tau_n(\omega)\}}
+  N_{s\wedge \tau_n(\omega)}(\omega).
+\]
+Assume each \(Z^n\) is a true martingale and satisfies the bounded,
+continuous, deterministic-variation-bound hypotheses of
+Lemma~\ref{lem:Martingale.eq_zero_of_localized_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+on \([\bot,t]\), with the same deterministic partitions and mesh hypothesis.
+Then \(N_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+Apply
+Lemma~\ref{lem:Martingale.eq_zero_of_localized_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+to the localized family \(Z^n\) and to the events
+\[
+  E_n=\{\omega : t<\tau_n(\omega)\}.
+\]
+These events cover almost every sample point by hypothesis.  On \(E_n\) we have
+\(\bot<\tau_n(\omega)\) and the stopping has not yet occurred by time \(t\), so
+the stopped process satisfies \(Z^n_t(\omega)=N_t(\omega)\).  The normalization
+\(Z^n_\bot=0\) follows from \(N_\bot=0\) on \(\{\bot<\tau_n\}\) and from the
+indicator being zero off that event.  The localized-family lemma then gives the
+desired terminal zero statement for \(N_t\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+  \uses{def:Martingale, lem:Martingale.eq_zero_of_stoppedProcess_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+  \lean{MeasureTheory.Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+Let \(N\) be a real-valued true martingale with \(N_\bot=0\), and suppose
+the paths of \(N\) are cadlag.  Let \((\tau_n)\) be a localizing sequence for
+the filtration.  Fix \(t\), deterministic monotone partitions of
+\([\bot,t]\) whose adjacent-pair mesh tends to zero, and deterministic bounds
+\(C_n,V_n\).  Assume that, for each \(n\), the stopped/indicator process
+\[
+  Z^n_s(\omega)
+  =
+  \mathbf 1_{\{\bot<\tau_n(\omega)\}}
+  N_{s\wedge\tau_n(\omega)}(\omega)
+\]
+is bounded by \(C_n\) on \([\bot,t]\) almost surely, has total variation at
+most \(V_n\) on \([\bot,t]\) almost surely, and is continuous on
+\([\bot,t]\) for every sample point.  Then \(N_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+The stopped/indicator processes \(Z^n\) are true martingales because \(N\) is
+a true martingale, the paths of \(N\) are right-continuous, and each
+\(\tau_n\) is a stopping time.  The stopping-time fact is part of the
+localizing-sequence hypothesis, and right-continuity follows from the cadlag
+assumption.
+
+It remains only to supply the covering event required by
+Lemma~\ref{lem:Martingale.eq_zero_of_stoppedProcess_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}.
+Since \(\tau_n(\omega)\to\top\) almost surely, for almost every \(\omega\) the
+open neighbourhood \((t,\top]\) of \(\top\) eventually contains
+\(\tau_n(\omega)\).  In particular, for such an \(\omega\) there is an index
+\(n\) with \(t<\tau_n(\omega)\).  Thus the events
+\(\{\omega:t<\tau_n(\omega)\}\) cover almost surely.  The stopped-process
+lemma now applies with the already assumed deterministic bounds, variation
+bounds, continuity, partition, and mesh hypotheses.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_continuousOn}
+  \uses{def:Martingale, lem:ae_stoppedProcess_indicator_bound_variation_on_Icc, lem:stoppedProcess_indicator_continuousOn_Icc, lem:Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+  \lean{MeasureTheory.Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_continuousOn}
+Let \(N\) be a real-valued true martingale with \(N_\bot=0\), and suppose the
+paths of \(N\) are cadlag.  Let \((\tau_n)\) be a localizing sequence.  Fix a
+deterministic horizon \([\bot,t]\), deterministic monotone partitions of that
+horizon with adjacent-pair mesh tending to zero, and deterministic bounds
+\(C_n,V_n\).  Assume that, for each \(n\), the original process \(N\) is
+bounded by \(C_n\) on \([\bot,t]\) almost surely and has total variation at
+most \(V_n\) on \([\bot,t]\) almost surely.  Assume also that the stopped
+pieces
+\[
+  Z^n_s(\omega)=
+  \mathbf 1_{\{\bot<\tau_n(\omega)\}}\,
+  N_{s\wedge\tau_n(\omega)}(\omega)
+\]
+are continuous on \([\bot,t]\) for every sample point.  Then \(N_t=0\) almost
+surely.
+\end{lemma}
+
+\begin{proof}
+For each \(n\), apply
+Lemma~\ref{lem:ae_stoppedProcess_indicator_bound_variation_on_Icc} with
+\(\tau=\tau_n\), \(C=C_n\), and \(V=V_n\).  This converts the almost-sure
+bound and variation hypotheses for \(N\) into the corresponding almost-sure
+bound and variation hypotheses for the stopped/indicator process \(Z^n\).
+The present Lean statement still assumes the continuity of the stopped
+pieces.  The next lemma packages the common situation where continuity of the
+original path has already been established; in that case
+Lemma~\ref{lem:stoppedProcess_indicator_continuousOn_Icc} supplies exactly
+the stopped-piece continuity.  The deterministic partitions and mesh
+hypothesis are still assumptions.  Therefore all hypotheses of
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+are available, and that lemma gives \(N_t=0\) almost surely.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn}
+  \uses{def:Martingale, lem:stoppedProcess_indicator_continuousOn_Icc, lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_continuousOn}
+  \lean{MeasureTheory.Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn}
+Let \(N\) be a real-valued true martingale with \(N_\bot=0\), and suppose the
+paths of \(N\) are cadlag.  Let \((\tau_n)\) be a localizing sequence.  Fix a
+deterministic horizon \([\bot,t]\), deterministic monotone partitions of that
+horizon with adjacent-pair mesh tending to zero, and deterministic bounds
+\(C_n,V_n\).  Assume that, for each \(n\), the original process \(N\) is
+bounded by \(C_n\) on \([\bot,t]\) almost surely and has total variation at
+most \(V_n\) on \([\bot,t]\) almost surely.  Assume in addition that the
+original paths \(s\mapsto N_s(\omega)\) are continuous on \([\bot,t]\) for
+every sample point \(\omega\).  Then \(N_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+For each \(n\) and \(\omega\), apply
+Lemma~\ref{lem:stoppedProcess_indicator_continuousOn_Icc} to the original
+path-continuity hypothesis for \(N\), with the stopping time specialized to
+\(\tau_n\).  This proves that the stopped/indicator path
+\[
+  s\longmapsto
+  \mathbf 1_{\{\bot<\tau_n(\omega)\}}\,
+  N_{s\wedge\tau_n(\omega)}(\omega)
+\]
+is continuous on \([\bot,t]\).  The original a.e. bound and variation-bound
+hypotheses, the deterministic partitions, and the mesh hypothesis are
+unchanged.  Hence
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_continuousOn}
+applies and gives \(N_t=0\) almost surely.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.ae_eq_leftLim_localizingSequence_of_left_approach_of_bound, lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn}
+  \lean{MeasureTheory.Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn}
+Let \(N\) be a strongly predictable real-valued true martingale with
+\(N_\bot=0\), cadlag paths, and locally bounded variation.  Let
+\((\tau_n)\) be a localizing sequence.  Fix \(t>\bot\), a deterministic
+left-approaching sequence \(v_k<t\) with \(v_k\to t\) from the left, and
+deterministic horizon bounds \(C_n\).  Assume also the explicit hypotheses
+needed by the localized continuous finite-variation square-integral wrapper:
+deterministic monotone partitions of \([\bot,t]\) with mesh tending to zero,
+deterministic variation bounds \(V_n\), almost-sure \(C_n\)-bounds and
+\(V_n\)-variation bounds on \([\bot,t]\), and pathwise continuity on the
+deterministic horizon.  Then both
+\[
+  N_t=0
+  \quad\text{and}\quad
+  N_{t-}=0
+\]
+almost surely.
+\end{lemma}
+
+\begin{proof}
+Apply
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn}
+to the explicit localized continuous finite-variation inputs.  This gives
+\(N_t=0\) almost surely.
+
+Independently, apply
+Lemma~\ref{lem:Martingale.ae_eq_leftLim_localizingSequence_of_left_approach_of_bound}
+to the same martingale, predictability and locally bounded-variation
+hypotheses, using the explicit left-approaching sequence and the same
+almost-sure horizon bounds.  This gives \(N_t=N_{t-}\) almost surely.  On the
+intersection of these two full-measure events, symmetry of the equality
+\(N_t=N_{t-}\) and transitivity with \(N_t=0\) give \(N_{t-}=0\).  Thus the
+terminal value and the chosen left limit are both zero almost surely.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_neBot_left}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Filter.exists_seq_lt_tendsto_nhdsWithin_Iio_of_neBot, lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn}
+  \lean{MeasureTheory.Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_neBot_left}
+Let \(N\) be a strongly predictable real-valued true martingale with
+\(N_\bot=0\), cadlag paths, and locally bounded variation.  Let
+\((\tau_n)\) be a localizing sequence and fix \(t>\bot\).  Assume the
+left-neighborhood filter at \(t\) is nontrivial.  Assume the same original-path
+inputs as in
+Lemma~\ref{lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn}:
+deterministic monotone partitions of \([\bot,t]\) with mesh tending to zero,
+deterministic constants \(C_n,V_n\ge0\), almost-sure \(C_n\)-bounds and
+\(V_n\)-variation bounds for \(N\) on \([\bot,t]\), and pathwise continuity of
+\(N\) on \([\bot,t]\).  Then \(N_t=0\) and \(N_{t-}=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+Use
+Lemma~\ref{lem:Filter.exists_seq_lt_tendsto_nhdsWithin_Iio_of_neBot}
+to choose a deterministic sequence \(v_k<t\) tending to \(t\) from the left.
+With this sequence supplied, every remaining hypothesis is exactly one of the
+hypotheses of
+Lemma~\ref{lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn}.
+Apply that lemma.  This wrapper derives only the left-approaching sequence; it
+does not derive the deterministic bounds, variation bounds, original-path
+continuity, partitions, or mesh.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_stopped_bound}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound_no_integrability}
+  \lean{MeasureTheory.Martingale.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_stopped_bound}
+Let \(N\) be a strongly predictable real-valued true martingale with cadlag
+paths and locally bounded variation.  Let \(\tau\) be a stopping time and put
+\[
+  Z_s(\omega)=
+  \mathbf 1_{\{\bot<\tau(\omega)\}}\,
+  N_{s\wedge\tau(\omega)}(\omega).
+\]
+Fix \(t>\bot\), a deterministic left-approaching sequence \(v_k<t\) with
+\(v_k\to t\) from the left, and a deterministic constant \(C\ge 0\).  Assume
+directly that the stopped process \(Z\) is bounded by \(C\) on
+\([\bot,t]\) almost surely.  Then \(Z_t=Z_{t-}\) almost surely.
+\end{lemma}
+
+\begin{proof}
+The proof is the stopped-process jump-removal argument without first deriving
+the stopped bound from an original-process bound.  The stopped/indicator
+process \(Z\) is a true martingale by stopped martingale stability, is
+strongly predictable by stopped predictability, and has locally bounded
+variation by the stopped finite-variation stability lemma.  The assumed
+almost-sure bound is already the bounded-horizon hypothesis for \(Z\).  Hence
+Lemma~\ref{lem:Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound_no_integrability}
+applies to \(Z\) and gives \(Z_t=Z_{t-}\) almost surely.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.ae_eq_leftLim_on_event_of_left_approach_of_stopped_bound}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_stopped_bound, lem:leftLim_stoppedProcess_indicator_eq_of_lt}
+  \lean{MeasureTheory.Martingale.ae_eq_leftLim_on_event_of_left_approach_of_stopped_bound}
+In the setting of the preceding lemma, suppose \(E=\{\omega:t<\tau(\omega)\}\).
+If the stopped process \(Z\) is bounded by \(C\) on \([\bot,t]\) almost
+surely, then on \(E\) the original process has no jump at \(t\):
+\[
+  N_t(\omega)=N_{t-}(\omega)
+\]
+for almost every \(\omega\in E\).
+\end{lemma}
+
+\begin{proof}
+Apply
+Lemma~\ref{lem:Martingale.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_stopped_bound}
+to obtain \(Z_t=Z_{t-}\) almost surely.  On the event \(t<\tau(\omega)\),
+the terminal values agree, \(Z_t(\omega)=N_t(\omega)\), by the definition of
+stopping.  The same event puts the stopped and original paths equal on a
+left-neighborhood of \(t\), so
+Lemma~\ref{lem:leftLim_stoppedProcess_indicator_eq_of_lt} gives
+\(Z_{t-}(\omega)=N_{t-}(\omega)\).  Combining these equalities proves the
+event-localized original jump-removal statement.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.ae_eq_leftLim_localizingSequence_of_left_approach_of_stopped_bound}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.ae_eq_leftLim_on_event_of_left_approach_of_stopped_bound, lem:ProbabilityTheory.IsLocalizingSequence.eventually_exists_gt}
+  \lean{MeasureTheory.Martingale.ae_eq_leftLim_localizingSequence_of_left_approach_of_stopped_bound}
+Let \(N\) be a strongly predictable real-valued true martingale with cadlag
+paths and locally bounded variation.  Let \((\tau_n)\) be a localizing
+sequence.  Fix \(t>\bot\), a deterministic left-approaching sequence
+\(v_k<t\), and constants \(C_n\ge0\).  Assume that each stopped/indicator
+process
+\[
+  Z^n_s(\omega)=
+  \mathbf 1_{\{\bot<\tau_n(\omega)\}}\,
+  N_{s\wedge\tau_n(\omega)}(\omega)
+\]
+is bounded by \(C_n\) on \([\bot,t]\) almost surely.  Then
+\[
+  N_t=N_{t-}
+\]
+almost surely.
+\end{lemma}
+
+\begin{proof}
+For each \(n\), apply
+Lemma~\ref{lem:Martingale.ae_eq_leftLim_on_event_of_left_approach_of_stopped_bound}
+to \(\tau_n\) and \(C_n\).  This gives \(N_t=N_{t-}\) almost surely on the
+event \(\{t<\tau_n\}\).  Intersect the resulting countably many full-measure
+sets.  The localizing-sequence cover
+Lemma~\ref{lem:ProbabilityTheory.IsLocalizingSequence.eventually_exists_gt}
+says that for almost every \(\omega\) some \(n\) satisfies
+\(t<\tau_n(\omega)\).  The corresponding event-local equality then proves the
+global almost-sure jump-removal statement.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn, lem:Martingale.ae_eq_leftLim_localizingSequence_of_left_approach_of_stopped_bound}
+  \lean{MeasureTheory.Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+Let \(N\) be a strongly predictable real-valued true martingale with
+\(N_\bot=0\), cadlag paths, and locally bounded variation.  Let
+\((\tau_n)\) be a localizing sequence.  Fix \(t>\bot\), a deterministic
+left-approaching sequence \(v_k<t\), deterministic monotone partitions of
+\([\bot,t]\) whose mesh tends to zero, and constants \(C_n,V_n\ge0\).
+Assume directly that every stopped/indicator process \(Z^n\) is bounded by
+\(C_n\) on \([\bot,t]\) almost surely, has total variation at most \(V_n\)
+on \([\bot,t]\) almost surely, and is pathwise continuous on \([\bot,t]\).
+Then both \(N_t=0\) and \(N_{t-}=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+Apply
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+to the stopped/indicator martingales, using the stopped-piece bound,
+variation, continuity, partition, and mesh hypotheses.  This gives
+\(N_t=0\) almost surely.  Separately apply
+Lemma~\ref{lem:Martingale.ae_eq_leftLim_localizingSequence_of_left_approach_of_stopped_bound}
+with the same stopped-piece horizon bounds to get \(N_t=N_{t-}\) almost
+surely.  As before, symmetry and transitivity of almost-sure equality give
+\(N_{t-}=0\).  This is the stopped-bound analogue of
+Lemma~\ref{lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn}.
+\end{proof}
+
+\begin{lemma}\label{lem:Filter.exists_seq_lt_tendsto_nhdsWithin_Iio_of_neBot}
+  \lean{Filter.exists_seq_lt_tendsto_nhdsWithin_Iio_of_neBot}
+Let \(\kappa\) be a second-countable topological preorder and fix a point
+\(t\).  If the left-neighborhood filter
+\[
+  \mathcal N[t^-] := \mathcal N(t)\cap\{s:s<t\}
+\]
+is nontrivial, then there is a deterministic sequence \(v_n<t\) for every
+\(n\), with \(v_n\to t\) along the left-neighborhood filter.
+\end{lemma}
+
+\begin{proof}
+The filter \(\mathcal N[t^-]\) is countably generated: second countability
+gives first countability of neighborhoods, and Mathlib's
+countable-generation theorem for within-neighborhood filters transfers this
+to \(\mathcal N(t)\cap\{s:s<t\}\).  The set \(\{s:s<t\}\) itself belongs to
+the within filter, so under the nontriviality hypothesis the predicate
+\(s<t\) is frequent in that filter.  Apply the countably-generated filter
+sequence extraction theorem with the frequent predicate \(s<t\).  It returns
+a sequence tending to the within filter and satisfying \(v_n<t\) for every
+index \(n\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn_of_neBot_left}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Filter.exists_seq_lt_tendsto_nhdsWithin_Iio_of_neBot, lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+  \lean{MeasureTheory.Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn_of_neBot_left}
+Let \(N\) be a strongly predictable real-valued true martingale with
+\(N_\bot=0\), cadlag paths, and locally bounded variation.  Let
+\((\tau_n)\) be a localizing sequence.  Fix \(t>\bot\).  Assume the
+left-neighborhood filter at \(t\) is nontrivial.  Assume also the stopped-piece
+inputs of
+Lemma~\ref{lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}:
+deterministic monotone partitions of \([\bot,t]\) with mesh tending to zero,
+deterministic constants \(C_n,V_n\ge0\), almost-sure \(C_n\)-bounds and
+\(V_n\)-variation bounds for every stopped/indicator process, and pathwise
+continuity of every stopped/indicator piece on \([\bot,t]\).  Then
+\[
+  N_t=0
+  \quad\text{and}\quad
+  N_{t-}=0
+\]
+almost surely.
+\end{lemma}
+
+\begin{proof}
+Use
+Lemma~\ref{lem:Filter.exists_seq_lt_tendsto_nhdsWithin_Iio_of_neBot}
+to choose a deterministic sequence \(v_k<t\) tending to \(t\) from the left.
+All remaining hypotheses are exactly the hypotheses of
+Lemma~\ref{lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}.
+Apply that lemma with the constructed sequence \(v\).  This gives the terminal
+zero and left-limit zero conclusions simultaneously.  No boundedness,
+variation, continuity, partition, or mesh input is derived in this lemma; only
+the explicit left-approaching sequence is constructed.
+\end{proof}
+
+\begin{lemma}\label{lem:IsStronglyPredictable.stronglyMeasurable_left_isolated_past}
+  \uses{lem:IsStronglyPredictable.stronglyMeasurable_past}
+  \lean{MeasureTheory.IsStronglyPredictable.stronglyMeasurable_left_isolated_past}
+Let \(U\) be a strongly predictable real-valued process and let \(t>\bot\).
+Assume \(s<t\) is a greatest strict predecessor of \(t\): every \(r<t\)
+satisfies \(r\le s\).  Then the random variable \(U_t\) is strongly
+measurable with respect to \(\mathcal F_s\).
+\end{lemma}
+
+\begin{proof}
+Strong predictability gives
+\[
+  U_t \quad\text{measurable with respect to}\quad
+  \bigvee_{r<t}\mathcal F_r
+\]
+by Lemma~\ref{lem:IsStronglyPredictable.stronglyMeasurable_past}.  The
+greatest-predecessor hypothesis implies
+\(\mathcal F_r\le \mathcal F_s\) for every \(r<t\), hence
+\(\bigvee_{r<t}\mathcal F_r\le \mathcal F_s\).  Monotonicity of strong
+measurability with respect to the ambient sigma-algebra then upgrades the
+past measurability of \(U_t\) to \(\mathcal F_s\)-measurability.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_predictable_left_isolated_of_previous}
+  \uses{def:Martingale, lem:IsStronglyPredictable.stronglyMeasurable_left_isolated_past, lem:Martingale.eq_zero_of_predictable_finiteVariation_past_measurable_zero_increment}
+  \lean{MeasureTheory.Martingale.eq_zero_of_predictable_left_isolated_of_previous}
+Let \(N\) be a real-valued martingale and a strongly predictable process.
+Assume \(s<t\) is a greatest strict predecessor of \(t\), and assume
+\(N_s=0\) almost surely.  Then \(N_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+By
+Lemma~\ref{lem:IsStronglyPredictable.stronglyMeasurable_left_isolated_past},
+the random variable \(N_t\) is \(\mathcal F_s\)-measurable.  The martingale
+adaptedness gives \(\mathcal F_s\)-measurability of \(N_s\), so the increment
+\(N_t-N_s\) is also \(\mathcal F_s\)-measurable.  Apply
+Lemma~\ref{lem:Martingale.eq_zero_of_predictable_finiteVariation_past_measurable_zero_increment}
+to this increment and the inequality \(s\le t\); it yields
+\(N_t-N_s=0\) almost surely.  Intersect this full-measure event with the
+hypothesis \(N_s=0\) almost surely.  On the intersection, \(N_t=N_s=0\), so
+\(N_t=0\) almost surely.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_predictable_bottom_immediate}
+  \uses{def:Martingale, lem:Martingale.eq_zero_of_predictable_left_isolated_of_previous}
+  \lean{MeasureTheory.Martingale.eq_zero_of_predictable_bottom_immediate}
+Let \(N\) be a real-valued martingale and a strongly predictable process.
+Let \(t>\bot\), and assume that \(t\) is immediate above the bottom time:
+every \(r<t\) satisfies \(r\le \bot\).  If \(N_\bot=0\) pointwise, then
+\(N_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+Apply
+Lemma~\ref{lem:Martingale.eq_zero_of_predictable_left_isolated_of_previous}
+with the predecessor \(s=\bot\).  The strict predecessor inequality is exactly
+\(\bot<t\), and the bottom-immediacy hypothesis says that every strict
+predecessor of \(t\) is at most \(s\).  The pointwise normalization
+\(N_\bot(\omega)=0\) for every \(\omega\) gives the required almost-sure
+previous-time zero statement.  The predecessor lemma then yields
+\(N_t=0\) almost surely.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_neBot_left}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:stoppedProcess_indicator_continuousOn_Icc, lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn_of_neBot_left}
+  \lean{MeasureTheory.Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_neBot_left}
+Let \(N\) be a strongly predictable real-valued true martingale with
+\(N_\bot=0\), cadlag paths, and locally bounded variation.  Let
+\((\tau_n)\) be a localizing sequence and fix \(t>\bot\).  Assume the
+left-neighborhood filter at \(t\) is nontrivial.  Assume the stopped-bound
+inputs of
+Lemma~\ref{lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn_of_neBot_left},
+except replace the stopped-piece continuity hypothesis by the original-path
+hypothesis that every path \(s\mapsto N_s(\omega)\) is continuous on
+\([\bot,t]\).  Thus the stopped/indicator pieces still have deterministic
+\(C_n\)-bounds and \(V_n\)-variation bounds almost surely, and the deterministic
+partitions and mesh hypotheses remain explicit.  Then \(N_t=0\) and
+\(N_{t-}=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+For each \(n\) and \(\omega\), apply
+Lemma~\ref{lem:stoppedProcess_indicator_continuousOn_Icc} to the original
+continuity of \(s\mapsto N_s(\omega)\) on \([\bot,t]\), with stopping time
+\(\tau_n\).  This supplies the stopped-piece continuity hypothesis required by
+Lemma~\ref{lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn_of_neBot_left}.
+All stopped-piece bounds, stopped-piece variation bounds, partitions, mesh, and
+the nontrivial-left-filter hypothesis are unchanged.  Applying that lemma gives
+the terminal zero and left-limit zero conclusions.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_left_branch}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_neBot_left, lem:Martingale.eq_zero_of_predictable_bottom_immediate, lem:Martingale.eq_zero_of_predictable_left_isolated_of_previous}
+  \lean{MeasureTheory.Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_left_branch}
+Let \(N\) be a strongly predictable real-valued true martingale with
+\(N_\bot=0\), cadlag paths, and locally bounded variation.  Let
+\((\tau_n)\) be a localizing sequence and fix \(t>\bot\).  Assume the
+stopped-bound inputs of
+Lemma~\ref{lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_neBot_left}:
+deterministic monotone partitions of \([\bot,t]\) with mesh tending to zero,
+deterministic constants \(C_n,V_n\ge0\), stopped/indicator \(C_n\)-bounds and
+\(V_n\)-variation bounds almost surely, and original-path continuity on
+\([\bot,t]\).  Assume also one of the following explicit left-branch
+hypotheses holds:
+\[
+  \mathcal N[t^-]\neq\bot,
+  \qquad
+  \forall r<t,\ r\le\bot,
+  \qquad\text{or}\qquad
+  \exists s<t,\ \bigl(\forall r<t,\ r\le s\bigr)\ \text{and}\ N_s=0
+  \text{ a.s.}
+\]
+Then \(N_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+Split into the three stated branches.  In the nontrivial-left-filter branch,
+apply
+Lemma~\ref{lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_neBot_left}
+with the stopped-piece bounds, stopped-piece variation bounds, original
+continuity, partitions and mesh, and take its first conclusion \(N_t=0\).
+
+In the bottom-immediate branch, apply
+Lemma~\ref{lem:Martingale.eq_zero_of_predictable_bottom_immediate}.  The
+normalization \(N_\bot=0\) supplies the previous zero statement, and the
+branch hypothesis supplies the explicit bottom-immediacy condition.
+
+In the left-isolated successor branch, choose the stated predecessor \(s\).
+The branch hypothesis supplies \(s<t\), the greatest-predecessor condition,
+and \(N_s=0\) almost surely.  Apply
+Lemma~\ref{lem:Martingale.eq_zero_of_predictable_left_isolated_of_previous}
+to propagate zero from \(s\) to \(t\).  No branch is inferred from topology;
+the trichotomy is an explicit hypothesis of this connector.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_left_branch}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:ae_stoppedProcess_indicator_bound_variation_on_Icc, lem:Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_left_branch}
+  \lean{MeasureTheory.Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_left_branch}
+Let \(N\) be a strongly predictable real-valued true martingale with
+\(N_\bot=0\), cadlag paths, and locally bounded variation.  Let
+\((\tau_n)\) be a localizing sequence and fix \(t>\bot\).  Assume deterministic
+monotone partitions of \([\bot,t]\) with mesh tending to zero, original-path
+continuity on \([\bot,t]\), and deterministic constants \(C_n,V_n\ge0\).
+Assume that, for each \(n\), the original process satisfies the almost-sure
+horizon bound
+\[
+  \forall s\in[\bot,t],\quad |N_s|\le C_n
+\]
+and the almost-sure variation bound
+\[
+  \operatorname{Var}_{[\bot,t]}(N)\le V_n .
+\]
+Assume also the explicit left-branch disjunction from
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_left_branch}:
+nontrivial left-neighborhood filter, bottom-immediacy, or a greatest strict
+predecessor \(s<t\) with \(N_s=0\) almost surely.  Then \(N_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+For each \(n\), apply
+Lemma~\ref{lem:ae_stoppedProcess_indicator_bound_variation_on_Icc} to the
+stopping time \(\tau_n\).  The original horizon bound and original variation
+bound on \([\bot,t]\), together with \(C_n\ge0\), give the stopped/indicator
+horizon bound and stopped/indicator variation bound required by
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_left_branch}.
+Now invoke that branch connector with the original-path continuity, the same
+deterministic partitions and mesh, and the supplied branch disjunction.  The
+conclusion is exactly \(N_t=0\) almost surely.  This lemma does not construct
+the deterministic bounds, variation levels, partitions, mesh, or branch
+trichotomy; they remain explicit hypotheses.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_localizingSequence_of_pre_stop_bound_variation_bound_original_continuousOn_of_left_branch}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:ae_stoppedProcess_indicator_bound_variation_on_Icc_of_pre_stop_bound, lem:Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_left_branch}
+  \lean{MeasureTheory.Martingale.eq_zero_of_localizingSequence_of_pre_stop_bound_variation_bound_original_continuousOn_of_left_branch}
+Let \(N\) be a strongly predictable real-valued true martingale with
+\(N_\bot=0\), cadlag paths, and locally bounded variation.  Let
+\((\tau_n)\) be a localizing sequence and fix \(t>\bot\).  Assume deterministic
+monotone partitions of \([\bot,t]\) with mesh tending to zero, original-path
+continuity on \([\bot,t]\), and deterministic constants \(C_n,V_n\ge0\).
+For each \(n\), assume the following three almost-sure inputs:
+\[
+  r\in[\bot,t],\quad r<\tau_n(\omega)
+  \quad\Longrightarrow\quad
+  |N_r(\omega)|\le C_n,
+\]
+\[
+  \bot<\tau_n(\omega),\quad \tau_n(\omega)\ne\top,\quad
+  \tau_n(\omega)\le (t:\iota_\infty)
+  \quad\Longrightarrow\quad
+  |N_{\tau_n(\omega)}(\omega)|\le C_n,
+\]
+and \(N(\cdot,\omega)\) has bounded variation at most \(V_n\) on the closed
+pre-stop horizon set
+\[
+  S_{\tau_n,t}(\omega)
+  =
+  \{r\in[\bot,t] : (r:\iota_\infty)\le \tau_n(\omega)\}.
+\]
+Assume also the explicit left-branch disjunction from
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_left_branch}:
+nontrivial left-neighborhood filter, bottom-immediacy, or a greatest strict
+predecessor \(s<t\) with \(N_s=0\) almost surely.  Then \(N_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+For each \(n\), apply
+Lemma~\ref{lem:ae_stoppedProcess_indicator_bound_variation_on_Icc_of_pre_stop_bound}
+to the stopping time \(\tau_n\).  The pre-stop horizon bound, finite
+stop-value bound, and closed-pre-stop variation bound give the stopped/indicator
+\(C_n\)-horizon bound and \(V_n\)-variation bound on \([\bot,t]\).  These are
+exactly the stopped-bound inputs required by
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_left_branch}.
+Invoke that branch connector with the same original-path continuity,
+deterministic partitions, mesh hypothesis, and supplied branch disjunction.
+This proves \(N_t=0\) almost surely.  No deterministic bound, variation level,
+partition, mesh, branch alternative, or no-overshoot property is inferred; all
+such data is assumed explicitly.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_localizingSequence_of_pre_stop_bound_variation_bound_original_continuousOn_of_dense_left}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Filter.nhdsWithin_Iio_self_neBot_of_bot_lt, lem:Martingale.eq_zero_of_localizingSequence_of_pre_stop_bound_variation_bound_original_continuousOn_of_left_branch}
+  \lean{MeasureTheory.Martingale.eq_zero_of_localizingSequence_of_pre_stop_bound_variation_bound_original_continuousOn_of_dense_left}
+Let \(N\) be a strongly predictable real-valued true martingale with
+\(N_\bot=0\), cadlag paths, and locally bounded variation, indexed by a dense
+order with bottom.  Let \((\tau_n)\) be a localizing sequence and fix
+\(t>\bot\).  Assume deterministic monotone partitions of \([\bot,t]\) with
+mesh tending to zero, original-path continuity on \([\bot,t]\), and
+deterministic constants \(C_n,V_n\ge0\).  For each \(n\), assume exactly the
+same three almost-sure pre-stop inputs as in
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_of_pre_stop_bound_variation_bound_original_continuousOn_of_left_branch}:
+a \(C_n\)-bound before \(\tau_n\), a \(C_n\)-bound at the finite stopped value
+when \(\tau_n(\omega)\le t\), and a \(V_n\)-bound on the variation over the
+closed pre-stop horizon set
+\[
+  \{r\in[\bot,t] : (r:\iota_\infty)\le \tau_n(\omega)\}.
+\]
+Then \(N_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+Because the time order is dense and \(\bot<t\),
+Lemma~\ref{lem:Filter.nhdsWithin_Iio_self_neBot_of_bot_lt} gives a
+nontrivial strict-left neighborhood filter at \(t\).  Therefore the explicit
+branch disjunction required by
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_of_pre_stop_bound_variation_bound_original_continuousOn_of_left_branch}
+holds by its nontrivial-left alternative.  Apply that pre-stop localizing
+left-branch wrapper with the same localizing sequence, pre-stop bounds,
+finite stop-value bounds, closed-pre-stop variation bounds, original-path
+continuity, deterministic partitions, and mesh.  This dense-left
+specialization constructs only the branch datum; it does not infer
+no-overshoot, deterministic bounds, variation levels, continuity, partitions,
+mesh, or localizing stopping times.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_left_branch}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_left_branch}
+  \lean{MeasureTheory.Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_left_branch}
+Let \(N\) be a strongly predictable real-valued true martingale with
+\(N_\bot=0\), cadlag paths, and locally bounded variation.  Fix
+\(t>\bot\).  Assume deterministic monotone partitions of \([\bot,t]\) whose
+mesh tends to zero, original-path continuity on \([\bot,t]\), and single
+deterministic constants \(C,V\ge0\).  Assume that, almost surely,
+\[
+  \forall s\in[\bot,t],\quad |N_s|\le C,
+\]
+and that, almost surely, \(N\) has bounded variation on \([\bot,t]\) with
+total variation at most \(V\).  Assume also the same explicit left-branch
+disjunction as in
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_left_branch}.
+Then \(N_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+Use the constant localizing sequence \(\tau_n\equiv\top\), which is a
+localizing sequence because every stopping time is identically infinite and
+the sequence trivially tends to \(\top\).  Define the deterministic level
+families \(C_n=C\) and \(V_n=V\).  The single almost-sure horizon bound and
+the single almost-sure variation bound provide the \(n\)-indexed hypotheses
+required by
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_left_branch}
+for every \(n\).  Apply that lemma with the same deterministic partitions,
+mesh hypothesis, original-path continuity, and branch disjunction.  This
+argument only packages the already supplied deterministic levels; it does not
+construct bounds, variation levels, partitions, mesh, or branch alternatives.
+\end{proof}
+
+\begin{lemma}\label{lem:Filter.exists_greatest_lt_of_not_neBot_nhdsWithin_Iio}
+  \lean{Filter.exists_greatest_lt_of_not_neBot_nhdsWithin_Iio}
+Let \(t>\bot\) in a linearly ordered topological space with the order
+topology.  If the left-neighborhood filter
+\(\mathcal N[t^-]=\mathcal N_t\!\restriction(-\infty,t)\) is not nontrivial,
+then \(t\) has a greatest strict predecessor: there exists \(s<t\) such that
+every \(r<t\) satisfies \(r\le s\).
+\end{lemma}
+
+\begin{proof}
+Since the within-filter is not nontrivial, it is the bottom filter; equivalently
+the empty set is a left-neighborhood of \(t\).  Thus there is an ordinary
+neighborhood \(U\) of \(t\) such that \(U\cap(-\infty,t)\) is empty.  Because
+\(\bot<t\), the order-topology neighborhood-basis lemma
+\texttt{exists\_Ioc\_subset\_of\_mem\_nhds} gives some \(s<t\) with
+\((s,t]\subseteq U\).  If \(r<t\) and \(s<r\), then \(r\in(s,t]\subseteq U\)
+and also \(r\in(-\infty,t)\), contradicting the emptiness of
+\(U\cap(-\infty,t)\).  Therefore every \(r<t\) has \(r\le s\), so \(s\) is the
+greatest strict predecessor of \(t\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_strictPast_zero}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Filter.exists_greatest_lt_of_not_neBot_nhdsWithin_Iio, lem:Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_left_branch}
+  \lean{MeasureTheory.Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_strictPast_zero}
+Let \(N\) be a strongly predictable real-valued true martingale with
+\(N_\bot=0\), cadlag paths, and locally bounded variation.  Fix \(t>\bot\).
+Assume the same bounded-level analytic inputs as in
+Lemma~\ref{lem:Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_left_branch}:
+deterministic monotone partitions of \([\bot,t]\) with mesh tending to zero,
+original-path continuity on \([\bot,t]\), constants \(C,V\ge0\), an
+almost-sure \(C\)-bound on \(N\) over \([\bot,t]\), and an almost-sure
+\(V\)-bound on the variation over \([\bot,t]\).  Finally assume the explicit
+strict-past zero hypothesis
+\[
+  \forall s<t,\qquad N_s=0\quad\text{almost surely}.
+\]
+Then \(N_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+Split on whether the left-neighborhood filter at \(t\) is nontrivial.  In the
+nontrivial-left case, the explicit branch disjunction required by
+Lemma~\ref{lem:Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_left_branch}
+holds by its first alternative.
+
+In the complementary case, apply
+Lemma~\ref{lem:Filter.exists_greatest_lt_of_not_neBot_nhdsWithin_Iio} to obtain
+a greatest strict predecessor \(s<t\).  The strict-past zero hypothesis gives
+\(N_s=0\) almost surely.  Hence the explicit branch disjunction required by
+Lemma~\ref{lem:Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_left_branch}
+holds by its predecessor alternative.  Apply that bounded-level endpoint with
+the same bounds, variation bound, continuity, partitions, and mesh.  This
+lemma constructs only the branch data from the extra strict-past zero
+hypothesis; it does not construct deterministic bounds, variation levels,
+partitions, or mesh, and it is not a full induction principle.
+\end{proof}
+
+\begin{lemma}\label{lem:Filter.nhdsWithin_Iio_self_neBot_of_bot_lt}
+  \lean{Filter.nhdsWithin_Iio_self_neBot_of_bot_lt}
+Let \(t>\bot\) in a densely ordered linearly ordered topological space with
+the order topology and a bottom element.  Then the strict-left neighborhood
+filter at \(t\),
+\[
+  \mathcal N_t\!\restriction(-\infty,t),
+\]
+is nontrivial.
+\end{lemma}
+
+\begin{proof}
+Since \(\bot<t\), the interval \((-\infty,t)\) is nonempty.  Mathlib's
+dense-order closure lemma `nhdsWithin_Iio_neBot'` says that, in a densely
+ordered order-topological space, if \((-\infty,c)\) is nonempty and \(b\le c\),
+then \(\mathcal N_b\!\restriction(-\infty,c)\) is nontrivial.  Apply it with
+\(b=c=t\), use the witness \(\bot\in(-\infty,t)\), and use \(t\le t\).
+Equivalently, one may use the specialized Mathlib lemma
+`nhdsLT_neBot_of_exists_lt` with the witness \(\bot<t\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_dense_left}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Filter.nhdsWithin_Iio_self_neBot_of_bot_lt, lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_left_branch}
+  \lean{MeasureTheory.Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_dense_left}
+Let \(N\) be a strongly predictable real-valued true martingale with
+\(N_\bot=0\), cadlag paths, and locally bounded variation, indexed by a
+dense order with bottom.  Fix \(t>\bot\) and a localizing sequence.  Assume
+the same original-process indexed horizon bounds, indexed variation bounds,
+original-path continuity on \([\bot,t]\), deterministic monotone partitions,
+endpoints, interval membership, and mesh as in
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_left_branch}.
+Then \(N_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:Filter.nhdsWithin_Iio_self_neBot_of_bot_lt}, the
+strict-left neighborhood filter at \(t\) is nontrivial.  Therefore the branch
+disjunction required by
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_left_branch}
+holds by its first alternative.  Apply that lemma with the same localizing
+sequence, indexed deterministic levels, bounds, variation bounds, continuity,
+partitions, and mesh.  This result constructs only the dense-left branch
+input; it does not derive any deterministic bound, variation level, partition,
+mesh, or zero-propagation fact.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_dense_left}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Filter.nhdsWithin_Iio_self_neBot_of_bot_lt, lem:Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_left_branch}
+  \lean{MeasureTheory.Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_dense_left}
+Let \(N\) be a strongly predictable real-valued true martingale with
+\(N_\bot=0\), cadlag paths, and locally bounded variation, indexed by a
+dense order with bottom.  Fix \(t>\bot\).  Assume the same bounded-level
+analytic inputs as in
+Lemma~\ref{lem:Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_left_branch}:
+constants \(C,V\ge0\), an almost-sure \(C\)-bound on \(N\) over
+\([\bot,t]\), an almost-sure \(V\)-bound on variation over \([\bot,t]\),
+original-path continuity on \([\bot,t]\), deterministic monotone partitions,
+endpoints, interval membership, and mesh.  Then \(N_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:Filter.nhdsWithin_Iio_self_neBot_of_bot_lt}, the
+strict-left neighborhood filter at \(t\) is nontrivial.  Hence the explicit
+branch disjunction required by
+Lemma~\ref{lem:Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_left_branch}
+holds by the nontrivial-left alternative.  Apply that bounded-level endpoint
+with the same bounds, variation bound, continuity, partitions, and mesh.
+Again, this is only branch-data packaging for dense time indices.
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn, lem:Martingale.eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+  \lean{MeasureTheory.Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation}
+Let \(M\) be a real-valued true martingale with \(M_\bot=0\).  Fix a
+deterministic time \(t>\bot\).  Assume that on the deterministic horizon
+\([\bot,t]\) the paths are continuous, have bounded variation, and are bounded
+by a deterministic integrable constant.  Assume moreover that the proof has
+chosen deterministic partitions of \([\bot,t]\) with adjacent-pair mesh tending
+to zero in the time uniformity.  Then \(M_t^2\) is integrable and
+\[
+  \int M_t^2\,dP=0 .
+\]
+\end{lemma}
+
+\begin{proof}
+Choose deterministic finite partitions
+\(\pi_n=\{\bot=s^n_0\le \cdots \le s^n_{k_n}=t\}\) whose mesh tends to zero.
+For each partition, the telescoping identity gives
+\[
+  M_t-M_\bot
+  =
+  \sum_i (M_{s^n_{i+1}}-M_{s^n_i}).
+\]
+
+For each sample point, continuity on \([\bot,t]\) implies that the largest
+increment along \(\pi_n\) tends to zero.  This modulus depends on the sample
+point; no deterministic modulus is available from pathwise continuity alone.
+First prove the variation-bounded stopped subcase, where the total variation on
+\([\bot,t]\) is also bounded by a deterministic constant.  In that subcase,
+convert continuity on the compact interval to uniform continuity and use the
+chosen deterministic partitions with adjacent-pair mesh tending to zero.
+Lemma~\ref{lem:Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn}
+then turns the continuous-path mesh control and deterministic variation bound
+into \(\int M_t^2\,dP=0\).  The full locally bounded-variation statement is
+obtained by stopping or localizing at increasing variation levels and then
+letting the level tend to infinity on the event where the localized process
+agrees with the original process up to \(t\).  The deterministic bound on
+\(M_t\) gives integrability of \(M_t^2\).
+\end{proof}
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_bounded_continuous_finiteVariation_core}
+  \uses{def:Martingale, lem:MeasureTheory.ae_eq_zero_of_integral_sq_eq_zero}
+  \lean{MeasureTheory.Martingale.eq_zero_of_bounded_continuous_finiteVariation_core}
+Let \(M\) be a real-valued true martingale with \(M_\bot=0\).  Fix a
+deterministic time \(t>\bot\).  Assume that on the deterministic horizon
+\([\bot,t]\) the paths are continuous, have bounded variation, and are bounded
+by a deterministic integrable constant.  If \(M_t^2\) is integrable and the
+square-integral identity \(\int M_t^2\,dP=0\) has been proved, then \(M_t=0\)
+almost surely.
+\end{lemma}
+
+\begin{proof}
+Apply
+Lemma~\ref{lem:MeasureTheory.ae_eq_zero_of_integral_sq_eq_zero} to the
+integrable random variable \(M_t\).  The continuity, boundedness, martingale,
+normalization, and finite-variation hypotheses are retained here because this
+terminal lemma is called from the bounded-continuous finite-variation bridge;
+the actual proof work left to that bridge is to derive the square-integral
+identity from those hypotheses.
+\end{proof}
+
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_predictable_finiteVariation_bounded_continuous_reduction}
+  % iter-062 PIVOT: \uses trimmed to the endpoints the assembly proof actually
+  % invokes (dense-order specialization). The jump-removal pipeline is reached
+  % through the localizing dense-left endpoint, not lemma-by-lemma here.
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_dense_left, lem:Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_dense_left, lem:Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn, lem:Martingale.integral_increment_mul_increment_eq_zero, lem:Martingale.eq_zero_of_bounded_continuous_finiteVariation_core}
+  \lean{MeasureTheory.Martingale.eq_zero_of_predictable_finiteVariation_bounded_continuous_reduction}
+Let \(M\) be a strongly predictable càdlàg true martingale with
+\(M_\bot=0\), and suppose every path has locally bounded variation.  For
+every deterministic time \(t>\bot\), the remaining analytic reduction proves
+\(M_t=0\) almost surely.
+\end{lemma}
+
+% PIVOT (iter-062): the route stopped adding general-`κ` branch/pre-stop helpers.
+% A strategy-critic + mathlib-analogist reassessment found that this `_reduction`
+% is NOT provable over an arbitrary linearly ordered `κ`: closing it requires a
+% deterministic refining partition of `[⊥,t]` with vanishing mesh, which does not
+% exist in a general order. Every downstream endpoint already takes the partition
+% and mesh as EXPLICIT hypotheses precisely to defer this construction; `_reduction`
+% is where the buck stops. The fix is to SPECIALIZE to densely-ordered time
+% (`[DenselyOrdered κ]` with the topological instances the endpoints already carry,
+% e.g. `ℝ≥0`, where dyadic partitions + Heine–Cantor supply the mesh) and ASSEMBLE
+% the already-closed pieces — not to prove more helpers. The jump-removal and
+% continuous-localizing endpoints below are all closed; the only remaining content
+% is the partition construction and wiring.
+\begin{proof}
+Specialize to densely-ordered time so that a deterministic refining partition of
+the compact horizon \([\bot,t]\) with vanishing mesh can be constructed (on
+\(\mathbb R_{\ge 0}\) take dyadic subdivisions; uniform continuity of the paths on
+the compact interval gives the vanishing-mesh control by Heine–Cantor).  With that
+partition and the deterministic a.e.\ horizon and variation bounds available, the
+proof is pure assembly of closed lemmas; no new branch, pre-stop, or mesh helper is
+needed.
+
+\emph{Step 1 — bounds and partition.}  From the càdlàg paths on the compact
+horizon \([\bot,t]\) obtain an a.e.\ deterministic horizon bound \(\sup_{s\in[\bot,t]}\|M_s\|\le C\),
+and from locally bounded variation obtain an a.e.\ deterministic variation bound
+\((\operatorname{Var}_{[\bot,t]} M)\le V\).  Construct the deterministic refining
+partition \(u_n\) of \([\bot,t]\) and verify the vanishing-mesh hypothesis.
+
+\emph{Step 2 — jump removal gives continuity on the localized pieces.}  The
+predictable-jump removal pipeline is already closed and supplies, along a localizing
+sequence, that the stopped/indicator pieces have no predictable jump, i.e.\ are
+a.e.\ continuous on the horizon.  This is exactly the input the continuous-localizing
+endpoint consumes; the existing jump-removal wrappers (terminal-and-left-limit zero
+packages) feed it.
+
+\emph{Step 3 — apply the closed continuous dense-left endpoint.}  Feed the bounds,
+variation bound, partition, mesh, and continuity into
+Lemma~\ref{lem:Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_dense_left}
+(or, with a single localization level, its fixed-level dense-left companion
+Lemma~\ref{lem:Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_dense_left}).
+Under \([\text{DenselyOrdered }\kappa]\) the branch disjunction these endpoints
+internally require is always the nontrivial strict-left branch, so the
+bottom-immediate and left-isolated cases — and the entire `leastGT` pre-stop layer
+the route was about to extend — are vacuous and unused.  The endpoint already runs
+the deterministic-partition square-increment estimate
+\(\mathbb E[M_t^2]=\sum_i \mathbb E[(M_{t_{i+1}}-M_{t_i})^2]\le \mathbb E[\max_i|\Delta M|\cdot V]\to 0\)
+(increment orthogonality from
+Lemma~\ref{lem:Martingale.integral_increment_mul_increment_eq_zero}) and the terminal
+core Lemma~\ref{lem:Martingale.eq_zero_of_bounded_continuous_finiteVariation_core},
+yielding \(M_t=0\) almost surely.
+\end{proof}
+
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_predictable_finiteVariation_bounded_continuous}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.eq_zero_of_predictable_finiteVariation_bounded_continuous_reduction}
+  \lean{MeasureTheory.Martingale.eq_zero_of_predictable_finiteVariation_bounded_continuous}
+Let \(M\) be a strongly predictable càdlàg true martingale with \(M_0=0\),
+and suppose every path has locally bounded variation.  For every
+deterministic time \(t>0\), the bounded-continuous finite-variation bridge
+shows that \(M_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+The Lean statement still carries the full predictable càdlàg finite-variation
+hypotheses; the phrase ``bounded-continuous'' names the core bridge reached
+inside the proof, not an extra assumption in the statement.
+It is now a wrapper around
+Lemma~\ref{lem:Martingale.eq_zero_of_predictable_finiteVariation_bounded_continuous_reduction}.
+\end{proof}
+
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_predictable_finiteVariation_value_zero}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.eq_zero_of_predictable_finiteVariation_past_measurable_zero_increment, lem:LocallyBoundedVariationOn.exists_tendsto_left_univ, lem:Martingale.stronglyMeasurable_leftLim_past_of_left_approach, lem:Martingale.stronglyMeasurable_jump_leftLim_past_of_left_approach, lem:Filtration.ae_eq_zero_of_past_setIntegral_eq_zero, lem:Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero, lem:Martingale.setIntegral_increment_eq_zero_of_measurableSet, lem:Martingale.setIntegral_jump_leftLim_eq_zero_of_left_approach_of_dominated, lem:Martingale.ae_eq_leftLim_of_left_approach_past_measurable_increments, lem:Martingale.eq_zero_of_predictable_finiteVariation_bounded_continuous}
+  \lean{MeasureTheory.Martingale.eq_zero_of_predictable_finiteVariation_value_zero}
+Let \(M\) be a strongly predictable càdlàg true martingale with \(M_0=0\),
+and suppose every path has locally bounded variation.  For every
+deterministic time \(t>0\), \(M_t=0\) almost surely.
+\end{lemma}
+
+\begin{proof}
+First remove deterministic predictable jumps.  By
+Lemma~\ref{lem:LocallyBoundedVariationOn.exists_tendsto_left_univ}, each
+sample path has a left limit at \(t\).  The closed martingale increment
+Lemma~\ref{lem:Martingale.eq_zero_of_predictable_finiteVariation_past_measurable_zero_increment}
+says that an increment \(M_t-M_s\) vanishes almost surely whenever it is
+already \(\mathcal F_s\)-measurable.  Use strong predictability only through
+the actual predictable-section or past-sigma-algebra measurability it gives;
+do not replace it by measurability with respect to an arbitrary fixed
+\(\mathcal F_s\) without proving that measurability.  Instead, along a
+deterministic cofinal left-approaching sequence, prove
+\(M_{t-}\) is past-measurable by
+Lemma~\ref{lem:Martingale.stronglyMeasurable_leftLim_past_of_left_approach}
+and combine it with strong predictability to make the jump
+\(M_t-M_{t-}\) past-measurable by
+Lemma~\ref{lem:Martingale.stronglyMeasurable_jump_leftLim_past_of_left_approach}.
+The remaining jump-removal step is then a conditional-expectation argument
+against the past sigma-algebra: it is enough, by
+Lemma~\ref{lem:Filtration.ae_eq_zero_of_past_setIntegral_eq_zero}, to show
+that the jump has zero integral on every earlier-filtration set, and then
+apply
+Lemma~\ref{lem:Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero}.
+The stronger
+Lemma~\ref{lem:Martingale.ae_eq_leftLim_of_left_approach_past_measurable_increments}
+is available only when the increments are genuinely
+\(\mathcal F_{u_n}\)-measurable.
+
+It remains to handle the continuous finite-variation part on a fixed finite
+horizon.  Stop the martingale so it is bounded on the horizon, and work with
+a deterministic partition
+\(\pi=\{0=s_0<\cdots<s_n=t\}\).  Orthogonality of martingale increments gives
+\[
+  \mathbb E[(M_t-M_0)^2]
+  =
+  \sum_{k<n}\mathbb E[(M_{s_{k+1}}-M_{s_k})^2].
+\]
+For each path of the continuous finite-variation process,
+\[
+  \sum_{k<n} (M_{s_{k+1}}-M_{s_k})^2
+  \le
+  \max_{k<n}|M_{s_{k+1}}-M_{s_k}|\,
+  \operatorname{Var}_{[0,t]}(M).
+\]
+Along refining deterministic partitions whose mesh tends to zero, continuity
+forces the maximum increment to tend to zero, while finite variation gives a
+finite pathwise variation bound.  Hence the square-increment sums tend to
+zero pathwise.  In the bounded stopped case, dominated convergence sends the
+expectations of these sums to zero, so
+\(\mathbb E[(M_t-M_0)^2]=0\).  Since \(M_0=0\), \(M_t=0\) almost surely.
+Finally remove the bounded stopping by localization.
+\end{proof}
+
+
+\begin{lemma}\label{lem:Martingale.eq_zero_of_predictable_finiteVariation_past_condExp_zero}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:condExp_ae_eq_zero_of_ae_eq_zero, lem:Martingale.eq_zero_of_predictable_finiteVariation_value_zero}
+  \lean{MeasureTheory.Martingale.eq_zero_of_predictable_finiteVariation_past_condExp_zero}
+Let \(M\) be a strongly predictable càdlàg true martingale with \(M_0=0\),
+and suppose every path has locally bounded variation.  For every
+deterministic time \(t>0\),
+\[
+  \mathbb E[M_t\mid \bigvee_{s<t}\mathcal F_s]=0
+\]
+almost surely.
+\end{lemma}
+
+\begin{proof}
+By
+Lemma~\ref{lem:Martingale.eq_zero_of_predictable_finiteVariation_value_zero},
+\(M_t=0\) almost surely.  Apply
+Lemma~\ref{lem:condExp_ae_eq_zero_of_ae_eq_zero} to this almost-sure equality
+with the past sigma-algebra \(\bigvee_{s<t}\mathcal F_s\).  The conditional
+expectation of \(M_t\) onto that sigma-algebra is therefore zero almost
+surely.
+\end{proof}
+
+
+\begin{theorem}\label{thm:Martingale.eq_zero_of_predictable_finiteVariation_noninitial_analytic}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:Martingale.eq_zero_of_predictable_finiteVariation_past_measurable_value, lem:Martingale.eq_zero_of_predictable_finiteVariation_past_condExp_zero}
+  \lean{MeasureTheory.Martingale.eq_zero_of_predictable_finiteVariation_noninitial_analytic}
+Let \(M\) be a strongly predictable càdlàg martingale with \(M_0=0\).
+Assume every path has locally bounded variation, and fix a deterministic time
+\(t>0\).  Suppose in addition that \(M_t\) is strongly measurable with
+respect to the past sigma-algebra \(\bigvee_{s<t}\mathcal F_s\).  Then
+\(M_t=0\) almost surely.
+\end{theorem}
+
+\begin{proof}
+By
+Lemma~\ref{lem:Martingale.eq_zero_of_predictable_finiteVariation_past_condExp_zero},
+the conditional expectation of \(M_t\) onto the past sigma-algebra
+\(\bigvee_{s<t}\mathcal F_s\) is zero almost surely.  Since the theorem
+assumes that \(M_t\) is strongly measurable with respect to this same
+past sigma-algebra, apply
+Lemma~\ref{lem:Martingale.eq_zero_of_predictable_finiteVariation_past_measurable_value}
+to conclude \(M_t=0\) almost surely.
+\end{proof}
+
+
+\begin{theorem}\label{thm:Martingale.eq_zero_of_predictable_finiteVariation_noninitial}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, lem:IsStronglyPredictable.stronglyMeasurable_past, thm:Martingale.eq_zero_of_predictable_finiteVariation_noninitial_analytic}
+  \lean{MeasureTheory.Martingale.eq_zero_of_predictable_finiteVariation_noninitial}
+Let \(M\) be a càdlàg martingale with \(M_0=0\).  Assume that \(M\) is
+strongly predictable and that every path has locally bounded variation.
+Then, for every deterministic time \(t\) with \(0<t\), \(M_t=0\) almost
+surely.
+\end{theorem}
+
+\begin{proof}
+Fix \(t>0\).  By
+Lemma~\ref{lem:IsStronglyPredictable.stronglyMeasurable_past}, strong
+predictability gives exactly the hypothesis that \(M_t\) is strongly
+measurable with respect to \(\bigvee_{s<t}\mathcal F_s\).  Apply
+Theorem~\ref{thm:Martingale.eq_zero_of_predictable_finiteVariation_noninitial_analytic}
+with this past-measurability input.
+\end{proof}
+
+
+\begin{theorem}\label{thm:Martingale.eq_zero_of_predictable_finiteVariation}
+  \uses{def:Martingale, def:LocallyBoundedVariationOn, thm:Martingale.eq_zero_of_predictable_finiteVariation_noninitial}
+  \lean{MeasureTheory.Martingale.eq_zero_of_predictable_finiteVariation}
+Let \(M\) be a càdlàg martingale with \(M_0=0\).  Assume that \(M\) is
+strongly predictable and that every path has locally bounded variation.
+Then, for every deterministic time \(t\), \(M_t=0\) almost surely.
+\end{theorem}
+
+\begin{proof}
+Fix \(t\).  If \(t=0\), the conclusion is exactly the assumed normalization
+\(M_0=0\).  If \(0<t\), apply
+Theorem~\ref{thm:Martingale.eq_zero_of_predictable_finiteVariation_noninitial}
+at this time.  These two cases give the fixed-time conclusion for every
+deterministic \(t\).
+\end{proof}
+
+
+\begin{theorem}\label{thm:IsLocalMartingale.eq_zero_of_predictable_finiteVariation}
+  \uses{def:IsLocalMartingale, def:LocallyBoundedVariationOn, lem:IsStronglyPredictable_stoppedProcess_indicator, lem:LocallyBoundedVariationOn_stoppedProcess_indicator, thm:Martingale.eq_zero_of_predictable_finiteVariation}
+  \lean{ProbabilityTheory.IsLocalMartingale.eq_zero_of_predictable_finiteVariation}
+  \leanok
+Let \(N\) be a càdlàg local martingale with \(N_0=0\).  Assume that \(N\)
+is strongly predictable and that each path of \(N\) has locally bounded
+variation on compact time intervals.  Then, for every deterministic time
+\(t\), \(N_t=0\) almost surely.
+\end{theorem}
+
+\begin{proof}
+
+\leanok
+Fix a deterministic time \(t\).  If \(t=0\), the claim is the normalization
+assumption \(N_0=0\).  Otherwise choose a localizing sequence \((\tau_n)\)
+for \(N\).  For each \(n\), the stopped and indicator-truncated process
+\[
+  N^n_s
+  =
+  N_{s\wedge\tau_n}\mathbf 1_{\{\tau_n>0\}}
+\]
+is a càdlàg martingale.  Strong predictability is stable under stopping and
+indicator truncation by a stopping-time event, and local bounded variation is
+pathwise stable under stopping.  Thus it suffices to prove the theorem for a
+true càdlàg predictable martingale of locally bounded variation, covered by
+Theorem~\ref{thm:Martingale.eq_zero_of_predictable_finiteVariation}.
+
+After applying that theorem to each \(N^n\), take the countable intersection
+of the resulting a.e. equalities and the a.e. event on which
+\(\tau_n\uparrow\infty\).  For such an \(\omega\) and fixed \(t>0\), there is
+some \(n\) with \(t<\tau_n(\omega)\), so the stopped-indicator process agrees
+with \(N_t(\omega)\).  Hence \(N_t=0\) almost surely.  If \(t=0\), the claim
+is exactly the normalization \(N_0=0\).
+
+The finite-variation and predictability assumptions are both essential:
+continuous martingales such as Brownian motion are predictable but not of
+finite variation, and càdlàg finite-variation martingales may have totally
+inaccessible jumps when predictability is omitted.
+\end{proof}
+
+
+\begin{lemma}\label{lem:predictablePart_eq_of_normalized_decomposition}
+  \uses{thm:local_doobMeyer_normalized, thm:IsLocalMartingale.eq_zero_of_predictable_finiteVariation}
+  \lean{ProbabilityTheory.IsLocalSubmartingale.predictablePart_eq_of_normalized_decomposition}
+  \leanok
+Suppose \(X=M+A\), where \(M\) is a càdlàg local martingale and \(A\) is
+strongly predictable, strongly progressive, càdlàg, locally integrable,
+nondecreasing, and \(A_0=0\).  Then, for every deterministic time \(t\),
+the choice-based predictable part of the normalized Doob--Meyer
+decomposition of \(X\) is almost surely equal to \(A_t\).
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+Let \(X=M'+A'\) be the normalized chosen decomposition.  Since both
+decompositions have the same sum, \(A'-A=M-M'\).  The right-hand side is
+a local martingale, being the difference of two local martingales.  The
+left-hand side is strongly predictable, because both \(A'\) and \(A\) are
+strongly predictable.  It is of finite variation on compact intervals,
+since each nondecreasing real-valued path has locally bounded variation and
+locally bounded variation is stable under subtraction.  It also starts at
+zero because both decompositions are normalized.  Therefore
+Theorem~\ref{thm:IsLocalMartingale.eq_zero_of_predictable_finiteVariation}
+implies \(A'_t-A_t=0\) almost surely for every deterministic time \(t\),
+and hence \(A'_t=A_t\) almost surely for every \(t\).
 \end{proof}

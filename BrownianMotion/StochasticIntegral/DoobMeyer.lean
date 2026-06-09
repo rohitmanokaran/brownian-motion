@@ -7,7 +7,9 @@ module
 
 public import BrownianMotion.StochasticIntegral.ClassD
 public import Mathlib.MeasureTheory.Integral.DominatedConvergence
+public import Mathlib.MeasureTheory.PiSystem
 public import Mathlib.Topology.EMetricSpace.BoundedVariation
+public import Mathlib.Topology.Order.DenselyOrdered
 
 /-! # Doob-Meyer decomposition theorem
 
@@ -16,7 +18,7 @@ public import Mathlib.Topology.EMetricSpace.BoundedVariation
 @[expose] public section
 
 open MeasureTheory Filter TopologicalSpace
-open scoped ENNReal
+open scoped ENNReal Uniformity
 
 namespace ProbabilityTheory
 
@@ -511,6 +513,386 @@ lemma locallyBoundedVariationOn_stoppedProcess_indicator
     ext t
     simp [stoppedProcess, hω]
 
+/-- A deterministic horizon bound is preserved by stopped-process localization with the usual
+localizing indicator. -/
+lemma _root_.MeasureTheory.stoppedProcess_indicator_bound_on_Icc
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ]
+    {N : κ → Ω' → ℝ} {τ : Ω' → WithTop κ} {ω : Ω'} {t : κ} {C : ℝ}
+    (hC_nonneg : 0 ≤ C)
+    (hbound : ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C) :
+    ∀ s ∈ Set.Icc (⊥ : κ) t,
+      ‖stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ s ω‖ ≤ C := by
+  intro s hs
+  by_cases hω : (⊥ : κ) < τ ω
+  · let g : κ :=
+      (min (↑s : WithTop κ) (τ ω)).untopA
+    have hmin_ne : min (↑s : WithTop κ) (τ ω) ≠ ⊤ :=
+      ne_top_of_le_ne_top WithTop.coe_ne_top (min_le_left _ _)
+    have hg_mem : g ∈ Set.Icc (⊥ : κ) t := by
+      refine ⟨bot_le, ?_⟩
+      rw [WithTop.untopA_le_iff hmin_ne]
+      exact le_trans (min_le_left _ _) (WithTop.coe_le_coe.2 hs.2)
+    have hmem : ω ∈ {ω | (⊥ : κ) < τ ω} := hω
+    change ‖{ω | (⊥ : κ) < τ ω}.indicator (N g) ω‖ ≤ C
+    rw [Set.indicator_of_mem hmem]
+    exact hbound g hg_mem
+  · have hnotmem : ω ∉ {ω | (⊥ : κ) < τ ω} := hω
+    change ‖{ω | (⊥ : κ) < τ ω}.indicator
+      (N (min (↑s : WithTop κ) (τ ω)).untopA) ω‖ ≤ C
+    rw [Set.indicator_of_notMem hnotmem]
+    simpa using hC_nonneg
+
+/-- A stopped/indicator path is bounded on `[⊥, t]` if the original path is bounded strictly
+before the stop and the finite stop value is bounded whenever the stop lies in the horizon. -/
+lemma _root_.MeasureTheory.stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ]
+    {N : κ → Ω' → ℝ} {τ : Ω' → WithTop κ} {ω : Ω'} {t : κ} {C : ℝ}
+    (hC_nonneg : 0 ≤ C)
+    (hpre : ∀ r ∈ Set.Icc (⊥ : κ) t, (r : WithTop κ) < τ ω → ‖N r ω‖ ≤ C)
+    (hstop : (⊥ : κ) < τ ω → τ ω ≠ ⊤ → τ ω ≤ (t : WithTop κ) →
+      ‖N (τ ω).untopA ω‖ ≤ C) :
+    ∀ s ∈ Set.Icc (⊥ : κ) t,
+      ‖stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i))
+        τ s ω‖ ≤ C := by
+  intro s hs
+  by_cases hbotτ : (⊥ : κ) < τ ω
+  · have hmem : ω ∈ {ω' : Ω' | (⊥ : κ) < τ ω'} := hbotτ
+    by_cases hsτ : (s : WithTop κ) < τ ω
+    · rw [stoppedProcess_eq_of_le hsτ.le, Set.indicator_of_mem hmem]
+      exact hpre s hs hsτ
+    · have hτs : τ ω ≤ (s : WithTop κ) := le_of_not_gt hsτ
+      have hτ_ne_top : τ ω ≠ ⊤ :=
+        ne_top_of_le_ne_top WithTop.coe_ne_top hτs
+      have hτt : τ ω ≤ (t : WithTop κ) :=
+        le_trans hτs (WithTop.coe_le_coe.2 hs.2)
+      rw [stoppedProcess_eq_of_ge hτs, Set.indicator_of_mem hmem]
+      exact hstop hbotτ hτ_ne_top hτt
+  · have hnotmem : ω ∉ {ω' : Ω' | (⊥ : κ) < τ ω'} := hbotτ
+    change ‖{ω' : Ω' | (⊥ : κ) < τ ω'}.indicator
+      (N (min (↑s : WithTop κ) (τ ω)).untopA) ω‖ ≤ C
+    rw [Set.indicator_of_notMem hnotmem]
+    simpa using hC_nonneg
+
+/-- Almost-sure packaging of
+`MeasureTheory.stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound`. -/
+lemma _root_.MeasureTheory.ae_stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {N : κ → Ω' → ℝ} {τ : Ω' → WithTop κ} {t : κ} {C : ℝ}
+    (hC_nonneg : 0 ≤ C)
+    (hpre : ∀ᵐ ω ∂P', ∀ r ∈ Set.Icc (⊥ : κ) t,
+      (r : WithTop κ) < τ ω → ‖N r ω‖ ≤ C)
+    (hstop : ∀ᵐ ω ∂P', (⊥ : κ) < τ ω → τ ω ≠ ⊤ →
+      τ ω ≤ (t : WithTop κ) → ‖N (τ ω).untopA ω‖ ≤ C) :
+    ∀ᵐ ω ∂P', ∀ s ∈ Set.Icc (⊥ : κ) t,
+      ‖stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i))
+        τ s ω‖ ≤ C := by
+  filter_upwards [hpre, hstop] with ω hω_pre hω_stop
+  exact MeasureTheory.stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound
+    (N := N) (τ := τ) (ω := ω) (t := t) (C := C)
+    hC_nonneg hω_pre hω_stop
+
+/-- The extended variation on `[⊥, t]` of a stopped/indicator path is bounded by the
+extended variation of the original path on the same horizon. -/
+lemma _root_.BoundedVariationOn.eVariationOn_stoppedProcess_indicator_le_Icc
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ]
+    {N : κ → Ω' → ℝ} {τ : Ω' → WithTop κ} (ω : Ω') (t : κ) :
+    eVariationOn
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+        (Set.Icc (⊥ : κ) t) ≤
+      eVariationOn (N · ω) (Set.Icc (⊥ : κ) t) := by
+  rw [eVariationOn]
+  refine iSup_le ?_
+  rintro ⟨n, v, hv, hvs⟩
+  by_cases hω : (⊥ : κ) < τ ω
+  · let g : κ → κ := fun s => (min (↑s : WithTop κ) (τ ω)).untopA
+    have hg_mono : Monotone g := by
+      intro x y hxy
+      have hmin_ne_y : min (↑y : WithTop κ) (τ ω) ≠ ⊤ :=
+        ne_top_of_le_ne_top WithTop.coe_ne_top (min_le_left _ _)
+      exact WithTop.untopA_mono hmin_ne_y
+        (min_le_min (WithTop.coe_le_coe.2 hxy) le_rfl)
+    have hg_mem : ∀ s ∈ Set.Icc (⊥ : κ) t, g s ∈ Set.Icc (⊥ : κ) t := by
+      intro s hs
+      have hmin_ne : min (↑s : WithTop κ) (τ ω) ≠ ⊤ :=
+        ne_top_of_le_ne_top WithTop.coe_ne_top (min_le_left _ _)
+      refine ⟨bot_le, ?_⟩
+      rw [WithTop.untopA_le_iff hmin_ne]
+      exact le_trans (min_le_left _ _) (WithTop.coe_le_coe.2 hs.2)
+    have hsum := eVariationOn.sum_le (f := (N · ω)) (s := Set.Icc (⊥ : κ) t)
+      (n := n) (u := fun i => g (v i))
+      (fun i j hij => hg_mono (hv hij))
+      (fun i => hg_mem (v i) (hvs i))
+    have hmem : ω ∈ {ω | (⊥ : κ) < τ ω} := hω
+    calc
+      (∑ i ∈ Finset.range n,
+          edist
+            (((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+              (v (i + 1)))
+            (((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+              (v i)))
+          =
+        ∑ i ∈ Finset.range n,
+          edist (N (g (v (i + 1))) ω) (N (g (v i)) ω) := by
+            refine Finset.sum_congr rfl fun i _hi => ?_
+            change
+              edist ({ω | (⊥ : κ) < τ ω}.indicator (N (g (v (i + 1)))) ω)
+                ({ω | (⊥ : κ) < τ ω}.indicator (N (g (v i))) ω) =
+              edist (N (g (v (i + 1))) ω) (N (g (v i)) ω)
+            rw [Set.indicator_of_mem hmem, Set.indicator_of_mem hmem]
+      _ ≤ eVariationOn (N · ω) (Set.Icc (⊥ : κ) t) := hsum
+  · have hsum_zero :
+        (∑ i ∈ Finset.range n,
+          edist
+            (((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+              (v (i + 1)))
+            (((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+              (v i))) = 0 := by
+      have hnotmem : ω ∉ {ω | (⊥ : κ) < τ ω} := hω
+      refine Finset.sum_eq_zero fun i _hi => ?_
+      change
+        edist
+          ({ω | (⊥ : κ) < τ ω}.indicator
+            (N (min (↑(v (i + 1)) : WithTop κ) (τ ω)).untopA) ω)
+          ({ω | (⊥ : κ) < τ ω}.indicator
+            (N (min (↑(v i) : WithTop κ) (τ ω)).untopA) ω) = 0
+      rw [Set.indicator_of_notMem hnotmem, Set.indicator_of_notMem hnotmem]
+      simp
+    rw [hsum_zero]
+    exact bot_le
+
+/-- Bounded variation and a deterministic real total-variation bound transfer to the
+stopped/indicator path on the same deterministic horizon. -/
+lemma _root_.BoundedVariationOn.stoppedProcess_indicator_variation_bound_on_Icc
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ]
+    {N : κ → Ω' → ℝ} {τ : Ω' → WithTop κ} {ω : Ω'} {t : κ} {V : ℝ}
+    (hvar : BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hV : (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V) :
+    BoundedVariationOn
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+        (Set.Icc (⊥ : κ) t) ∧
+      (eVariationOn
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+        (Set.Icc (⊥ : κ) t)).toReal ≤ V := by
+  have hle := BoundedVariationOn.eVariationOn_stoppedProcess_indicator_le_Icc
+    (N := N) (τ := τ) ω t
+  have hstop_var :
+      BoundedVariationOn
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+        (Set.Icc (⊥ : κ) t) :=
+    ne_top_of_le_ne_top hvar hle
+  refine ⟨hstop_var, ?_⟩
+  exact le_trans (ENNReal.toReal_mono hvar hle) hV
+
+/-- The extended variation on `[⊥, t]` of a stopped/indicator path is bounded by the
+extended variation of the original path on the closed pre-stop part of the horizon. -/
+lemma _root_.BoundedVariationOn.eVariationOn_stoppedProcess_indicator_le_closed_pre_stop_Icc
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ]
+    {N : κ → Ω' → ℝ} {τ : Ω' → WithTop κ} (ω : Ω') (t : κ) :
+    eVariationOn
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+        (Set.Icc (⊥ : κ) t) ≤
+      eVariationOn (N · ω)
+        {r : κ | r ∈ Set.Icc (⊥ : κ) t ∧ (r : WithTop κ) ≤ τ ω} := by
+  rw [eVariationOn]
+  refine iSup_le ?_
+  rintro ⟨n, v, hv, hvs⟩
+  by_cases hω : (⊥ : κ) < τ ω
+  · let g : κ → κ := fun s => (min (↑s : WithTop κ) (τ ω)).untopA
+    have hg_mono : Monotone g := by
+      intro x y hxy
+      have hmin_ne_y : min (↑y : WithTop κ) (τ ω) ≠ ⊤ :=
+        ne_top_of_le_ne_top WithTop.coe_ne_top (min_le_left _ _)
+      exact WithTop.untopA_mono hmin_ne_y
+        (min_le_min (WithTop.coe_le_coe.2 hxy) le_rfl)
+    have hg_mem : ∀ s ∈ Set.Icc (⊥ : κ) t,
+        g s ∈ {r : κ | r ∈ Set.Icc (⊥ : κ) t ∧ (r : WithTop κ) ≤ τ ω} := by
+      intro s hs
+      have hmin_ne : min (↑s : WithTop κ) (τ ω) ≠ ⊤ :=
+        ne_top_of_le_ne_top WithTop.coe_ne_top (min_le_left _ _)
+      refine ⟨⟨bot_le, ?_⟩, ?_⟩
+      · rw [WithTop.untopA_le_iff hmin_ne]
+        exact le_trans (min_le_left _ _) (WithTop.coe_le_coe.2 hs.2)
+      · change ((min (↑s : WithTop κ) (τ ω)).untopA : WithTop κ) ≤ τ ω
+        rw [WithTop.untopA_eq_untop hmin_ne, WithTop.coe_untop]
+        exact min_le_right _ _
+    have hsum := eVariationOn.sum_le (f := (N · ω))
+      (s := {r : κ | r ∈ Set.Icc (⊥ : κ) t ∧ (r : WithTop κ) ≤ τ ω})
+      (n := n) (u := fun i => g (v i))
+      (fun i j hij => hg_mono (hv hij))
+      (fun i => hg_mem (v i) (hvs i))
+    have hmem : ω ∈ {ω | (⊥ : κ) < τ ω} := hω
+    calc
+      (∑ i ∈ Finset.range n,
+          edist
+            (((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+              (v (i + 1)))
+            (((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+              (v i)))
+          =
+        ∑ i ∈ Finset.range n,
+          edist (N (g (v (i + 1))) ω) (N (g (v i)) ω) := by
+            refine Finset.sum_congr rfl fun i _hi => ?_
+            change
+              edist ({ω | (⊥ : κ) < τ ω}.indicator (N (g (v (i + 1)))) ω)
+                ({ω | (⊥ : κ) < τ ω}.indicator (N (g (v i))) ω) =
+              edist (N (g (v (i + 1))) ω) (N (g (v i)) ω)
+            rw [Set.indicator_of_mem hmem, Set.indicator_of_mem hmem]
+      _ ≤ eVariationOn (N · ω)
+          {r : κ | r ∈ Set.Icc (⊥ : κ) t ∧ (r : WithTop κ) ≤ τ ω} := hsum
+  · have hsum_zero :
+        (∑ i ∈ Finset.range n,
+          edist
+            (((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+              (v (i + 1)))
+            (((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+              (v i))) = 0 := by
+      have hnotmem : ω ∉ {ω | (⊥ : κ) < τ ω} := hω
+      refine Finset.sum_eq_zero fun i _hi => ?_
+      change
+        edist
+          ({ω | (⊥ : κ) < τ ω}.indicator
+            (N (min (↑(v (i + 1)) : WithTop κ) (τ ω)).untopA) ω)
+          ({ω | (⊥ : κ) < τ ω}.indicator
+            (N (min (↑(v i) : WithTop κ) (τ ω)).untopA) ω) = 0
+      rw [Set.indicator_of_notMem hnotmem, Set.indicator_of_notMem hnotmem]
+      simp
+    rw [hsum_zero]
+    exact bot_le
+
+set_option linter.style.longLine false in
+/-- Bounded variation and a deterministic real total-variation bound on the closed pre-stop
+horizon transfer to the stopped/indicator path on the full deterministic horizon. -/
+lemma _root_.BoundedVariationOn.stoppedProcess_indicator_variation_bound_on_Icc_of_closed_pre_stop_bound
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ]
+    {N : κ → Ω' → ℝ} {τ : Ω' → WithTop κ} {ω : Ω'} {t : κ} {V : ℝ}
+    (hvar : BoundedVariationOn (N · ω)
+      {r : κ | r ∈ Set.Icc (⊥ : κ) t ∧ (r : WithTop κ) ≤ τ ω})
+    (hV : (eVariationOn (N · ω)
+      {r : κ | r ∈ Set.Icc (⊥ : κ) t ∧ (r : WithTop κ) ≤ τ ω}).toReal ≤ V) :
+    BoundedVariationOn
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+        (Set.Icc (⊥ : κ) t) ∧
+      (eVariationOn
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+        (Set.Icc (⊥ : κ) t)).toReal ≤ V := by
+  have hle := BoundedVariationOn.eVariationOn_stoppedProcess_indicator_le_closed_pre_stop_Icc
+    (N := N) (τ := τ) ω t
+  have hstop_var :
+      BoundedVariationOn
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+        (Set.Icc (⊥ : κ) t) :=
+    ne_top_of_le_ne_top hvar hle
+  refine ⟨hstop_var, ?_⟩
+  exact le_trans (ENNReal.toReal_mono hvar hle) hV
+
+/-- Almost-everywhere packaging of the pre-stop horizon-bound transfer and the closed pre-stop
+variation-bound transfer. -/
+lemma _root_.MeasureTheory.ae_stoppedProcess_indicator_bound_variation_on_Icc_of_pre_stop_bound
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {N : κ → Ω' → ℝ} {τ : Ω' → WithTop κ} {t : κ} {C V : ℝ}
+    (hC_nonneg : 0 ≤ C)
+    (hpre_bound : ∀ᵐ ω ∂P', ∀ r ∈ Set.Icc (⊥ : κ) t,
+      (r : WithTop κ) < τ ω → ‖N r ω‖ ≤ C)
+    (hstop_bound : ∀ᵐ ω ∂P', (⊥ : κ) < τ ω → τ ω ≠ ⊤ →
+      τ ω ≤ (t : WithTop κ) → ‖N (τ ω).untopA ω‖ ≤ C)
+    (hvar_bound : ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω)
+          {r : κ | r ∈ Set.Icc (⊥ : κ) t ∧ (r : WithTop κ) ≤ τ ω} ∧
+        (eVariationOn (N · ω)
+          {r : κ | r ∈ Set.Icc (⊥ : κ) t ∧ (r : WithTop κ) ≤ τ ω}).toReal ≤ V) :
+    (∀ᵐ ω ∂P', ∀ s ∈ Set.Icc (⊥ : κ) t,
+      ‖stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i))
+        τ s ω‖ ≤ C) ∧
+      (∀ᵐ ω ∂P',
+        BoundedVariationOn
+            ((stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i))
+              τ) · ω)
+            (Set.Icc (⊥ : κ) t) ∧
+          (eVariationOn
+            ((stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i))
+              τ) · ω)
+            (Set.Icc (⊥ : κ) t)).toReal ≤ V) := by
+  refine ⟨?_, ?_⟩
+  · exact MeasureTheory.ae_stoppedProcess_indicator_bound_on_Icc_of_pre_stop_bound
+      (N := N) (τ := τ) (t := t) (C := C) hC_nonneg hpre_bound hstop_bound
+  · filter_upwards [hvar_bound] with ω hω_var
+    exact
+      BoundedVariationOn.stoppedProcess_indicator_variation_bound_on_Icc_of_closed_pre_stop_bound
+        (N := N) (τ := τ) (ω := ω) hω_var.1 hω_var.2
+
+/-- Almost-everywhere packaging of the deterministic stopped/indicator horizon-bound and
+variation-bound transfers. -/
+lemma _root_.MeasureTheory.ae_stoppedProcess_indicator_bound_variation_on_Icc
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {N : κ → Ω' → ℝ} {τ : Ω' → WithTop κ} {t : κ} {C V : ℝ}
+    (hC_nonneg : 0 ≤ C)
+    (hbound : ∀ᵐ ω ∂P', ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C)
+    (hvar_bound : ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V) :
+    (∀ᵐ ω ∂P', ∀ s ∈ Set.Icc (⊥ : κ) t,
+      ‖stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ s ω‖ ≤ C) ∧
+      (∀ᵐ ω ∂P',
+        BoundedVariationOn
+            ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+            (Set.Icc (⊥ : κ) t) ∧
+          (eVariationOn
+            ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+            (Set.Icc (⊥ : κ) t)).toReal ≤ V) := by
+  refine ⟨?_, ?_⟩
+  · filter_upwards [hbound] with ω hω_bound
+    exact MeasureTheory.stoppedProcess_indicator_bound_on_Icc
+      (N := N) (τ := τ) (ω := ω) hC_nonneg hω_bound
+  · filter_upwards [hvar_bound] with ω hω_var
+    exact BoundedVariationOn.stoppedProcess_indicator_variation_bound_on_Icc
+      (N := N) (τ := τ) (ω := ω) hω_var.1 hω_var.2
+
+/-- Pathwise continuity on a deterministic horizon is preserved by stopped-process localization
+with the usual localizing indicator. -/
+lemma _root_.MeasureTheory.stoppedProcess_indicator_continuousOn_Icc
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ]
+    {N : κ → Ω' → ℝ} {τ : Ω' → WithTop κ} {ω : Ω'} {t : κ}
+    (hcont : ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t)) :
+    ContinuousOn
+      ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω)
+      (Set.Icc (⊥ : κ) t) := by
+  by_cases hω : (⊥ : κ) < τ ω
+  · have hmem : ω ∈ {ω | (⊥ : κ) < τ ω} := hω
+    by_cases htop : τ ω = ⊤
+    · exact hcont.congr (by
+        intro s _hs
+        simp [stoppedProcess, htop])
+    · obtain ⟨a, ha⟩ := WithTop.ne_top_iff_exists.mp htop
+      have hbot_a : (⊥ : κ) ≤ a := by
+        have hbot_a_lt : (⊥ : κ) < a :=
+          WithTop.coe_lt_coe.mp (by simpa [← ha] using hω)
+        exact hbot_a_lt.le
+      have hg_cont : ContinuousOn (fun s : κ => min s a) (Set.Icc (⊥ : κ) t) :=
+        (Continuous.min continuous_id continuous_const).continuousOn
+      have hg_maps : Set.MapsTo (fun s : κ => min s a)
+          (Set.Icc (⊥ : κ) t) (Set.Icc (⊥ : κ) t) := by
+        intro s hs
+        exact ⟨le_min hs.1 hbot_a, le_trans (min_le_left _ _) hs.2⟩
+      refine (hcont.comp' hg_cont hg_maps).congr ?_
+      intro s _hs
+      change {ω | (⊥ : κ) < τ ω}.indicator
+          (N (min (↑s : WithTop κ) (τ ω)).untopA) ω =
+        N (min s a) ω
+      rw [Set.indicator_of_mem hmem]
+      rw [← ha, ← WithTop.coe_min, WithTop.untopA_coe]
+  · have hnotmem : ω ∉ {ω | (⊥ : κ) < τ ω} := hω
+    have hzero : ContinuousOn (fun _ : κ => (0 : ℝ)) (Set.Icc (⊥ : κ) t) :=
+      continuousOn_const
+    exact hzero.congr (by
+      intro s _hs
+      change {ω | (⊥ : κ) < τ ω}.indicator
+          (N (min (↑s : WithTop κ) (τ ω)).untopA) ω = 0
+      rw [Set.indicator_of_notMem hnotmem])
+
 /-- The deterministic section of the predictable sigma-algebra at a non-initial time is
 measurable with respect to the past sigma-algebra generated by all strictly earlier filtration
 levels. -/
@@ -544,6 +926,22 @@ lemma _root_.MeasureTheory.IsStronglyPredictable.stronglyMeasurable_past
   rw [MeasureTheory.IsStronglyPredictable] at hU
   simpa [Function.comp_def, Function.uncurry] using
     hU.comp_measurable (𝓕'.measurable_prod_mk_predictable_past ht)
+
+set_option linter.style.longLine false in
+/-- At a left-isolated deterministic time, strong predictability makes the future section
+measurable at the greatest strict predecessor. -/
+lemma _root_.MeasureTheory.IsStronglyPredictable.stronglyMeasurable_left_isolated_past
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ]
+    {mΩ' : MeasurableSpace Ω'} {𝓕' : Filtration κ mΩ'}
+    {U : κ → Ω' → ℝ} (hU : IsStronglyPredictable 𝓕' U)
+    {s t : κ} (ht : (⊥ : κ) < t) (hst : s < t)
+    (hprev : ∀ r : κ, r < t → r ≤ s) :
+    StronglyMeasurable[𝓕' s] (U t) := by
+  have _hst_used : s < t := hst
+  have hpast :
+      StronglyMeasurable[(⨆ r : {r : κ // r < t}, 𝓕' r)] (U t) :=
+    hU.stronglyMeasurable_past ht
+  exact hpast.mono (iSup_le fun r => 𝓕'.mono (hprev r.1 r.2))
 
 /-- A past-measurable martingale value with zero conditional expectation against the past
 sigma-algebra is zero almost surely.  This is the conditional-expectation reduction used at the
@@ -589,6 +987,41 @@ lemma _root_.MeasureTheory.Martingale.eq_zero_of_predictable_finiteVariation_pas
     exact MeasureTheory.condExp_of_stronglyMeasurable (𝓕'.le s) hinc_meas
       ((hN.integrable t).sub (hN.integrable s))
   simpa [hcond_eq] using hcond_inc
+
+set_option linter.style.longLine false in
+/-- A predictable martingale whose greatest predecessor value is zero is zero at the
+left-isolated successor. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_predictable_left_isolated_of_previous
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_pred : IsStronglyPredictable 𝓕' N)
+    {s t : κ} (ht : (⊥ : κ) < t) (hst : s < t)
+    (hprev : ∀ r : κ, r < t → r ≤ s) (hs_zero : N s =ᵐ[P'] 0) :
+    N t =ᵐ[P'] 0 := by
+  have hNt_meas : StronglyMeasurable[𝓕' s] (N t) :=
+    hN_pred.stronglyMeasurable_left_isolated_past ht hst hprev
+  have hinc_meas : StronglyMeasurable[𝓕' s] (N t - N s) := by
+    simpa [Pi.sub_apply] using hNt_meas.sub (hN.stronglyMeasurable s)
+  have hinc_zero : N t - N s =ᵐ[P'] 0 :=
+    hN.eq_zero_of_predictable_finiteVariation_past_measurable_zero_increment hst.le hinc_meas
+  filter_upwards [hinc_zero, hs_zero] with ω hinc hs
+  have ht_eq : N t ω = N s ω :=
+    sub_eq_zero.mp (by simpa [Pi.sub_apply] using hinc)
+  exact ht_eq.trans hs
+
+/-- A predictable martingale is zero at a time immediately above the bottom time when its bottom
+value is pointwise zero. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_predictable_bottom_immediate
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_pred : IsStronglyPredictable 𝓕' N) (hN_zero : ∀ ω, N ⊥ ω = 0)
+    {t : κ} (ht : (⊥ : κ) < t)
+    (hbot_prev : ∀ r : κ, r < t → r ≤ (⊥ : κ)) :
+    N t =ᵐ[P'] 0 := by
+  exact hN.eq_zero_of_predictable_left_isolated_of_previous hN_pred ht ht hbot_prev
+    (Eventually.of_forall hN_zero)
 
 /-- Multiplying a future martingale increment by an earlier strongly measurable random variable
 gives zero expectation, provided the product is integrable.  This is the martingale
@@ -680,6 +1113,589 @@ lemma _root_.LocallyBoundedVariationOn.exists_tendsto_left_univ
     · intro hy
       exact ⟨le_of_lt hy, hy⟩
   simpa [hset] using hl
+
+set_option linter.style.longLine false in
+/-- Along an explicit deterministic sequence approaching `t` from the left, the left-limit
+random variable of a finite-variation martingale is measurable with respect to the sigma-algebra
+generated by the strictly earlier filtration levels. -/
+lemma _root_.MeasureTheory.Martingale.stronglyMeasurable_leftLim_past_of_left_approach
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P')
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {t : κ} {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t))) :
+    StronglyMeasurable[(⨆ s : {s : κ // s < t}, 𝓕' s)]
+      (fun ω => Function.leftLim (N · ω) t) := by
+  let mPast : MeasurableSpace Ω' := ⨆ s : {s : κ // s < t}, 𝓕' s
+  change StronglyMeasurable[mPast] (fun ω => Function.leftLim (N · ω) t)
+  refine stronglyMeasurable_of_tendsto (m := mPast) (u := atTop)
+    (f := fun n ω => N (u n) ω) ?_ ?_
+  · intro n
+    exact (hN.stronglyMeasurable (u n)).mono
+      (by
+        dsimp [mPast]
+        exact le_iSup (fun s : {s : κ // s < t} => 𝓕' s) ⟨u n, hu_lt n⟩)
+  · rw [tendsto_pi_nhds]
+    intro ω
+    simpa [Function.comp_def] using
+      (tendsto_leftLim_of_tendsto ((hN_var ω).exists_tendsto_left_univ t)).comp
+        hu_tendsto
+
+set_option linter.style.longLine false in
+/-- For a strongly predictable finite-variation martingale, the deterministic jump at `t`
+computed using an explicit left-approaching sequence is measurable with respect to the past
+sigma-algebra. -/
+lemma _root_.MeasureTheory.Martingale.stronglyMeasurable_jump_leftLim_past_of_left_approach
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {t : κ} (ht : (⊥ : κ) < t) {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t))) :
+    StronglyMeasurable[(⨆ s : {s : κ // s < t}, 𝓕' s)]
+      (fun ω => N t ω - Function.leftLim (N · ω) t) := by
+  have hNt :
+      StronglyMeasurable[(⨆ s : {s : κ // s < t}, 𝓕' s)] (N t) :=
+    hN_pred.stronglyMeasurable_past ht
+  have hleft :
+      StronglyMeasurable[(⨆ s : {s : κ // s < t}, 𝓕' s)]
+        (fun ω => Function.leftLim (N · ω) t) :=
+    hN.stronglyMeasurable_leftLim_past_of_left_approach hN_var hu_lt hu_tendsto
+  simpa [Pi.sub_apply] using hNt.sub hleft
+
+set_option linter.style.longLine false in
+/-- If an integrable random variable is measurable with respect to the sigma-algebra generated by
+the strict past of a filtration and has zero integral on every earlier-filtration set, then it is
+zero almost surely. -/
+lemma _root_.MeasureTheory.Filtration.ae_eq_zero_of_past_setIntegral_eq_zero
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ] {mΩ' : MeasurableSpace Ω'}
+    {P' : Measure Ω'} (𝓕' : Filtration κ mΩ') [IsFiniteMeasure P']
+    {X : Ω' → ℝ} {t : κ} (ht : (⊥ : κ) < t)
+    (hX_int : Integrable X P')
+    (hX_past : StronglyMeasurable[(⨆ s : {s : κ // s < t}, 𝓕' s)] X)
+    (hzero : ∀ s : {s : κ // s < t}, ∀ A : Set Ω',
+      MeasurableSet[𝓕' s] A → ∫ ω in A, X ω ∂P' = 0) :
+    X =ᵐ[P'] 0 := by
+  let mPast : MeasurableSpace Ω' := ⨆ s : {s : κ // s < t}, 𝓕' s
+  let C : Set (Set Ω') :=
+    {A | ∃ s : {s : κ // s < t}, MeasurableSet[𝓕' s] A}
+  have hmPast_le : mPast ≤ mΩ' := by
+    dsimp [mPast]
+    exact iSup_le fun s => 𝓕'.le s
+  have hmPast_eq : mPast = MeasurableSpace.generateFrom C := by
+    dsimp [mPast, C]
+    simpa using
+      (MeasurableSpace.measurableSpace_iSup_eq
+        (fun s : {s : κ // s < t} => 𝓕' s))
+  have hC_pi : IsPiSystem C := by
+    intro A hA B hB hnonempty
+    rcases hA with ⟨s, hA⟩
+    rcases hB with ⟨r, hB⟩
+    by_cases hsr : s.1 ≤ r.1
+    · refine ⟨r, ?_⟩
+      exact MeasurableSet.inter ((𝓕'.mono hsr) A hA) hB
+    · have hrs : r.1 ≤ s.1 := le_of_not_ge hsr
+      refine ⟨s, ?_⟩
+      exact MeasurableSet.inter hA ((𝓕'.mono hrs) B hB)
+  have hzero_past :
+      ∀ A : Set Ω', MeasurableSet[mPast] A → ∫ ω in A, X ω ∂P' = 0 := by
+    intro A hA
+    refine MeasurableSpace.induction_on_inter (m := mPast) (s := C)
+      (C := fun A _ => ∫ ω in A, X ω ∂P' = 0)
+      hmPast_eq hC_pi ?empty ?basic ?compl ?iUnion A hA
+    · simp
+    · intro A hA
+      rcases hA with ⟨s, hA⟩
+      exact hzero s A hA
+    · intro A hA_meas hA_zero
+      have hA_meas_ambient : @MeasurableSet Ω' mΩ' A :=
+        hmPast_le A hA_meas
+      have htotal : ∫ ω, X ω ∂P' = 0 := by
+        simpa using hzero ⟨⊥, ht⟩ Set.univ (MeasurableSet.univ)
+      calc
+        ∫ ω in Aᶜ, X ω ∂P' = ∫ ω, X ω ∂P' - ∫ ω in A, X ω ∂P' := by
+          exact MeasureTheory.setIntegral_compl hA_meas_ambient hX_int
+        _ = 0 := by simp [htotal, hA_zero]
+    · intro f hdisj hfm hfzero
+      have hfm_ambient : ∀ i, @MeasurableSet Ω' mΩ' (f i) :=
+        fun i => hmPast_le (f i) (hfm i)
+      calc
+        ∫ ω in ⋃ i, f i, X ω ∂P' = ∑' i, ∫ ω in f i, X ω ∂P' := by
+          exact MeasureTheory.integral_iUnion hfm_ambient hdisj hX_int.integrableOn
+        _ = 0 := by simp [hfzero]
+  have hX_past' : StronglyMeasurable[mPast] X := by
+    simpa [mPast] using hX_past
+  exact MeasureTheory.ae_eq_zero_of_forall_setIntegral_eq_of_finStronglyMeasurable_trim
+    hmPast_le
+    (fun A hA hAfin => hX_int.integrableOn)
+    (fun A hA hAfin => hzero_past A hA)
+    (hX_past'.finStronglyMeasurable (P'.trim hmPast_le))
+
+set_option linter.style.longLine false in
+/-- A strongly predictable finite-variation martingale has no deterministic jump at `t` once the
+jump is integrable and its integral over every strict-past filtration set is zero. -/
+lemma _root_.MeasureTheory.Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {t : κ} (ht : (⊥ : κ) < t) {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t)))
+    (hjump_int : Integrable (fun ω => N t ω - Function.leftLim (N · ω) t) P')
+    (hzero : ∀ s : {s : κ // s < t}, ∀ A : Set Ω',
+      MeasurableSet[𝓕' s] A →
+        ∫ ω in A, (N t ω - Function.leftLim (N · ω) t) ∂P' = 0) :
+    N t =ᵐ[P'] fun ω => Function.leftLim (N · ω) t := by
+  have hjump_meas :
+      StronglyMeasurable[(⨆ s : {s : κ // s < t}, 𝓕' s)]
+        (fun ω => N t ω - Function.leftLim (N · ω) t) :=
+    hN.stronglyMeasurable_jump_leftLim_past_of_left_approach
+      hN_pred hN_var ht hu_lt hu_tendsto
+  have hjump_zero :
+      (fun ω => N t ω - Function.leftLim (N · ω) t) =ᵐ[P'] 0 :=
+    𝓕'.ae_eq_zero_of_past_setIntegral_eq_zero ht hjump_int hjump_meas hzero
+  filter_upwards [hjump_zero] with ω hω
+  exact sub_eq_zero.mp hω
+
+set_option linter.style.longLine false in
+/-- A future martingale increment has zero set integral over any event measurable at an
+earlier deterministic time. -/
+lemma _root_.MeasureTheory.Martingale.setIntegral_increment_eq_zero_of_measurableSet
+    {κ Ω' : Type*} [LinearOrder κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') {s u v : κ} (hsu : s ≤ u) (huv : u ≤ v)
+    {A : Set Ω'} (hA : MeasurableSet[𝓕' s] A) :
+    ∫ ω in A, (N v ω - N u ω) ∂P' = 0 := by
+  have hA_u : MeasurableSet[𝓕' u] A := (𝓕'.mono hsu) A hA
+  have heq : ∫ ω in A, N u ω ∂P' = ∫ ω in A, N v ω ∂P' :=
+    hN.setIntegral_eq huv hA_u
+  have hsub :
+      ∫ ω in A, (N v ω - N u ω) ∂P' =
+        ∫ ω in A, N v ω ∂P' - ∫ ω in A, N u ω ∂P' :=
+    MeasureTheory.integral_sub
+      ((hN.integrable v).integrableOn) ((hN.integrable u).integrableOn)
+  rw [hsub]
+  simp [heq]
+
+set_option linter.style.longLine false in
+/-- Dominated convergence turns zero set integrals of left-approaching martingale increments
+into the zero set integral of the deterministic left jump. -/
+lemma _root_.MeasureTheory.Martingale.setIntegral_jump_leftLim_eq_zero_of_left_approach_of_dominated
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P')
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {t : κ} {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t)))
+    {s : {s : κ // s < t}} {A : Set Ω'} (hA : MeasurableSet[𝓕' s] A)
+    (hu_ge : ∀ᶠ n in atTop, s.1 ≤ u n) {bound : Ω' → ℝ}
+    (hbound_int : Integrable bound (P'.restrict A))
+    (hbound : ∀ n, ∀ᵐ ω ∂P'.restrict A, ‖N t ω - N (u n) ω‖ ≤ bound ω) :
+    ∫ ω in A, (N t ω - Function.leftLim (N · ω) t) ∂P' = 0 := by
+  let F : ℕ → Ω' → ℝ := fun n ω => N t ω - N (u n) ω
+  let G : Ω' → ℝ := fun ω => N t ω - Function.leftLim (N · ω) t
+  have hF_sm : ∀ n, AEStronglyMeasurable (F n) (P'.restrict A) := by
+    intro n
+    have hsm : StronglyMeasurable (F n) := by
+      dsimp [F]
+      exact ((hN.stronglyMeasurable t).mono (𝓕'.le t)).sub
+        ((hN.stronglyMeasurable (u n)).mono (𝓕'.le (u n)))
+    exact hsm.aestronglyMeasurable
+  have hF_tendsto :
+      ∀ᵐ ω ∂P'.restrict A, Tendsto (fun n => F n ω) atTop (nhds (G ω)) := by
+    filter_upwards with ω
+    have hleft : Tendsto (fun n : ℕ => N (u n) ω) atTop
+        (nhds (Function.leftLim (N · ω) t)) := by
+      simpa [Function.comp_def] using
+        (tendsto_leftLim_of_tendsto ((hN_var ω).exists_tendsto_left_univ t)).comp
+          hu_tendsto
+    dsimp [F, G]
+    exact tendsto_const_nhds.sub hleft
+  have hintegral_tendsto :
+      Tendsto (fun n => ∫ ω, F n ω ∂P'.restrict A) atTop
+        (nhds (∫ ω, G ω ∂P'.restrict A)) :=
+    MeasureTheory.tendsto_integral_of_dominated_convergence
+      bound hF_sm hbound_int hbound hF_tendsto
+  have hzero_eventually :
+      ∀ᶠ n in atTop, ∫ ω in A, (N t ω - N (u n) ω) ∂P' = 0 := by
+    filter_upwards [hu_ge] with n hn
+    exact hN.setIntegral_increment_eq_zero_of_measurableSet hn (le_of_lt (hu_lt n)) hA
+  have hzero_tendsto :
+      Tendsto (fun n => ∫ ω, F n ω ∂P'.restrict A) atTop (nhds 0) := by
+    apply tendsto_const_nhds.congr'
+    filter_upwards [hzero_eventually] with n hn
+    simpa [F] using hn.symm
+  have hlim : ∫ ω, G ω ∂P'.restrict A = 0 :=
+    tendsto_nhds_unique hintegral_tendsto hzero_tendsto
+  simpa [G] using hlim
+
+set_option linter.style.longLine false in
+/-- A deterministic sequence converging to `t` from the left is eventually above every fixed
+strict-past time `s < t`. -/
+lemma _root_.Filter.Tendsto.eventually_const_le_of_nhdsWithin_Iio
+    {κ : Type*} [LinearOrder κ] [TopologicalSpace κ] [OrderTopology κ]
+    {u : ℕ → κ} {s t : κ}
+    (hu : Tendsto u atTop (nhdsWithin t (Set.Iio t))) (hst : s < t) :
+    ∀ᶠ n in atTop, s ≤ u n := by
+  have hIoi : Set.Ioi s ∈ nhds t := Ioi_mem_nhds hst
+  have hIoi_within : Set.Ioi s ∈ nhdsWithin t (Set.Iio t) :=
+    nhdsWithin_le_nhds hIoi
+  filter_upwards [hu hIoi_within] with n hn
+  exact le_of_lt hn
+
+/-- A deterministic horizon bound controls increments from a point in `[⊥, t]` to the endpoint. -/
+lemma _root_.MeasureTheory.norm_sub_le_two_mul_of_Icc_bound
+    {κ Ω' : Type*} [Preorder κ] [OrderBot κ] {N : κ → Ω' → ℝ}
+    {t u : κ} {ω : Ω'} {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hu : u ∈ Set.Icc (⊥ : κ) t)
+    (hbound : ∀ r ∈ Set.Icc (⊥ : κ) t, ‖N r ω‖ ≤ C) :
+    ‖N t ω - N u ω‖ ≤ 2 * C := by
+  have _hC_nonneg_used : 0 ≤ C := hC_nonneg
+  have ht_mem : t ∈ Set.Icc (⊥ : κ) t := ⟨bot_le, le_rfl⟩
+  calc
+    ‖N t ω - N u ω‖ ≤ ‖N t ω‖ + ‖N u ω‖ := norm_sub_le _ _
+    _ ≤ C + C := add_le_add (hbound t ht_mem) (hbound u hu)
+    _ = 2 * C := by ring
+
+set_option linter.style.longLine false in
+/-- A deterministic a.e. bound on `[⊥, t]` supplies the domination needed to remove the predictable
+jump along an explicit left-approaching sequence. -/
+lemma _root_.MeasureTheory.Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {t : κ} (ht : (⊥ : κ) < t) {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t)))
+    {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hbound_horizon : ∀ᵐ ω ∂P', ∀ r ∈ Set.Icc (⊥ : κ) t, ‖N r ω‖ ≤ C)
+    (hjump_int : Integrable (fun ω => N t ω - Function.leftLim (N · ω) t) P') :
+    N t =ᵐ[P'] fun ω => Function.leftLim (N · ω) t := by
+  refine hN.ae_eq_leftLim_of_left_approach_past_setIntegral_zero
+    hN_pred hN_var ht hu_lt hu_tendsto hjump_int ?_
+  intro s A hA
+  have hu_ge : ∀ᶠ n in atTop, s.1 ≤ u n :=
+    hu_tendsto.eventually_const_le_of_nhdsWithin_Iio s.2
+  refine hN.setIntegral_jump_leftLim_eq_zero_of_left_approach_of_dominated
+    hN_var hu_lt hu_tendsto hA hu_ge
+    (bound := fun _ : Ω' => 2 * C) ?_ ?_
+  · exact MeasureTheory.integrable_const (2 * C)
+  · intro n
+    filter_upwards [MeasureTheory.ae_restrict_of_ae hbound_horizon] with ω hω_bound
+    have hu_mem : u n ∈ Set.Icc (⊥ : κ) t := ⟨bot_le, le_of_lt (hu_lt n)⟩
+    exact MeasureTheory.norm_sub_le_two_mul_of_Icc_bound
+      (N := N) (t := t) (u := u n) (ω := ω) hC_nonneg hu_mem hω_bound
+
+set_option linter.style.longLine false in
+/-- A deterministic a.e. horizon bound makes the deterministic left jump integrable. -/
+lemma _root_.MeasureTheory.Martingale.integrable_jump_leftLim_of_left_approach_of_bound
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {t : κ} (ht : (⊥ : κ) < t) {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t)))
+    {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hbound_horizon : ∀ᵐ ω ∂P', ∀ r ∈ Set.Icc (⊥ : κ) t, ‖N r ω‖ ≤ C) :
+    Integrable (fun ω => N t ω - Function.leftLim (N · ω) t) P' := by
+  have hmPast_le : (⨆ s : {s : κ // s < t}, 𝓕' s) ≤ mΩ' := by
+    exact iSup_le fun s => 𝓕'.le s
+  have hjump_sm :
+      StronglyMeasurable (fun ω => N t ω - Function.leftLim (N · ω) t) :=
+    (hN.stronglyMeasurable_jump_leftLim_past_of_left_approach
+      hN_pred hN_var ht hu_lt hu_tendsto).mono hmPast_le
+  refine Integrable.of_bound hjump_sm.aestronglyMeasurable (2 * C) ?_
+  filter_upwards [hbound_horizon] with ω hω_bound
+  have hleft :
+      Tendsto (fun n : ℕ => N (u n) ω) atTop
+        (nhds (Function.leftLim (N · ω) t)) := by
+    simpa [Function.comp_def] using
+      (tendsto_leftLim_of_tendsto ((hN_var ω).exists_tendsto_left_univ t)).comp
+        hu_tendsto
+  have hjump_tendsto :
+      Tendsto (fun n : ℕ => N t ω - N (u n) ω) atTop
+        (nhds (N t ω - Function.leftLim (N · ω) t)) := by
+    exact tendsto_const_nhds.sub hleft
+  have hnorm_tendsto :
+      Tendsto (fun n : ℕ => ‖N t ω - N (u n) ω‖) atTop
+        (nhds ‖N t ω - Function.leftLim (N · ω) t‖) := by
+    exact hjump_tendsto.norm
+  refine le_of_tendsto hnorm_tendsto (Eventually.of_forall ?_)
+  intro n
+  have hu_mem : u n ∈ Set.Icc (⊥ : κ) t := ⟨bot_le, le_of_lt (hu_lt n)⟩
+  exact MeasureTheory.norm_sub_le_two_mul_of_Icc_bound
+    (N := N) (t := t) (u := u n) (ω := ω) hC_nonneg hu_mem hω_bound
+
+set_option linter.style.longLine false in
+/-- Bounded-horizon jump removal without a separate jump-integrability hypothesis. -/
+lemma _root_.MeasureTheory.Martingale.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound_no_integrability
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {t : κ} (ht : (⊥ : κ) < t) {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t)))
+    {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hbound_horizon : ∀ᵐ ω ∂P', ∀ r ∈ Set.Icc (⊥ : κ) t, ‖N r ω‖ ≤ C) :
+    N t =ᵐ[P'] fun ω => Function.leftLim (N · ω) t := by
+  have hjump_int :
+      Integrable (fun ω => N t ω - Function.leftLim (N · ω) t) P' :=
+    hN.integrable_jump_leftLim_of_left_approach_of_bound
+      hN_pred hN_var ht hu_lt hu_tendsto hC_nonneg hbound_horizon
+  exact hN.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound
+    hN_pred hN_var ht hu_lt hu_tendsto hC_nonneg hbound_horizon hjump_int
+
+set_option linter.style.longLine false in
+/-- Stopped/indicator version of bounded-horizon jump removal along an explicit
+left-approaching deterministic sequence. -/
+lemma _root_.MeasureTheory.Martingale.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_bound
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] [MeasurableSpace κ] [BorelSpace κ] [SecondCountableTopology κ]
+    [PseudoMetrizableSpace κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] [Approximable 𝓕' P']
+    {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_cadlag : ∀ ω, IsCadlag (N · ω)) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : Ω' → WithTop κ} (hτ : IsStoppingTime 𝓕' τ) {t : κ}
+    (ht : (⊥ : κ) < t) {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t)))
+    {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hbound_horizon : ∀ᵐ ω ∂P',
+      ∀ r ∈ Set.Icc (⊥ : κ) t, ‖N r ω‖ ≤ C) :
+    stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ t =ᵐ[P']
+      fun ω => Function.leftLim
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω) t := by
+  let Z : κ → Ω' → ℝ :=
+    stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ
+  have hZ_mart : Martingale Z 𝓕' P' := by
+    simpa [Z] using hN.stoppedProcess_indicator
+      (fun ω ↦ (hN_cadlag ω).right_continuous) hτ
+  have hZ_pred : IsStronglyPredictable 𝓕' Z := by
+    simpa [Z] using hN_pred.stoppedProcess_indicator hτ
+  have hZ_var : ∀ ω, LocallyBoundedVariationOn (Z · ω) Set.univ := by
+    intro ω
+    simpa [Z] using locallyBoundedVariationOn_stoppedProcess_indicator
+      (N := N) (τ := τ) hN_var ω
+  have hZ_bound : ∀ᵐ ω ∂P',
+      ∀ r ∈ Set.Icc (⊥ : κ) t, ‖Z r ω‖ ≤ C := by
+    filter_upwards [hbound_horizon] with ω hω_bound
+    intro r hr
+    simpa [Z] using MeasureTheory.stoppedProcess_indicator_bound_on_Icc
+      (N := N) (τ := τ) (ω := ω) (t := t) (C := C)
+      hC_nonneg hω_bound r hr
+  simpa [Z] using hZ_mart.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound_no_integrability
+    hZ_pred hZ_var ht hu_lt hu_tendsto hC_nonneg hZ_bound
+
+set_option linter.style.longLine false in
+/-- Localizing-family stopped/indicator bounded-horizon jump removal along an explicit
+left-approaching deterministic sequence. -/
+lemma _root_.MeasureTheory.Martingale.ae_eq_leftLim_localizingSequence_stoppedProcess_indicator_of_left_approach_of_bound
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] [MeasurableSpace κ] [BorelSpace κ] [SecondCountableTopology κ]
+    [PseudoMetrizableSpace κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] [Approximable 𝓕' P']
+    {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_cadlag : ∀ ω, IsCadlag (N · ω)) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P')
+    {t : κ} (ht : (⊥ : κ) < t) {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t)))
+    {C : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n)
+    (hbound_horizon : ∀ n, ∀ᵐ ω ∂P',
+      ∀ r ∈ Set.Icc (⊥ : κ) t, ‖N r ω‖ ≤ C n) :
+    ∀ n,
+      stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n) t
+        =ᵐ[P'] fun ω => Function.leftLim
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω) t := by
+  intro n
+  exact hN.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_bound
+    (τ := τ n) (C := C n) hN_cadlag hN_pred hN_var (hτ.isStoppingTime n)
+    ht hu_lt hu_tendsto (hC_nonneg n) (hbound_horizon n)
+
+set_option linter.style.longLine false in
+/-- Before the stopping time, a stopped/indicator path agrees with the original path on a
+left-neighborhood of the deterministic time. -/
+lemma _root_.MeasureTheory.stoppedProcess_indicator_eventuallyEq_left_of_lt
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] {N : κ → Ω' → ℝ} {τ : Ω' → WithTop κ} {ω : Ω'} {t : κ}
+    (hτt : (t : WithTop κ) < τ ω) :
+    (fun s : κ =>
+        stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i)) τ s ω)
+      =ᶠ[nhdsWithin t (Set.Iio t)] fun s => N s ω := by
+  let S : Set κ := {s | (s : WithTop κ) < τ ω}
+  have hS_open : IsOpen S := isOpen_Iio.preimage WithTop.continuous_coe
+  have hS_mem : S ∈ nhdsWithin t (Set.Iio t) :=
+    mem_nhdsWithin_of_mem_nhds (hS_open.mem_nhds hτt)
+  have hbotτ : (⊥ : κ) < τ ω :=
+    lt_of_le_of_lt (WithTop.coe_le_coe.2 bot_le) hτt
+  have hmem : ω ∈ {ω' : Ω' | (⊥ : κ) < τ ω'} := hbotτ
+  filter_upwards [hS_mem] with s hs
+  have hsτ : (s : WithTop κ) ≤ τ ω := hs.le
+  rw [stoppedProcess_eq_of_le hsτ, Set.indicator_of_mem hmem]
+
+set_option linter.style.longLine false in
+/-- The left limit of a stopped/indicator path equals the original left limit on the event
+`t < τ`. -/
+lemma _root_.MeasureTheory.leftLim_stoppedProcess_indicator_eq_of_lt
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] {N : κ → Ω' → ℝ} {τ : Ω' → WithTop κ} {ω : Ω'} {t : κ}
+    (hN_var : LocallyBoundedVariationOn (N · ω) Set.univ)
+    (hτt : (t : WithTop κ) < τ ω) :
+    Function.leftLim
+        ((stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i)) τ) · ω) t =
+      Function.leftLim (N · ω) t := by
+  let Z : κ → Ω' → ℝ :=
+    stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i)) τ
+  have hterminal : Z t ω = N t ω := by
+    have hbotτ : (⊥ : κ) < τ ω :=
+      lt_of_le_of_lt (WithTop.coe_le_coe.2 bot_le) hτt
+    have hmem : ω ∈ {ω' : Ω' | (⊥ : κ) < τ ω'} := hbotτ
+    change stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i)) τ
+      t ω = N t ω
+    rw [stoppedProcess_eq_of_le hτt.le, Set.indicator_of_mem hmem]
+  by_cases hleft_bot : nhdsWithin t (Set.Iio t) = ⊥
+  · rw [leftLim_eq_of_eq_bot ((Z · ω)) hleft_bot,
+      leftLim_eq_of_eq_bot (N · ω) hleft_bot]
+    exact hterminal
+  · have heq :
+        ((Z · ω) =ᶠ[nhdsWithin t (Set.Iio t)] fun s : κ => N s ω) := by
+      simpa [Z] using
+        MeasureTheory.stoppedProcess_indicator_eventuallyEq_left_of_lt
+          (N := N) (τ := τ) (ω := ω) (t := t) hτt
+    have hN_left :
+        Tendsto (N · ω) (nhdsWithin t (Set.Iio t))
+          (nhds (Function.leftLim (N · ω) t)) :=
+      tendsto_leftLim_of_tendsto (hN_var.exists_tendsto_left_univ t)
+    have hZ_left :
+        Tendsto (Z · ω) (nhdsWithin t (Set.Iio t))
+          (nhds (Function.leftLim (N · ω) t)) :=
+      hN_left.congr' heq.symm
+    exact leftLim_eq_of_tendsto hleft_bot hZ_left
+
+set_option linter.style.longLine false in
+/-- On the event `{ω | t < τ ω}`, the stopped/indicator jump-removal theorem transfers back to
+the original martingale. -/
+lemma _root_.MeasureTheory.Martingale.ae_eq_leftLim_on_event_of_left_approach_of_bound
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] [MeasurableSpace κ] [BorelSpace κ] [SecondCountableTopology κ]
+    [PseudoMetrizableSpace κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] [Approximable 𝓕' P']
+    {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_cadlag : ∀ ω, IsCadlag (N · ω)) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : Ω' → WithTop κ} (hτ : IsStoppingTime 𝓕' τ) {t : κ}
+    (ht : (⊥ : κ) < t) {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t)))
+    {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hbound_horizon : ∀ᵐ ω ∂P',
+      ∀ r ∈ Set.Icc (⊥ : κ) t, ‖N r ω‖ ≤ C) :
+    ∀ᵐ ω ∂P', (t : WithTop κ) < τ ω →
+      N t ω = Function.leftLim (N · ω) t := by
+  have hstopped :
+      stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ t =ᵐ[P']
+        fun ω => Function.leftLim
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω) t :=
+    hN.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_bound
+      hN_cadlag hN_pred hN_var hτ ht hu_lt hu_tendsto hC_nonneg hbound_horizon
+  filter_upwards [hstopped] with ω hω_stopped hτt
+  have hterminal :
+      stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i)) τ t ω =
+        N t ω := by
+    have hbotτ : (⊥ : κ) < τ ω :=
+      lt_of_le_of_lt (WithTop.coe_le_coe.2 bot_le) hτt
+    have hmem : ω ∈ {ω' : Ω' | (⊥ : κ) < τ ω'} := hbotτ
+    rw [stoppedProcess_eq_of_le hτt.le, Set.indicator_of_mem hmem]
+  have hleft :
+      Function.leftLim
+          ((stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i)) τ) · ω) t =
+        Function.leftLim (N · ω) t :=
+    MeasureTheory.leftLim_stoppedProcess_indicator_eq_of_lt
+      (N := N) (τ := τ) (ω := ω) (t := t) (hN_var ω) hτt
+  calc
+    N t ω =
+        stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i)) τ t ω :=
+      hterminal.symm
+    _ = Function.leftLim
+          ((stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i)) τ) · ω) t :=
+      hω_stopped
+    _ = Function.leftLim (N · ω) t := hleft
+
+set_option linter.style.longLine false in
+/-- Localizing-sequence version of deterministic jump removal, transferred from stopped pieces
+back to the original martingale. -/
+lemma _root_.MeasureTheory.Martingale.ae_eq_leftLim_localizingSequence_of_left_approach_of_bound
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] [MeasurableSpace κ] [BorelSpace κ] [SecondCountableTopology κ]
+    [PseudoMetrizableSpace κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] [Approximable 𝓕' P']
+    {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_cadlag : ∀ ω, IsCadlag (N · ω)) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P')
+    {t : κ} (ht : (⊥ : κ) < t) {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t)))
+    {C : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n)
+    (hbound_horizon : ∀ n, ∀ᵐ ω ∂P',
+      ∀ r ∈ Set.Icc (⊥ : κ) t, ‖N r ω‖ ≤ C n) :
+    N t =ᵐ[P'] fun ω => Function.leftLim (N · ω) t := by
+  have hon_event : ∀ n, ∀ᵐ ω ∂P', (t : WithTop κ) < τ n ω →
+      N t ω = Function.leftLim (N · ω) t := by
+    intro n
+    exact hN.ae_eq_leftLim_on_event_of_left_approach_of_bound
+      (τ := τ n) (C := C n) hN_cadlag hN_pred hN_var (hτ.isStoppingTime n)
+      ht hu_lt hu_tendsto (hC_nonneg n) (hbound_horizon n)
+  have hall_event : ∀ᵐ ω ∂P', ∀ n, (t : WithTop κ) < τ n ω →
+      N t ω = Function.leftLim (N · ω) t :=
+    ae_all_iff.2 hon_event
+  have hcover : ∀ᵐ ω ∂P', ∃ n, (t : WithTop κ) < τ n ω := by
+    filter_upwards [hτ.tendsto_top] with ω htop
+    simp only [tendsto_atTop_nhds] at htop
+    obtain ⟨n, hn⟩ := htop (Set.Ioi (t : WithTop κ)) (by simp) isOpen_Ioi
+    exact ⟨n, hn n le_rfl⟩
+  filter_upwards [hcover, hall_event] with ω hω_cover hω_all
+  rcases hω_cover with ⟨n, hωn⟩
+  exact hω_all n hωn
+
+set_option linter.style.longLine false in
+/-- If all increments from a deterministic left-approaching sequence to `t` are already
+measurable at their earlier times, then a finite-variation martingale has no jump at `t` along
+that sequence. -/
+lemma _root_.MeasureTheory.Martingale.ae_eq_leftLim_of_left_approach_past_measurable_increments
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P')
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {t : κ} {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t)))
+    (hinc_meas : ∀ n, StronglyMeasurable[𝓕' (u n)] (N t - N (u n))) :
+    N t =ᵐ[P'] fun ω => Function.leftLim (N · ω) t := by
+  have hzero : ∀ n, N t - N (u n) =ᵐ[P'] 0 := fun n =>
+    hN.eq_zero_of_predictable_finiteVariation_past_measurable_zero_increment
+      (le_of_lt (hu_lt n)) (hinc_meas n)
+  have hzero_all : ∀ᵐ ω ∂P', ∀ n, (N t - N (u n)) ω = 0 :=
+    ae_all_iff.2 hzero
+  filter_upwards [hzero_all] with ω hω
+  have hconst :
+      Tendsto (fun n : ℕ => N (u n) ω) atTop (nhds (N t ω)) := by
+    apply tendsto_const_nhds.congr'
+    filter_upwards with n
+    exact sub_eq_zero.mp (by simpa [Pi.sub_apply] using hω n)
+  have hleft :
+      Tendsto (fun n : ℕ => N (u n) ω) atTop
+        (nhds (Function.leftLim (N · ω) t)) := by
+    simpa [Function.comp_def] using
+      (tendsto_leftLim_of_tendsto ((hN_var ω).exists_tendsto_left_univ t)).comp
+        hu_tendsto
+  exact tendsto_nhds_unique hconst hleft
 
 /-- For a finite monotone partition inside `s`, the sum of absolute increments is controlled by
 the total variation.  This is the pathwise estimate used in the square-increment part of the
@@ -1199,6 +2215,1244 @@ lemma _root_.MeasureTheory.Martingale.integral_sq_terminal_eq_zero_of_refining_p
   have hterminal_zero : ∫ ω, N t ω ^ 2 ∂P' = 0 := by
     simpa using (tendsto_const_nhds_iff.mp hconst_tendsto)
   exact ⟨hterminal_int, hterminal_zero⟩
+
+set_option linter.style.longLine false in
+/-- Variation-bounded refining partitions give the terminal zero-square-integral identity.
+
+This packages the deterministic partition/modulus hypotheses used before the bounded-continuous
+localization step: a horizon bound supplies the bounded partition values, and the pathwise
+increment modulus plus bounded variation gives the square-increment convergence. -/
+lemma _root_.MeasureTheory.Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_zero : ∀ ω, N ⊥ ω = 0) {t : κ} {m : ℕ → ℕ} {u : ℕ → ℕ → κ}
+    (hu : ∀ n, Monotone (u n)) (hu0 : ∀ n, u n 0 = ⊥)
+    (hut : ∀ n, u n (m n) = t) (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℝ} {δ : ℕ → ℝ} (hC_nonneg : 0 ≤ C) (hV_nonneg : 0 ≤ V)
+    (hδ_nonneg : ∀ n, 0 ≤ δ n) (hδ_tendsto : Tendsto δ atTop (nhds 0))
+    (hbound_horizon : ∀ᵐ ω ∂P', ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C)
+    (hvar_bound : ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V)
+    (hinc_bound : ∀ᵐ ω ∂P',
+      ∀ n i, i ∈ Finset.range (m n) →
+        ‖N (u n (i + 1)) ω - N (u n i) ω‖ ≤ δ n) :
+    Integrable (fun ω => N t ω ^ 2) P' ∧
+      ∫ ω, N t ω ^ 2 ∂P' = 0 := by
+  have hpartition_bound : ∀ n, ∀ᵐ ω ∂P', ∀ k, ‖N (u n k) ω‖ ≤ C := by
+    intro n
+    filter_upwards [hbound_horizon] with ω hω k
+    exact hω (u n k) (hus n k)
+  have hF_tendsto : ∀ᵐ ω ∂P',
+      Tendsto
+        (fun n => ∑ i ∈ Finset.range (m n),
+          (N (u n (i + 1)) ω - N (u n i) ω) ^ 2)
+        atTop (nhds 0) := by
+    filter_upwards [hvar_bound, hinc_bound] with ω hω_var hω_inc
+    have hnorm_tendsto :
+        Tendsto
+          (fun n => ∑ i ∈ Finset.range (m n),
+            ‖N (u n (i + 1)) ω - N (u n i) ω‖ ^ 2)
+          atTop (nhds 0) :=
+      hω_var.1.sq_increment_sum_tendsto_zero_of_uniform_bound hu hus hδ_nonneg
+        hδ_tendsto hω_inc
+    simpa [Real.norm_eq_abs, sq_abs] using hnorm_tendsto
+  exact hN.integral_sq_terminal_eq_zero_of_refining_partitions hN_zero hu hu0 hut hus
+    hC_nonneg hV_nonneg hpartition_bound hvar_bound hF_tendsto
+
+set_option linter.style.longLine false in
+/-- Variation-bounded refining partitions give the terminal zero-square-integral identity when
+the partition increment modulus is allowed to depend on the sample point. -/
+lemma _root_.MeasureTheory.Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_eventual_modulus
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_zero : ∀ ω, N ⊥ ω = 0) {t : κ} {m : ℕ → ℕ} {u : ℕ → ℕ → κ}
+    (hu : ∀ n, Monotone (u n)) (hu0 : ∀ n, u n 0 = ⊥)
+    (hut : ∀ n, u n (m n) = t) (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℝ} (hC_nonneg : 0 ≤ C) (hV_nonneg : 0 ≤ V)
+    (hbound_horizon : ∀ᵐ ω ∂P', ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C)
+    (hvar_bound : ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V)
+    (hinc_modulus : ∀ᵐ ω ∂P',
+      ∃ δ : ℕ → ℝ, (∀ n, 0 ≤ δ n) ∧ Tendsto δ atTop (nhds 0) ∧
+        ∀ n i, i ∈ Finset.range (m n) →
+          ‖N (u n (i + 1)) ω - N (u n i) ω‖ ≤ δ n) :
+    Integrable (fun ω => N t ω ^ 2) P' ∧
+      ∫ ω, N t ω ^ 2 ∂P' = 0 := by
+  have hpartition_bound : ∀ n, ∀ᵐ ω ∂P', ∀ k, ‖N (u n k) ω‖ ≤ C := by
+    intro n
+    filter_upwards [hbound_horizon] with ω hω k
+    exact hω (u n k) (hus n k)
+  have hF_tendsto : ∀ᵐ ω ∂P',
+      Tendsto
+        (fun n => ∑ i ∈ Finset.range (m n),
+          (N (u n (i + 1)) ω - N (u n i) ω) ^ 2)
+        atTop (nhds 0) := by
+    filter_upwards [hvar_bound, hinc_modulus] with ω hω_var hω_modulus
+    rcases hω_modulus with ⟨δω, hδω_nonneg, hδω_tendsto, hω_inc⟩
+    have hnorm_tendsto :
+        Tendsto
+          (fun n => ∑ i ∈ Finset.range (m n),
+            ‖N (u n (i + 1)) ω - N (u n i) ω‖ ^ 2)
+          atTop (nhds 0) :=
+      hω_var.1.sq_increment_sum_tendsto_zero_of_uniform_bound hu hus hδω_nonneg
+        hδω_tendsto hω_inc
+    simpa [Real.norm_eq_abs, sq_abs] using hnorm_tendsto
+  exact hN.integral_sq_terminal_eq_zero_of_refining_partitions hN_zero hu hu0 hut hus
+    hC_nonneg hV_nonneg hpartition_bound hvar_bound hF_tendsto
+
+set_option linter.style.longLine false in
+/-- Variation-bounded refining partitions give the terminal zero-square-integral identity when
+the largest partition increment tends to zero pathwise.  This isolates the remaining
+mesh-to-modulus step needed for the bounded-continuous finite-variation bridge. -/
+lemma _root_.MeasureTheory.Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_sup_modulus
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_zero : ∀ ω, N ⊥ ω = 0) {t : κ} {m : ℕ → ℕ} {u : ℕ → ℕ → κ}
+    (hu : ∀ n, Monotone (u n)) (hu0 : ∀ n, u n 0 = ⊥)
+    (hut : ∀ n, u n (m n) = t) (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℝ} (hC_nonneg : 0 ≤ C) (hV_nonneg : 0 ≤ V)
+    (hbound_horizon : ∀ᵐ ω ∂P', ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C)
+    (hvar_bound : ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V)
+    (hmax_inc_tendsto : ∀ᵐ ω ∂P',
+      Tendsto
+        (fun n => (((Finset.range (m n)).sup fun i =>
+          ‖N (u n (i + 1)) ω - N (u n i) ω‖₊ : NNReal) : ℝ))
+        atTop (nhds 0)) :
+    Integrable (fun ω => N t ω ^ 2) P' ∧
+      ∫ ω, N t ω ^ 2 ∂P' = 0 := by
+  refine hN.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_eventual_modulus
+    hN_zero hu hu0 hut hus hC_nonneg hV_nonneg hbound_horizon hvar_bound ?_
+  filter_upwards [hmax_inc_tendsto] with ω hωmax
+  refine ⟨fun n => (((Finset.range (m n)).sup fun i =>
+    ‖N (u n (i + 1)) ω - N (u n i) ω‖₊ : NNReal) : ℝ), ?_, hωmax, ?_⟩
+  · intro n
+    exact NNReal.coe_nonneg _
+  · intro n i hi
+    have hnn :
+        ‖N (u n (i + 1)) ω - N (u n i) ω‖₊ ≤
+          (Finset.range (m n)).sup (fun j =>
+            ‖N (u n (j + 1)) ω - N (u n j) ω‖₊) :=
+      Finset.le_sup (f := fun j =>
+        ‖N (u n (j + 1)) ω - N (u n j) ω‖₊) hi
+    exact_mod_cast hnn
+
+set_option linter.style.longLine false in
+/-- Uniform continuity turns an entourage-mesh condition for finite point families into
+convergence to zero of the finite maximum of adjacent real increments. -/
+lemma _root_.UniformContinuousOn.finite_partition_sup_nnnorm_sub_tendsto_zero
+    {κ : Type*} [UniformSpace κ] {S : Set κ} {f : κ → ℝ}
+    (hf : UniformContinuousOn f S) {m : ℕ → ℕ} {u : ℕ → ℕ → κ}
+    (hus : ∀ n i, u n i ∈ S)
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V) :
+    Tendsto
+      (fun n => (((Finset.range (m n)).sup fun i =>
+        ‖f (u n (i + 1)) - f (u n i)‖₊ : NNReal) : ℝ))
+      atTop (nhds 0) := by
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  let T : Set (ℝ × ℝ) := {p | dist p.1 p.2 < ε}
+  have hT_mem : T ∈ 𝓤 ℝ :=
+    (Metric.mem_uniformity_dist).2 ⟨ε, hε, fun _ _ hdist => hdist⟩
+  have hpre :
+      {p : κ × κ | (f p.1, f p.2) ∈ T} ∈
+        𝓤 κ ⊓ Filter.principal (S ×ˢ S) := by
+    rw [UniformContinuousOn] at hf
+    exact hf hT_mem
+  rw [Filter.mem_inf_principal] at hpre
+  filter_upwards [hmesh _ hpre] with n hn
+  have hsup_nn :
+      (Finset.range (m n)).sup (fun i =>
+        ‖f (u n (i + 1)) - f (u n i)‖₊) < Real.toNNReal ε := by
+    rw [Finset.sup_lt_iff (Real.toNNReal_pos.2 hε)]
+    intro i hi
+    rw [← NNReal.coe_lt_coe]
+    have hp :
+        (u n i, u n (i + 1)) ∈
+          {p : κ × κ | p ∈ S ×ˢ S → p ∈ {p : κ × κ | (f p.1, f p.2) ∈ T}} :=
+      hn i hi
+    have hdist : dist (f (u n i)) (f (u n (i + 1))) < ε := by
+      exact hp ⟨hus n i, hus n (i + 1)⟩
+    have hinc :
+        ((‖f (u n (i + 1)) - f (u n i)‖₊ : NNReal) : ℝ) < ε := by
+      simpa [Real.dist_eq, abs_sub_comm, Real.norm_eq_abs] using hdist
+    simpa [Real.toNNReal_of_nonneg hε.le] using hinc
+  have hsup_real :
+      (((Finset.range (m n)).sup fun i =>
+        ‖f (u n (i + 1)) - f (u n i)‖₊ : NNReal) : ℝ) < ε := by
+    have hcoe : ((Real.toNNReal ε : NNReal) : ℝ) = ε := by
+      simp [Real.toNNReal_of_nonneg hε.le]
+    exact lt_of_lt_of_eq (by exact_mod_cast hsup_nn) hcoe
+  have hnonneg :
+      0 ≤ (((Finset.range (m n)).sup fun i =>
+        ‖f (u n (i + 1)) - f (u n i)‖₊ : NNReal) : ℝ) :=
+    NNReal.coe_nonneg _
+  simpa [Real.dist_eq, abs_of_nonneg hnonneg] using hsup_real
+
+/-- A continuous real-valued function on a compact order interval is uniformly continuous on
+that interval. -/
+lemma _root_.ContinuousOn.uniformContinuousOn_Icc
+    {κ : Type*} [Preorder κ] [UniformSpace κ] [CompactIccSpace κ]
+    {f : κ → ℝ} {a b : κ} (hf : ContinuousOn f (Set.Icc a b)) :
+    UniformContinuousOn f (Set.Icc a b) := by
+  exact isCompact_Icc.uniformContinuousOn_of_continuous hf
+
+set_option linter.style.longLine false in
+/-- Uniformly continuous paths turn deterministic entourage-mesh partitions into the finite
+maximum increment convergence required by the variation-bounded square-integral endpoint. -/
+lemma _root_.MeasureTheory.Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_uniformContinuousOn
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ] [UniformSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_zero : ∀ ω, N ⊥ ω = 0) {t : κ} {m : ℕ → ℕ} {u : ℕ → ℕ → κ}
+    (hu : ∀ n, Monotone (u n)) (hu0 : ∀ n, u n 0 = ⊥)
+    (hut : ∀ n, u n (m n) = t) (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℝ} (hC_nonneg : 0 ≤ C) (hV_nonneg : 0 ≤ V)
+    (hbound_horizon : ∀ᵐ ω ∂P', ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C)
+    (hvar_bound : ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V)
+    (hN_unif : ∀ ω, UniformContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V) :
+    Integrable (fun ω => N t ω ^ 2) P' ∧
+      ∫ ω, N t ω ^ 2 ∂P' = 0 := by
+  refine hN.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_sup_modulus
+    hN_zero hu hu0 hut hus hC_nonneg hV_nonneg hbound_horizon hvar_bound ?_
+  filter_upwards with ω
+  exact (hN_unif ω).finite_partition_sup_nnnorm_sub_tendsto_zero hus hmesh
+
+set_option linter.style.longLine false in
+/-- Continuous paths on compact order intervals provide the uniform-continuity hypothesis needed
+by the explicit-mesh variation-bounded square-integral endpoint. -/
+lemma _root_.MeasureTheory.Martingale.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ] [UniformSpace κ] [CompactIccSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_zero : ∀ ω, N ⊥ ω = 0) {t : κ} {m : ℕ → ℕ} {u : ℕ → ℕ → κ}
+    (hu : ∀ n, Monotone (u n)) (hu0 : ∀ n, u n 0 = ⊥)
+    (hut : ∀ n, u n (m n) = t) (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℝ} (hC_nonneg : 0 ≤ C) (hV_nonneg : 0 ≤ V)
+    (hbound_horizon : ∀ᵐ ω ∂P', ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C)
+    (hvar_bound : ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V)
+    (hN_cont : ∀ ω, ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V) :
+    Integrable (fun ω => N t ω ^ 2) P' ∧
+      ∫ ω, N t ω ^ 2 ∂P' = 0 := by
+  refine hN.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_uniformContinuousOn
+    hN_zero hu hu0 hut hus hC_nonneg hV_nonneg hbound_horizon hvar_bound ?_ hmesh
+  intro ω
+  exact (hN_cont ω).uniformContinuousOn_Icc
+
+set_option linter.style.longLine false in
+/-- Terminal a.e.-zero form of the continuous-path, variation-bounded explicit-mesh endpoint. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ] [UniformSpace κ] [CompactIccSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_zero : ∀ ω, N ⊥ ω = 0) {t : κ} {m : ℕ → ℕ} {u : ℕ → ℕ → κ}
+    (hu : ∀ n, Monotone (u n)) (hu0 : ∀ n, u n 0 = ⊥)
+    (hut : ∀ n, u n (m n) = t) (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℝ} (hC_nonneg : 0 ≤ C) (hV_nonneg : 0 ≤ V)
+    (hbound_horizon : ∀ᵐ ω ∂P', ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C)
+    (hvar_bound : ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V)
+    (hN_cont : ∀ ω, ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V) :
+    N t =ᵐ[P'] 0 := by
+  rcases hN.integral_sq_terminal_eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+    hN_zero hu hu0 hut hus hC_nonneg hV_nonneg hbound_horizon hvar_bound hN_cont hmesh with
+    ⟨hN_sq_int, hN_sq_zero⟩
+  exact MeasureTheory.ae_eq_zero_of_integral_sq_eq_zero hN_sq_int hN_sq_zero
+
+set_option linter.style.longLine false in
+/-- Event-localized terminal a.e.-zero form of the continuous-path, variation-bounded
+explicit-mesh endpoint.  A localized martingale `Z` is zero at the terminal time by the
+global theorem, and terminal agreement transfers that conclusion to the original process on
+the event `E`. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_on_event_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ] [UniformSpace κ] [CompactIccSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {Z N : κ → Ω' → ℝ} (hZ : Martingale Z 𝓕' P')
+    (hZ_zero : ∀ ω, Z ⊥ ω = 0) {t : κ} {m : ℕ → ℕ} {u : ℕ → ℕ → κ}
+    (hu : ∀ n, Monotone (u n)) (hu0 : ∀ n, u n 0 = ⊥)
+    (hut : ∀ n, u n (m n) = t) (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℝ} (hC_nonneg : 0 ≤ C) (hV_nonneg : 0 ≤ V)
+    (hbound_horizon : ∀ᵐ ω ∂P', ∀ s ∈ Set.Icc (⊥ : κ) t, ‖Z s ω‖ ≤ C)
+    (hvar_bound : ∀ᵐ ω ∂P',
+      BoundedVariationOn (Z · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (Z · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V)
+    (hZ_cont : ∀ ω, ContinuousOn (Z · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V)
+    {E : Set Ω'} (hagree : ∀ᵐ ω ∂P', ω ∈ E → Z t ω = N t ω) :
+    ∀ᵐ ω ∂P', ω ∈ E → N t ω = 0 := by
+  have hZ_terminal : Z t =ᵐ[P'] 0 :=
+    hZ.eq_zero_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+      hZ_zero hu hu0 hut hus hC_nonneg hV_nonneg hbound_horizon hvar_bound
+      hZ_cont hmesh
+  filter_upwards [hZ_terminal, hagree] with ω hZ_zero_terminal hω_agree hωE
+  have hterminal_agree : Z t ω = N t ω := hω_agree hωE
+  simpa [hterminal_agree] using hZ_zero_terminal
+
+/-- Countable exhaustion of event-localized a.e.-zero statements. -/
+lemma _root_.MeasureTheory.ae_eq_zero_of_eventually_event_zero_exhaustion
+    {Ω' : Type*} {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {f : Ω' → ℝ}
+    {E : ℕ → Set Ω'} (hcover : ∀ᵐ ω ∂P', ∃ n, ω ∈ E n)
+    (hzero : ∀ n, ∀ᵐ ω ∂P', ω ∈ E n → f ω = 0) :
+    f =ᵐ[P'] 0 := by
+  have hall_zero : ∀ᵐ ω ∂P', ∀ n, ω ∈ E n → f ω = 0 :=
+    ae_all_iff.2 hzero
+  filter_upwards [hcover, hall_zero] with ω hω_cover hω_zero
+  rcases hω_cover with ⟨n, hωE⟩
+  exact hω_zero n hωE
+
+set_option linter.style.longLine false in
+/-- Countable localized-family terminal a.e.-zero form of the continuous-path,
+variation-bounded explicit-mesh endpoint. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_localized_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ] [UniformSpace κ] [CompactIccSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {Z : ℕ → κ → Ω' → ℝ} {N : κ → Ω' → ℝ}
+    (hZ : ∀ n, Martingale (Z n) 𝓕' P') (hZ_zero : ∀ n ω, Z n ⊥ ω = 0)
+    {t : κ} {m : ℕ → ℕ} {u : ℕ → ℕ → κ}
+    (hu : ∀ n, Monotone (u n)) (hu0 : ∀ n, u n 0 = ⊥)
+    (hut : ∀ n, u n (m n) = t) (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {E : ℕ → Set Ω'} {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n)
+    (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hbound_horizon : ∀ n, ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t, ‖Z n s ω‖ ≤ C n)
+    (hvar_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn (Z n · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (Z n · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V n)
+    (hZ_cont : ∀ n ω, ContinuousOn (Z n · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V)
+    (hcover : ∀ᵐ ω ∂P', ∃ n, ω ∈ E n)
+    (hagree : ∀ n, ∀ᵐ ω ∂P', ω ∈ E n → Z n t ω = N t ω) :
+    N t =ᵐ[P'] 0 := by
+  have hzero : ∀ n, ∀ᵐ ω ∂P', ω ∈ E n → N t ω = 0 := by
+    intro n
+    exact (hZ n).eq_zero_on_event_of_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+      (hZ_zero n) hu hu0 hut hus (hC_nonneg n) (hV_nonneg n)
+      (hbound_horizon n) (hvar_bound n) (hZ_cont n) hmesh (hagree n)
+  exact MeasureTheory.ae_eq_zero_of_eventually_event_zero_exhaustion hcover hzero
+
+set_option linter.style.longLine false in
+/-- Stopped-process specialization of the countable localized-family terminal a.e.-zero
+wrapper. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_stoppedProcess_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ] [UniformSpace κ] [CompactIccSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] {N : κ → Ω' → ℝ} {τ : ℕ → Ω' → WithTop κ}
+    (hZ_mart : ∀ n,
+      Martingale
+        (stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n))
+        𝓕' P')
+    (hN_zero : ∀ ω, N ⊥ ω = 0) {t : κ} {m : ℕ → ℕ} {u : ℕ → ℕ → κ}
+    (hu : ∀ n, Monotone (u n)) (hu0 : ∀ n, u n 0 = ⊥)
+    (hut : ∀ n, u n (m n) = t) (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n) (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hbound_horizon : ∀ n, ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t,
+        ‖stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n) s ω‖
+          ≤ C n)
+    (hvar_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+          (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+          (Set.Icc (⊥ : κ) t)).toReal ≤ V n)
+    (hZ_cont : ∀ n ω,
+      ContinuousOn
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+        (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V)
+    (hcover : ∀ᵐ ω ∂P', ∃ n, (t : WithTop κ) < τ n ω) :
+    N t =ᵐ[P'] 0 := by
+  let Z : ℕ → κ → Ω' → ℝ :=
+    fun n ↦ stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)
+  let E : ℕ → Set Ω' := fun n ↦ {ω | (t : WithTop κ) < τ n ω}
+  have hZ_zero : ∀ n ω, Z n ⊥ ω = 0 := by
+    intro n ω
+    by_cases hω : (⊥ : κ) < τ n ω
+    · have hmem : ω ∈ {ω | (⊥ : κ) < τ n ω} := hω
+      change stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)
+        ⊥ ω = 0
+      rw [stoppedProcess_eq_of_le hω.le, Set.indicator_of_mem hmem]
+      exact hN_zero ω
+    · change stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)
+        ⊥ ω = 0
+      rw [stoppedProcess]
+      exact Set.indicator_of_notMem
+        (s := {ω' : Ω' | (⊥ : κ) < τ n ω'}) hω
+        (N (min ((⊥ : κ) : WithTop κ) (τ n ω)).untopA)
+  have hagree : ∀ n, ∀ᵐ ω ∂P', ω ∈ E n → Z n t ω = N t ω := by
+    intro n
+    filter_upwards with ω hωE
+    have htτ : (t : WithTop κ) < τ n ω := hωE
+    have hbotτ : (⊥ : κ) < τ n ω :=
+      lt_of_le_of_lt (WithTop.coe_le_coe.2 bot_le) htτ
+    have hmem : ω ∈ {ω | (⊥ : κ) < τ n ω} := hbotτ
+    change stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)
+      t ω = N t ω
+    rw [stoppedProcess_eq_of_le htτ.le, Set.indicator_of_mem hmem]
+  exact MeasureTheory.Martingale.eq_zero_of_localized_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+    (Z := Z) (N := N) (E := E) (C := C) (V := V)
+    (fun n ↦ by simpa [Z] using hZ_mart n) hZ_zero hu hu0 hut hus hC_nonneg
+    hV_nonneg (fun n ↦ by simpa [Z] using hbound_horizon n)
+    (fun n ↦ by simpa [Z] using hvar_bound n) (fun n ↦ by simpa [Z] using hZ_cont n)
+    hmesh (by simpa [E] using hcover) hagree
+
+/-- At a fixed deterministic time, a localizing sequence eventually lies above that time on an
+almost-sure set. -/
+lemma _root_.ProbabilityTheory.IsLocalizingSequence.eventually_exists_gt
+    {κ Ω' : Type*} [LinearOrder κ] [TopologicalSpace κ] [OrderTopology κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P') (t : κ) :
+    ∀ᵐ ω ∂P', ∃ n, (t : WithTop κ) < τ n ω := by
+  filter_upwards [hτ.tendsto_top] with ω htop
+  simp only [tendsto_atTop_nhds] at htop
+  obtain ⟨n, hn⟩ := htop (Set.Ioi (t : WithTop κ)) (by simp) isOpen_Ioi
+  exact ⟨n, hn n le_rfl⟩
+
+set_option linter.style.longLine false in
+/-- Localizing-sequence version of the stopped-process continuous finite-variation zero theorem.
+The localizing sequence supplies both the stopped true martingales and the almost-sure cover
+`∃ n, t < τ n`. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+    {κ Ω' : Type*} [LinearOrder κ] [OrderBot κ] [UniformSpace κ] [OrderTopology κ]
+    [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ] [SecondCountableTopology κ]
+    [PseudoMetrizableSpace κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] [Approximable 𝓕' P']
+    {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_cadlag : ∀ ω, IsCadlag (N · ω)) (hN_zero : ∀ ω, N ⊥ ω = 0)
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P') {t : κ}
+    {m : ℕ → ℕ} {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n))
+    (hu0 : ∀ n, u n 0 = ⊥) (hut : ∀ n, u n (m n) = t)
+    (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n) (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hbound_horizon : ∀ n, ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t,
+        ‖stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n) s ω‖
+          ≤ C n)
+    (hvar_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+          (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+          (Set.Icc (⊥ : κ) t)).toReal ≤ V n)
+    (hZ_cont : ∀ n ω,
+      ContinuousOn
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+        (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V) :
+    N t =ᵐ[P'] 0 := by
+  have hZ_mart : ∀ n,
+      Martingale
+        (stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n))
+        𝓕' P' := by
+    intro n
+    exact hN.stoppedProcess_indicator (fun ω ↦ (hN_cadlag ω).right_continuous)
+      (hτ.isStoppingTime n)
+  exact MeasureTheory.Martingale.eq_zero_of_stoppedProcess_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+    (N := N) (τ := τ) hZ_mart hN_zero hu hu0 hut hus hC_nonneg hV_nonneg
+    hbound_horizon hvar_bound hZ_cont hmesh (hτ.eventually_exists_gt t)
+
+set_option linter.style.longLine false in
+/-- Bookkeeping wrapper that transfers original-process deterministic horizon and variation
+bounds to each stopped/indicator localization before applying the localizing-sequence zero
+theorem. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_continuousOn
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) {τ : ℕ → Ω' → WithTop κ}
+    (hτ : IsLocalizingSequence 𝓕' τ P') {t : κ} {m : ℕ → ℕ}
+    {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n)) (hu0 : ∀ n, u n 0 = ⊥)
+    (hut : ∀ n, u n (m n) = t) (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n) (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hbound_horizon : ∀ n, ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C n)
+    (hvar_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V n)
+    (hZ_cont : ∀ n ω,
+      ContinuousOn
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+        (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V) :
+    N t =ᵐ[P'] 0 := by
+  have hstopped_bounds : ∀ n,
+      (∀ᵐ ω ∂P', ∀ s ∈ Set.Icc (⊥ : κ) t,
+        ‖stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n) s ω‖
+          ≤ C n) ∧
+        (∀ᵐ ω ∂P',
+          BoundedVariationOn
+              ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+              (Set.Icc (⊥ : κ) t) ∧
+            (eVariationOn
+              ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+              (Set.Icc (⊥ : κ) t)).toReal ≤ V n) := by
+    intro n
+    exact MeasureTheory.ae_stoppedProcess_indicator_bound_variation_on_Icc
+      (N := N) (τ := τ n) (t := t) (C := C n) (V := V n)
+      (hC_nonneg n) (hbound_horizon n) (hvar_bound n)
+  exact hN.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+    hN_cadlag hN_zero hτ hu hu0 hut hus hC_nonneg hV_nonneg
+    (fun n ↦ (hstopped_bounds n).1) (fun n ↦ (hstopped_bounds n).2) hZ_cont hmesh
+
+set_option linter.style.longLine false in
+/-- Bookkeeping wrapper that derives the stopped/indicator path-continuity hypothesis from
+original-path continuity on the deterministic horizon. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) {τ : ℕ → Ω' → WithTop κ}
+    (hτ : IsLocalizingSequence 𝓕' τ P') {t : κ} {m : ℕ → ℕ}
+    {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n)) (hu0 : ∀ n, u n 0 = ⊥)
+    (hut : ∀ n, u n (m n) = t) (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n) (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hbound_horizon : ∀ n, ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C n)
+    (hvar_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V n)
+    (hN_cont : ∀ ω, ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V) :
+    N t =ᵐ[P'] 0 := by
+  exact hN.eq_zero_of_localizingSequence_of_bound_variation_bound_continuousOn
+    hN_cadlag hN_zero hτ hu hu0 hut hus hC_nonneg hV_nonneg hbound_horizon
+    hvar_bound
+    (fun n ω ↦ MeasureTheory.stoppedProcess_indicator_continuousOn_Icc
+      (N := N) (τ := τ n) (ω := ω) (t := t) (hN_cont ω))
+    hmesh
+
+set_option linter.style.longLine false in
+/-- Localized terminal-zero and left-limit-zero wrapper under explicit deterministic
+left-approach, horizon bounds, variation bounds, pathwise continuity, partitions, and mesh
+hypotheses. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P')
+    {t : κ} (ht : (⊥ : κ) < t) {v : ℕ → κ} (hv_lt : ∀ k, v k < t)
+    (hv_tendsto : Tendsto v atTop (nhdsWithin t (Set.Iio t)))
+    {m : ℕ → ℕ} {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n))
+    (hu0 : ∀ n, u n 0 = ⊥) (hut : ∀ n, u n (m n) = t)
+    (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n) (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hbound_horizon : ∀ n, ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C n)
+    (hvar_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V n)
+    (hN_cont : ∀ ω, ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V) :
+    (N t =ᵐ[P'] 0) ∧ ((fun ω => Function.leftLim (N · ω) t) =ᵐ[P'] 0) := by
+  have hzero : N t =ᵐ[P'] 0 :=
+    hN.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn
+      hN_cadlag hN_zero hτ hu hu0 hut hus hC_nonneg hV_nonneg hbound_horizon
+      hvar_bound hN_cont hmesh
+  have hjump : N t =ᵐ[P'] fun ω => Function.leftLim (N · ω) t :=
+    hN.ae_eq_leftLim_localizingSequence_of_left_approach_of_bound
+      hN_cadlag hN_pred hN_var hτ ht hv_lt hv_tendsto hC_nonneg hbound_horizon
+  exact ⟨hzero, hjump.symm.trans hzero⟩
+
+set_option linter.style.longLine false in
+/-- Stopped/indicator jump removal when the stopped process itself has the deterministic
+horizon bound on `[⊥, t]`. -/
+lemma _root_.MeasureTheory.Martingale.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_stopped_bound
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] [MeasurableSpace κ] [BorelSpace κ] [SecondCountableTopology κ]
+    [PseudoMetrizableSpace κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] [Approximable 𝓕' P']
+    {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_cadlag : ∀ ω, IsCadlag (N · ω)) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : Ω' → WithTop κ} (hτ : IsStoppingTime 𝓕' τ) {t : κ}
+    (ht : (⊥ : κ) < t) {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t)))
+    {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hZ_bound : ∀ᵐ ω ∂P',
+      ∀ r ∈ Set.Icc (⊥ : κ) t,
+        ‖stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ r ω‖ ≤ C) :
+    stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ t =ᵐ[P']
+      fun ω => Function.leftLim
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω) t := by
+  let Z : κ → Ω' → ℝ :=
+    stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ
+  have hZ_mart : Martingale Z 𝓕' P' := by
+    simpa [Z] using hN.stoppedProcess_indicator
+      (fun ω ↦ (hN_cadlag ω).right_continuous) hτ
+  have hZ_pred : IsStronglyPredictable 𝓕' Z := by
+    simpa [Z] using hN_pred.stoppedProcess_indicator hτ
+  have hZ_var : ∀ ω, LocallyBoundedVariationOn (Z · ω) Set.univ := by
+    intro ω
+    simpa [Z] using locallyBoundedVariationOn_stoppedProcess_indicator
+      (N := N) (τ := τ) hN_var ω
+  have hZ_bound' : ∀ᵐ ω ∂P',
+      ∀ r ∈ Set.Icc (⊥ : κ) t, ‖Z r ω‖ ≤ C := by
+    simpa [Z] using hZ_bound
+  simpa [Z] using hZ_mart.ae_eq_leftLim_of_left_approach_past_setIntegral_zero_of_bound_no_integrability
+    hZ_pred hZ_var ht hu_lt hu_tendsto hC_nonneg hZ_bound'
+
+set_option linter.style.longLine false in
+/-- On `{ω | t < τ ω}`, stopped-bound jump removal transfers from the stopped/indicator
+process back to the original martingale. -/
+lemma _root_.MeasureTheory.Martingale.ae_eq_leftLim_on_event_of_left_approach_of_stopped_bound
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] [MeasurableSpace κ] [BorelSpace κ] [SecondCountableTopology κ]
+    [PseudoMetrizableSpace κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] [Approximable 𝓕' P']
+    {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_cadlag : ∀ ω, IsCadlag (N · ω)) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : Ω' → WithTop κ} (hτ : IsStoppingTime 𝓕' τ) {t : κ}
+    (ht : (⊥ : κ) < t) {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t)))
+    {C : ℝ} (hC_nonneg : 0 ≤ C)
+    (hZ_bound : ∀ᵐ ω ∂P',
+      ∀ r ∈ Set.Icc (⊥ : κ) t,
+        ‖stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ r ω‖ ≤ C) :
+    ∀ᵐ ω ∂P', (t : WithTop κ) < τ ω →
+      N t ω = Function.leftLim (N · ω) t := by
+  have hstopped :
+      stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ t =ᵐ[P']
+        fun ω => Function.leftLim
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ ω}.indicator (N i)) τ) · ω) t :=
+    hN.ae_eq_leftLim_stoppedProcess_indicator_of_left_approach_of_stopped_bound
+      hN_cadlag hN_pred hN_var hτ ht hu_lt hu_tendsto hC_nonneg hZ_bound
+  filter_upwards [hstopped] with ω hω_stopped hτt
+  have hterminal :
+      stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i)) τ t ω =
+        N t ω := by
+    have hbotτ : (⊥ : κ) < τ ω :=
+      lt_of_le_of_lt (WithTop.coe_le_coe.2 bot_le) hτt
+    have hmem : ω ∈ {ω' : Ω' | (⊥ : κ) < τ ω'} := hbotτ
+    rw [stoppedProcess_eq_of_le hτt.le, Set.indicator_of_mem hmem]
+  have hleft :
+      Function.leftLim
+          ((stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i)) τ) · ω) t =
+        Function.leftLim (N · ω) t :=
+    MeasureTheory.leftLim_stoppedProcess_indicator_eq_of_lt
+      (N := N) (τ := τ) (ω := ω) (t := t) (hN_var ω) hτt
+  calc
+    N t ω =
+        stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i)) τ t ω :=
+      hterminal.symm
+    _ = Function.leftLim
+          ((stoppedProcess (fun i ↦ {ω' : Ω' | (⊥ : κ) < τ ω'}.indicator (N i)) τ) · ω) t :=
+      hω_stopped
+    _ = Function.leftLim (N · ω) t := hleft
+
+set_option linter.style.longLine false in
+/-- Localizing-sequence jump removal from direct stopped/indicator horizon bounds. -/
+lemma _root_.MeasureTheory.Martingale.ae_eq_leftLim_localizingSequence_of_left_approach_of_stopped_bound
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [TopologicalSpace κ]
+    [OrderTopology κ] [MeasurableSpace κ] [BorelSpace κ] [SecondCountableTopology κ]
+    [PseudoMetrizableSpace κ] {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'}
+    {𝓕' : Filtration κ mΩ'} [IsFiniteMeasure P'] [Approximable 𝓕' P']
+    {N : κ → Ω' → ℝ} (hN : Martingale N 𝓕' P')
+    (hN_cadlag : ∀ ω, IsCadlag (N · ω)) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P')
+    {t : κ} (ht : (⊥ : κ) < t) {u : ℕ → κ} (hu_lt : ∀ n, u n < t)
+    (hu_tendsto : Tendsto u atTop (nhdsWithin t (Set.Iio t)))
+    {C : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n)
+    (hZ_bound : ∀ n, ∀ᵐ ω ∂P',
+      ∀ r ∈ Set.Icc (⊥ : κ) t,
+        ‖stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n) r ω‖
+          ≤ C n) :
+    N t =ᵐ[P'] fun ω => Function.leftLim (N · ω) t := by
+  have hon_event : ∀ n, ∀ᵐ ω ∂P', (t : WithTop κ) < τ n ω →
+      N t ω = Function.leftLim (N · ω) t := by
+    intro n
+    exact hN.ae_eq_leftLim_on_event_of_left_approach_of_stopped_bound
+      (τ := τ n) (C := C n) hN_cadlag hN_pred hN_var (hτ.isStoppingTime n)
+      ht hu_lt hu_tendsto (hC_nonneg n) (hZ_bound n)
+  have hall_event : ∀ᵐ ω ∂P', ∀ n, (t : WithTop κ) < τ n ω →
+      N t ω = Function.leftLim (N · ω) t :=
+    ae_all_iff.2 hon_event
+  have hcover : ∀ᵐ ω ∂P', ∃ n, (t : WithTop κ) < τ n ω := by
+    filter_upwards [hτ.tendsto_top] with ω htop
+    simp only [tendsto_atTop_nhds] at htop
+    obtain ⟨n, hn⟩ := htop (Set.Ioi (t : WithTop κ)) (by simp) isOpen_Ioi
+    exact ⟨n, hn n le_rfl⟩
+  filter_upwards [hcover, hall_event] with ω hω_cover hω_all
+  rcases hω_cover with ⟨n, hωn⟩
+  exact hω_all n hωn
+
+set_option linter.style.longLine false in
+/-- Stopped-bound terminal-zero and left-limit-zero wrapper under explicit deterministic
+left-approach, stopped-piece horizon and variation bounds, stopped-piece continuity, partitions,
+and mesh hypotheses. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P')
+    {t : κ} (ht : (⊥ : κ) < t) {v : ℕ → κ} (hv_lt : ∀ k, v k < t)
+    (hv_tendsto : Tendsto v atTop (nhdsWithin t (Set.Iio t)))
+    {m : ℕ → ℕ} {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n))
+    (hu0 : ∀ n, u n 0 = ⊥) (hut : ∀ n, u n (m n) = t)
+    (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n) (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hZ_bound : ∀ n, ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t,
+        ‖stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n) s ω‖
+          ≤ C n)
+    (hZ_var_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+          (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+          (Set.Icc (⊥ : κ) t)).toReal ≤ V n)
+    (hZ_cont : ∀ n ω,
+      ContinuousOn
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+        (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V) :
+    (N t =ᵐ[P'] 0) ∧ ((fun ω => Function.leftLim (N · ω) t) =ᵐ[P'] 0) := by
+  have hzero : N t =ᵐ[P'] 0 :=
+    hN.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+      hN_cadlag hN_zero hτ hu hu0 hut hus hC_nonneg hV_nonneg hZ_bound
+      hZ_var_bound hZ_cont hmesh
+  have hjump : N t =ᵐ[P'] fun ω => Function.leftLim (N · ω) t :=
+    hN.ae_eq_leftLim_localizingSequence_of_left_approach_of_stopped_bound
+      hN_cadlag hN_pred hN_var hτ ht hv_lt hv_tendsto hC_nonneg hZ_bound
+  exact ⟨hzero, hjump.symm.trans hzero⟩
+
+/-- Extract a deterministic sequence from a nontrivial left-neighborhood filter. -/
+lemma _root_.Filter.exists_seq_lt_tendsto_nhdsWithin_Iio_of_neBot
+    {κ : Type*} [Preorder κ] [TopologicalSpace κ] [SecondCountableTopology κ]
+    {t : κ} (hleft : (nhdsWithin t (Set.Iio t)).NeBot) :
+    ∃ v : ℕ → κ, (∀ n, v n < t) ∧
+      Tendsto v atTop (nhdsWithin t (Set.Iio t)) := by
+  haveI : NeBot (nhdsWithin t (Set.Iio t)) := hleft
+  have h_eventually : ∀ᶠ x in nhdsWithin t (Set.Iio t), x < t := by
+    simpa only [Set.mem_Iio] using
+      (self_mem_nhdsWithin : ∀ᶠ x in nhdsWithin t (Set.Iio t), x ∈ Set.Iio t)
+  obtain ⟨v, hv_tendsto, hv_lt⟩ :=
+    Filter.exists_seq_forall_of_frequently h_eventually.frequently
+  exact ⟨v, hv_lt, hv_tendsto⟩
+
+set_option linter.style.longLine false in
+/-- Original-bound terminal-zero and left-limit-zero wrapper using a nontrivial
+left-neighborhood filter instead of an explicit left-approaching sequence. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_neBot_left
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P')
+    {t : κ} (ht : (⊥ : κ) < t) (hleft : (nhdsWithin t (Set.Iio t)).NeBot)
+    {m : ℕ → ℕ} {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n))
+    (hu0 : ∀ n, u n 0 = ⊥) (hut : ∀ n, u n (m n) = t)
+    (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n) (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hbound_horizon : ∀ n, ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C n)
+    (hvar_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V n)
+    (hN_cont : ∀ ω, ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V) :
+    (N t =ᵐ[P'] 0) ∧ ((fun ω => Function.leftLim (N · ω) t) =ᵐ[P'] 0) := by
+  obtain ⟨v, hv_lt, hv_tendsto⟩ :=
+    Filter.exists_seq_lt_tendsto_nhdsWithin_Iio_of_neBot hleft
+  exact hN.eq_zero_and_leftLim_eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn
+    hN_cadlag hN_zero hN_pred hN_var hτ ht hv_lt hv_tendsto hu hu0 hut hus
+    hC_nonneg hV_nonneg hbound_horizon hvar_bound hN_cont hmesh
+
+set_option linter.style.longLine false in
+/-- Stopped-bound terminal-zero and left-limit-zero wrapper using a nontrivial
+left-neighborhood filter instead of an explicit left-approaching sequence. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn_of_neBot_left
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P')
+    {t : κ} (ht : (⊥ : κ) < t) (hleft : (nhdsWithin t (Set.Iio t)).NeBot)
+    {m : ℕ → ℕ} {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n))
+    (hu0 : ∀ n, u n 0 = ⊥) (hut : ∀ n, u n (m n) = t)
+    (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n) (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hZ_bound : ∀ n, ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t,
+        ‖stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n) s ω‖
+          ≤ C n)
+    (hZ_var_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+          (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+          (Set.Icc (⊥ : κ) t)).toReal ≤ V n)
+    (hZ_cont : ∀ n ω,
+      ContinuousOn
+        ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+        (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V) :
+    (N t =ᵐ[P'] 0) ∧ ((fun ω => Function.leftLim (N · ω) t) =ᵐ[P'] 0) := by
+  obtain ⟨v, hv_lt, hv_tendsto⟩ :=
+    Filter.exists_seq_lt_tendsto_nhdsWithin_Iio_of_neBot hleft
+  exact hN.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn
+    hN_cadlag hN_zero hN_pred hN_var hτ ht hv_lt hv_tendsto hu hu0 hut hus
+    hC_nonneg hV_nonneg hZ_bound hZ_var_bound hZ_cont hmesh
+
+set_option linter.style.longLine false in
+/-- Stopped-bound terminal-zero and left-limit-zero wrapper that derives stopped/indicator
+path-continuity from original-path continuity on the deterministic horizon. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_neBot_left
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P')
+    {t : κ} (ht : (⊥ : κ) < t) (hleft : (nhdsWithin t (Set.Iio t)).NeBot)
+    {m : ℕ → ℕ} {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n))
+    (hu0 : ∀ n, u n 0 = ⊥) (hut : ∀ n, u n (m n) = t)
+    (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n) (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hZ_bound : ∀ n, ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t,
+        ‖stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n) s ω‖
+          ≤ C n)
+    (hZ_var_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+          (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+          (Set.Icc (⊥ : κ) t)).toReal ≤ V n)
+    (hN_cont : ∀ ω, ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V) :
+    (N t =ᵐ[P'] 0) ∧ ((fun ω => Function.leftLim (N · ω) t) =ᵐ[P'] 0) := by
+  exact hN.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_continuousOn_of_neBot_left
+    hN_cadlag hN_zero hN_pred hN_var hτ ht hleft hu hu0 hut hus hC_nonneg hV_nonneg
+    hZ_bound hZ_var_bound
+    (fun n ω ↦ MeasureTheory.stoppedProcess_indicator_continuousOn_Icc
+      (N := N) (τ := τ n) (ω := ω) (t := t) (hN_cont ω))
+    hmesh
+
+set_option linter.style.longLine false in
+/-- Fixed-time value-zero connector for the three explicit left-branch alternatives. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_left_branch
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P')
+    {t : κ} (ht : (⊥ : κ) < t)
+    {m : ℕ → ℕ} {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n))
+    (hu0 : ∀ n, u n 0 = ⊥) (hut : ∀ n, u n (m n) = t)
+    (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n) (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hZ_bound : ∀ n, ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t,
+        ‖stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n) s ω‖
+          ≤ C n)
+    (hZ_var_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+          (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn
+          ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+          (Set.Icc (⊥ : κ) t)).toReal ≤ V n)
+    (hN_cont : ∀ ω, ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ V ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ V)
+    (hbranch :
+      (nhdsWithin t (Set.Iio t)).NeBot ∨
+        (∀ r : κ, r < t → r ≤ (⊥ : κ)) ∨
+          ∃ s : κ, s < t ∧ (∀ r : κ, r < t → r ≤ s) ∧ N s =ᵐ[P'] 0) :
+    N t =ᵐ[P'] 0 := by
+  rcases hbranch with hleft | hbranch
+  · exact
+      (hN.eq_zero_and_leftLim_eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_neBot_left
+        hN_cadlag hN_zero hN_pred hN_var hτ ht hleft hu hu0 hut hus hC_nonneg
+        hV_nonneg hZ_bound hZ_var_bound hN_cont hmesh).1
+  · rcases hbranch with hbot_prev | hprev
+    · exact hN.eq_zero_of_predictable_bottom_immediate hN_pred hN_zero ht hbot_prev
+    · rcases hprev with ⟨s, hst, hgreatest, hs_zero⟩
+      exact hN.eq_zero_of_predictable_left_isolated_of_previous hN_pred ht hst
+        hgreatest hs_zero
+
+set_option linter.style.longLine false in
+/-- Original-bound fixed-time value-zero connector for the three explicit left-branch
+alternatives. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_left_branch
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P')
+    {t : κ} (ht : (⊥ : κ) < t)
+    {m : ℕ → ℕ} {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n))
+    (hu0 : ∀ n, u n 0 = ⊥) (hut : ∀ n, u n (m n) = t)
+    (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n) (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hbound_horizon : ∀ n, ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C n)
+    (hvar_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V n)
+    (hN_cont : ∀ ω, ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ W ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ W)
+    (hbranch :
+      (nhdsWithin t (Set.Iio t)).NeBot ∨
+        (∀ r : κ, r < t → r ≤ (⊥ : κ)) ∨
+          ∃ s : κ, s < t ∧ (∀ r : κ, r < t → r ≤ s) ∧ N s =ᵐ[P'] 0) :
+    N t =ᵐ[P'] 0 := by
+  have hstopped_bounds : ∀ n,
+      (∀ᵐ ω ∂P', ∀ s ∈ Set.Icc (⊥ : κ) t,
+        ‖stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n) s ω‖
+          ≤ C n) ∧
+        (∀ᵐ ω ∂P',
+          BoundedVariationOn
+              ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+              (Set.Icc (⊥ : κ) t) ∧
+            (eVariationOn
+              ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+              (Set.Icc (⊥ : κ) t)).toReal ≤ V n) := by
+    intro n
+    exact MeasureTheory.ae_stoppedProcess_indicator_bound_variation_on_Icc
+      (N := N) (τ := τ n) (t := t) (C := C n) (V := V n)
+      (hC_nonneg n) (hbound_horizon n) (hvar_bound n)
+  exact hN.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_left_branch
+    hN_cadlag hN_zero hN_pred hN_var hτ ht hu hu0 hut hus hC_nonneg hV_nonneg
+    (fun n ↦ (hstopped_bounds n).1) (fun n ↦ (hstopped_bounds n).2) hN_cont hmesh
+    hbranch
+
+/-- In a densely ordered time line with a bottom, every non-bottom point has a nontrivial
+strict-left neighborhood filter. -/
+lemma _root_.Filter.nhdsWithin_Iio_self_neBot_of_bot_lt
+    {κ : Type*} [LinearOrder κ] [OrderBot κ] [TopologicalSpace κ] [OrderTopology κ]
+    [DenselyOrdered κ] {t : κ} (ht : (⊥ : κ) < t) :
+    (nhdsWithin t (Set.Iio t)).NeBot := by
+  simpa only [nhdsWithin] using
+    (nhdsLT_neBot_of_exists_lt (α := κ) (b := t) ⟨⊥, ht⟩)
+
+set_option linter.style.longLine false in
+/-- Pre-stop-bound fixed-time value-zero connector for the three explicit left-branch
+alternatives. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_localizingSequence_of_pre_stop_bound_variation_bound_original_continuousOn_of_left_branch
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P')
+    {t : κ} (ht : (⊥ : κ) < t)
+    {m : ℕ → ℕ} {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n))
+    (hu0 : ∀ n, u n 0 = ⊥) (hut : ∀ n, u n (m n) = t)
+    (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n) (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hpre_bound : ∀ n, ∀ᵐ ω ∂P', ∀ r ∈ Set.Icc (⊥ : κ) t,
+      (r : WithTop κ) < τ n ω → ‖N r ω‖ ≤ C n)
+    (hstop_bound : ∀ n, ∀ᵐ ω ∂P', (⊥ : κ) < τ n ω → τ n ω ≠ ⊤ →
+      τ n ω ≤ (t : WithTop κ) → ‖N (τ n ω).untopA ω‖ ≤ C n)
+    (hvar_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω)
+          {r : κ | r ∈ Set.Icc (⊥ : κ) t ∧ (r : WithTop κ) ≤ τ n ω} ∧
+        (eVariationOn (N · ω)
+          {r : κ | r ∈ Set.Icc (⊥ : κ) t ∧ (r : WithTop κ) ≤ τ n ω}).toReal ≤ V n)
+    (hN_cont : ∀ ω, ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ W ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ W)
+    (hbranch :
+      (nhdsWithin t (Set.Iio t)).NeBot ∨
+        (∀ r : κ, r < t → r ≤ (⊥ : κ)) ∨
+          ∃ s : κ, s < t ∧ (∀ r : κ, r < t → r ≤ s) ∧ N s =ᵐ[P'] 0) :
+    N t =ᵐ[P'] 0 := by
+  have hstopped_bounds : ∀ n,
+      (∀ᵐ ω ∂P', ∀ s ∈ Set.Icc (⊥ : κ) t,
+        ‖stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n) s ω‖
+          ≤ C n) ∧
+        (∀ᵐ ω ∂P',
+          BoundedVariationOn
+              ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+              (Set.Icc (⊥ : κ) t) ∧
+            (eVariationOn
+              ((stoppedProcess (fun i ↦ {ω | (⊥ : κ) < τ n ω}.indicator (N i)) (τ n)) · ω)
+              (Set.Icc (⊥ : κ) t)).toReal ≤ V n) := by
+    intro n
+    exact MeasureTheory.ae_stoppedProcess_indicator_bound_variation_on_Icc_of_pre_stop_bound
+      (N := N) (τ := τ n) (t := t) (C := C n) (V := V n)
+      (hC_nonneg n) (hpre_bound n) (hstop_bound n) (hvar_bound n)
+  exact hN.eq_zero_of_localizingSequence_bounded_continuous_finiteVariation_of_variation_bound_original_continuousOn_of_left_branch
+    hN_cadlag hN_zero hN_pred hN_var hτ ht hu hu0 hut hus hC_nonneg hV_nonneg
+    (fun n ↦ (hstopped_bounds n).1) (fun n ↦ (hstopped_bounds n).2) hN_cont hmesh
+    hbranch
+
+set_option linter.style.longLine false in
+/-- Dense-left specialization of the pre-stop localizing-sequence endpoint.  The dense order
+assumption is used only to construct the nontrivial strict-left branch. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_localizingSequence_of_pre_stop_bound_variation_bound_original_continuousOn_of_dense_left
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ] [DenselyOrdered κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P')
+    {t : κ} (ht : (⊥ : κ) < t)
+    {m : ℕ → ℕ} {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n))
+    (hu0 : ∀ n, u n 0 = ⊥) (hut : ∀ n, u n (m n) = t)
+    (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n) (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hpre_bound : ∀ n, ∀ᵐ ω ∂P', ∀ r ∈ Set.Icc (⊥ : κ) t,
+      (r : WithTop κ) < τ n ω → ‖N r ω‖ ≤ C n)
+    (hstop_bound : ∀ n, ∀ᵐ ω ∂P', (⊥ : κ) < τ n ω → τ n ω ≠ ⊤ →
+      τ n ω ≤ (t : WithTop κ) → ‖N (τ n ω).untopA ω‖ ≤ C n)
+    (hvar_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω)
+          {r : κ | r ∈ Set.Icc (⊥ : κ) t ∧ (r : WithTop κ) ≤ τ n ω} ∧
+        (eVariationOn (N · ω)
+          {r : κ | r ∈ Set.Icc (⊥ : κ) t ∧ (r : WithTop κ) ≤ τ n ω}).toReal ≤ V n)
+    (hN_cont : ∀ ω, ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ W ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ W) :
+    N t =ᵐ[P'] 0 := by
+  have hleft : (nhdsWithin t (Set.Iio t)).NeBot :=
+    Filter.nhdsWithin_Iio_self_neBot_of_bot_lt ht
+  exact hN.eq_zero_of_localizingSequence_of_pre_stop_bound_variation_bound_original_continuousOn_of_left_branch
+    hN_cadlag hN_zero hN_pred hN_var hτ ht hu hu0 hut hus hC_nonneg hV_nonneg
+    hpre_bound hstop_bound hvar_bound hN_cont hmesh (Or.inl hleft)
+
+set_option linter.style.longLine false in
+/-- Fixed-level original-bound fixed-time value-zero connector for the three explicit left-branch
+alternatives.  This is the single-deterministic-bound specialization of the localizing-sequence
+wrapper, using the constant-top localizing sequence. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_left_branch
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {t : κ} (ht : (⊥ : κ) < t)
+    {m : ℕ → ℕ} {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n))
+    (hu0 : ∀ n, u n 0 = ⊥) (hut : ∀ n, u n (m n) = t)
+    (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℝ} (hC_nonneg : 0 ≤ C) (hV_nonneg : 0 ≤ V)
+    (hbound_horizon : ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C)
+    (hvar_bound : ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V)
+    (hN_cont : ∀ ω, ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ W ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ W)
+    (hbranch :
+      (nhdsWithin t (Set.Iio t)).NeBot ∨
+        (∀ r : κ, r < t → r ≤ (⊥ : κ)) ∨
+          ∃ s : κ, s < t ∧ (∀ r : κ, r < t → r ≤ s) ∧ N s =ᵐ[P'] 0) :
+    N t =ᵐ[P'] 0 := by
+  let τ : ℕ → Ω' → WithTop κ := fun _ _ ↦ ⊤
+  have hτ : IsLocalizingSequence 𝓕' τ P' := by
+    simpa [τ] using (_root_.ProbabilityTheory.isLocalizingSequence_const_top 𝓕' P')
+  exact hN.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_left_branch
+    (τ := τ) (C := fun _ ↦ C) (V := fun _ ↦ V)
+    hN_cadlag hN_zero hN_pred hN_var hτ ht hu hu0 hut hus
+    (fun _ ↦ hC_nonneg) (fun _ ↦ hV_nonneg)
+    (fun _ ↦ hbound_horizon) (fun _ ↦ hvar_bound) hN_cont hmesh hbranch
+
+set_option linter.style.longLine false in
+/-- If the strict-left neighborhood filter at a non-bottom point is trivial, then the point has
+a greatest strict predecessor. -/
+lemma _root_.Filter.exists_greatest_lt_of_not_neBot_nhdsWithin_Iio
+    {κ : Type*} [LinearOrder κ] [OrderBot κ] [TopologicalSpace κ] [OrderTopology κ]
+    {t : κ} (ht : (⊥ : κ) < t)
+    (hleft : ¬ (nhdsWithin t (Set.Iio t)).NeBot) :
+    ∃ s : κ, s < t ∧ ∀ r : κ, r < t → r ≤ s := by
+  have hbot : nhdsWithin t (Set.Iio t) = ⊥ := Filter.not_neBot.mp hleft
+  have hmem_empty : (∅ : Set κ) ∈ nhdsWithin t (Set.Iio t) :=
+    Filter.empty_mem_iff_bot.mpr hbot
+  rcases mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hmem_empty with
+    ⟨U, hU_nhds, hU_empty⟩
+  rcases exists_Ioc_subset_of_mem_nhds hU_nhds ⟨⊥, ht⟩ with ⟨s, hst, hIoc_subset⟩
+  refine ⟨s, hst, fun r hrt ↦ ?_⟩
+  by_contra hrs
+  have hsr : s < r := lt_of_not_ge hrs
+  have hrU : r ∈ U := hIoc_subset ⟨hsr, hrt.le⟩
+  have hr_empty : r ∈ (∅ : Set κ) := hU_empty ⟨hrU, hrt⟩
+  exact Set.notMem_empty r hr_empty
+
+set_option linter.style.longLine false in
+/-- Fixed-level original-bound endpoint when all strict-past values have already been proved
+zero.  The proof constructs only the explicit branch data required by the left-branch connector. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_strictPast_zero
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {t : κ} (ht : (⊥ : κ) < t)
+    {m : ℕ → ℕ} {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n))
+    (hu0 : ∀ n, u n 0 = ⊥) (hut : ∀ n, u n (m n) = t)
+    (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℝ} (hC_nonneg : 0 ≤ C) (hV_nonneg : 0 ≤ V)
+    (hbound_horizon : ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C)
+    (hvar_bound : ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V)
+    (hN_cont : ∀ ω, ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ W ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ W)
+    (hprev_zero : ∀ s : κ, s < t → N s =ᵐ[P'] 0) :
+    N t =ᵐ[P'] 0 := by
+  by_cases hleft : (nhdsWithin t (Set.Iio t)).NeBot
+  · exact hN.eq_zero_of_bound_variation_bound_original_continuousOn_of_left_branch
+      hN_cadlag hN_zero hN_pred hN_var ht hu hu0 hut hus hC_nonneg hV_nonneg
+      hbound_horizon hvar_bound hN_cont hmesh (Or.inl hleft)
+  · rcases Filter.exists_greatest_lt_of_not_neBot_nhdsWithin_Iio ht hleft with
+      ⟨s, hst, hgreatest⟩
+    exact hN.eq_zero_of_bound_variation_bound_original_continuousOn_of_left_branch
+      hN_cadlag hN_zero hN_pred hN_var ht hu hu0 hut hus hC_nonneg hV_nonneg
+      hbound_horizon hvar_bound hN_cont hmesh
+      (Or.inr (Or.inr ⟨s, hst, hgreatest, hprev_zero s hst⟩))
+
+set_option linter.style.longLine false in
+/-- Dense-left specialization of the original-bound localizing-sequence endpoint.  The dense
+order assumption is used only to construct the nontrivial strict-left branch. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_dense_left
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ] [DenselyOrdered κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {τ : ℕ → Ω' → WithTop κ} (hτ : IsLocalizingSequence 𝓕' τ P')
+    {t : κ} (ht : (⊥ : κ) < t)
+    {m : ℕ → ℕ} {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n))
+    (hu0 : ∀ n, u n 0 = ⊥) (hut : ∀ n, u n (m n) = t)
+    (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℕ → ℝ} (hC_nonneg : ∀ n, 0 ≤ C n) (hV_nonneg : ∀ n, 0 ≤ V n)
+    (hbound_horizon : ∀ n, ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C n)
+    (hvar_bound : ∀ n, ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V n)
+    (hN_cont : ∀ ω, ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ W ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ W) :
+    N t =ᵐ[P'] 0 := by
+  have hleft : (nhdsWithin t (Set.Iio t)).NeBot :=
+    Filter.nhdsWithin_Iio_self_neBot_of_bot_lt ht
+  exact hN.eq_zero_of_localizingSequence_of_bound_variation_bound_original_continuousOn_of_left_branch
+    hN_cadlag hN_zero hN_pred hN_var hτ ht hu hu0 hut hus hC_nonneg hV_nonneg
+    hbound_horizon hvar_bound hN_cont hmesh (Or.inl hleft)
+
+set_option linter.style.longLine false in
+/-- Dense-left specialization of the fixed-level original-bound endpoint.  The dense order
+assumption is used only to construct the nontrivial strict-left branch. -/
+lemma _root_.MeasureTheory.Martingale.eq_zero_of_bound_variation_bound_original_continuousOn_of_dense_left
+    {κ Ω' : Type*} [ConditionallyCompleteLinearOrderBot κ] [UniformSpace κ]
+    [OrderTopology κ] [CompactIccSpace κ] [MeasurableSpace κ] [BorelSpace κ]
+    [SecondCountableTopology κ] [PseudoMetrizableSpace κ] [DenselyOrdered κ]
+    {mΩ' : MeasurableSpace Ω'} {P' : Measure Ω'} {𝓕' : Filtration κ mΩ'}
+    [IsFiniteMeasure P'] [Approximable 𝓕' P'] {N : κ → Ω' → ℝ}
+    (hN : Martingale N 𝓕' P') (hN_cadlag : ∀ ω, IsCadlag (N · ω))
+    (hN_zero : ∀ ω, N ⊥ ω = 0) (hN_pred : IsStronglyPredictable 𝓕' N)
+    (hN_var : ∀ ω, LocallyBoundedVariationOn (N · ω) Set.univ)
+    {t : κ} (ht : (⊥ : κ) < t)
+    {m : ℕ → ℕ} {u : ℕ → ℕ → κ} (hu : ∀ n, Monotone (u n))
+    (hu0 : ∀ n, u n 0 = ⊥) (hut : ∀ n, u n (m n) = t)
+    (hus : ∀ n i, u n i ∈ Set.Icc (⊥ : κ) t)
+    {C V : ℝ} (hC_nonneg : 0 ≤ C) (hV_nonneg : 0 ≤ V)
+    (hbound_horizon : ∀ᵐ ω ∂P',
+      ∀ s ∈ Set.Icc (⊥ : κ) t, ‖N s ω‖ ≤ C)
+    (hvar_bound : ∀ᵐ ω ∂P',
+      BoundedVariationOn (N · ω) (Set.Icc (⊥ : κ) t) ∧
+        (eVariationOn (N · ω) (Set.Icc (⊥ : κ) t)).toReal ≤ V)
+    (hN_cont : ∀ ω, ContinuousOn (N · ω) (Set.Icc (⊥ : κ) t))
+    (hmesh : ∀ W ∈ 𝓤 κ, ∀ᶠ n in atTop, ∀ i, i ∈ Finset.range (m n) →
+      (u n i, u n (i + 1)) ∈ W) :
+    N t =ᵐ[P'] 0 := by
+  have hleft : (nhdsWithin t (Set.Iio t)).NeBot :=
+    Filter.nhdsWithin_Iio_self_neBot_of_bot_lt ht
+  exact hN.eq_zero_of_bound_variation_bound_original_continuousOn_of_left_branch
+    hN_cadlag hN_zero hN_pred hN_var ht hu hu0 hut hus hC_nonneg hV_nonneg
+    hbound_horizon hvar_bound hN_cont hmesh (Or.inl hleft)
 
 /-- Terminal form of the bounded continuous finite-variation martingale core.
 

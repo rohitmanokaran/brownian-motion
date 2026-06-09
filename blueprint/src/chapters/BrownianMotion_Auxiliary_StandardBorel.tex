@@ -1,0 +1,119 @@
+% archon:covers BrownianMotion/Auxiliary/StandardBorel.lean
+
+\chapter{Borel structures on countable disjoint unions}
+\label{chap:standard_borel_disjoint_unions}
+
+This chapter records the compatibility of the canonical measurable and
+topological structures on binary and countable dependent disjoint unions.
+
+\begin{lemma}\leanok
+[Borel structure on a binary disjoint union]
+  \label{lem:borel_space_sum}
+  \lean{BorelSpace.sum}
+  Let $\alpha$ and $\beta$ be topological spaces whose measurable structures
+  are their Borel sigma-algebras.  Give $\alpha \sqcup \beta$ the disjoint-union
+  topology and the measurable structure in which a set is measurable exactly
+  when its inverse images in both summands are measurable.  Then this
+  measurable structure is the Borel sigma-algebra of the disjoint-union
+  topology.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+  Write $\iota_\alpha$ and $\iota_\beta$ for the two inclusions.
+  First, every open subset $U$ of $\alpha \sqcup \beta$ is measurable: its two
+  inverse images $\iota_\alpha^{-1}(U)$ and $\iota_\beta^{-1}(U)$ are open and
+  therefore Borel in their respective summands.  Hence the Borel sigma-algebra
+  is contained in the canonical sum measurable structure.
+
+  For the reverse inclusion, observe that each inclusion is an open embedding
+  with clopen range.  If $A$ is Borel in $\alpha$, then
+  $\iota_\alpha(A)$ is Borel in the disjoint union.  Indeed, the class of sets
+  $A$ with this property contains every open set, is closed under countable
+  unions, and is closed under complements because
+  \[
+    \iota_\alpha(\alpha \setminus A)
+      = \operatorname{range}(\iota_\alpha) \setminus \iota_\alpha(A)
+  \]
+  and the range is clopen.  The same argument applies to the second summand.
+  If $U$ is measurable for the canonical sum measurable structure, its two
+  fibers are Borel and
+  \[
+    U =
+      \iota_\alpha\bigl(\iota_\alpha^{-1}(U)\bigr)
+      \cup
+      \iota_\beta\bigl(\iota_\beta^{-1}(U)\bigr).
+  \]
+  Thus $U$ is Borel, proving equality of the two measurable structures.
+\end{proof}
+
+\begin{lemma}\leanok
+[Borel structure on a countable dependent disjoint union]
+  \label{lem:borel_space_sigma}
+  \lean{BorelSpace.sigma}
+  Let $\iota$ be a countable type and let $(\gamma_i)_{i \in \iota}$ be
+  topological spaces whose measurable structures are their Borel
+  sigma-algebras.  Give $\sum_{i \in \iota} \gamma_i$ its disjoint-union
+  topology and canonical dependent-sum measurable structure.  Then the latter
+  is the Borel sigma-algebra of the former.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+  For each $i$, write $\sigma_i : \gamma_i \to \sum_j \gamma_j$ for the
+  canonical inclusion.  An open set in the dependent sum has open, hence
+  measurable, inverse image under every $\sigma_i$.  Therefore every open set
+  is measurable for the canonical dependent-sum measurable structure, and the
+  Borel sigma-algebra is contained in that structure.
+
+  Conversely, every $\sigma_i$ is an open embedding with clopen range.  As in
+  Lemma~\ref{lem:borel_space_sum}, induction over the sigma-algebra generated
+  by the open subsets of $\gamma_i$ shows that $\sigma_i(A)$ is Borel whenever
+  $A \subseteq \gamma_i$ is Borel.  If $U$ is measurable for the canonical
+  dependent-sum structure, every fiber $\sigma_i^{-1}(U)$ is Borel and
+  \[
+    U = \bigcup_{i \in \iota}
+      \sigma_i\bigl(\sigma_i^{-1}(U)\bigr).
+  \]
+  The index type is countable, so this is a countable union of Borel sets.
+  Hence $U$ is Borel and the two measurable structures coincide.
+\end{proof}
+
+\begin{lemma}\leanok
+[Binary sums of standard Borel spaces]
+  \label{lem:standard_borel_space_sum}
+  \uses{lem:borel_space_sum}
+  \lean{StandardBorelSpace.sum}
+  A binary disjoint union of standard Borel spaces is a standard Borel space.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+  Equip both summands with compatible Polish topologies witnessing that they
+  are standard Borel.  Their topological disjoint union is Polish, and
+  Lemma~\ref{lem:borel_space_sum} identifies its Borel sigma-algebra with the
+  original canonical sum measurable structure.  This Polish topology is the
+  required witness.
+\end{proof}
+
+\begin{lemma}\leanok
+[Countable sums of standard Borel spaces]
+  \label{lem:standard_borel_space_sigma_countable}
+  \uses{lem:borel_space_sigma}
+  \lean{StandardBorelSpace.sigma_countable}
+  A countable dependent disjoint union of standard Borel spaces is a standard
+  Borel space.
+\end{lemma}
+
+\begin{proof}
+
+\leanok
+  Choose a compatible Polish topology on every fiber.  The countable
+  topological disjoint union of these Polish spaces is Polish.
+  Lemma~\ref{lem:borel_space_sigma} identifies its Borel sigma-algebra with the
+  canonical dependent-sum measurable structure, which supplies the desired
+  standard Borel witness.
+\end{proof}

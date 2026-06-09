@@ -361,54 +361,58 @@ lemma isLocalMartingale_brownian :
     IsLocalMartingale brownian brownianNaturalFiltration gaussianLimit :=
   Martingale.IsLocalMartingale martingale_brownian isCadlag_brownian
 
+/-- The quadratic variation process attached to the canonical Brownian motion. -/
+noncomputable abbrev brownianQuadraticVariation : ℝ≥0 → (ℝ≥0 → ℝ) → ℝ :=
+  brownianDeterministicTime
+
 section UsualConditions
 
 variable [brownianNaturalFiltration.IsComplete gaussianLimit]
 variable [brownianNaturalFiltration.IsRightContinuous]
 
-/-- The quadratic variation process attached to the canonical Brownian motion. -/
-noncomputable abbrev brownianQuadraticVariation : ℝ≥0 → (ℝ≥0 → ℝ) → ℝ :=
-  letI : Approximable brownianNaturalFiltration gaussianLimit :=
-    brownianNaturalFiltration_approximable
-  quadraticVariation isLocalMartingale_brownian isCadlag_brownian
+/-- The explicit Brownian quadratic variation gives the normalized Brownian square
+decomposition. -/
+theorem brownianQuadraticVariation_normalized_decomposition :
+    ∃ M : ℝ≥0 → (ℝ≥0 → ℝ) → ℝ,
+      (fun t ω => ‖brownian t ω‖ ^ 2) = M + brownianQuadraticVariation ∧
+        IsLocalMartingale M brownianNaturalFiltration gaussianLimit ∧
+        (∀ ω, IsCadlag (M · ω)) ∧
+        IsStronglyPredictable brownianNaturalFiltration brownianQuadraticVariation ∧
+        IsStronglyProgressive brownianNaturalFiltration brownianQuadraticVariation ∧
+        (∀ ω, IsCadlag (brownianQuadraticVariation · ω)) ∧
+        HasLocallyIntegrableSup brownianQuadraticVariation brownianNaturalFiltration
+          gaussianLimit ∧
+        (∀ ω, Monotone (brownianQuadraticVariation · ω)) ∧
+        (∀ ω, brownianQuadraticVariation ⊥ ω = 0) := by
+  refine ⟨fun t ω => brownian t ω ^ 2 - (t : ℝ), ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · ext t ω
+    simp only [Pi.add_apply, brownianQuadraticVariation, brownianDeterministicTime]
+    rw [Real.norm_eq_abs, sq_abs]
+    ring
+  · simpa using
+      (Martingale.IsLocalMartingale martingale_brownian_sq_sub_time
+        isCadlag_brownian_sq_sub_time)
+  · intro ω
+    simpa [Function.comp_def] using isCadlag_brownian_sq_sub_time ω
+  · simpa [brownianQuadraticVariation] using
+      isStronglyPredictable_brownianDeterministicTime
+  · simpa [brownianQuadraticVariation] using
+      isStronglyProgressive_brownianDeterministicTime
+  · intro ω
+    simpa [brownianQuadraticVariation] using isCadlag_brownianDeterministicTime ω
+  · simpa [brownianQuadraticVariation] using
+      hasLocallyIntegrableSup_brownianDeterministicTime
+  · intro ω
+    simpa [brownianQuadraticVariation] using monotone_brownianDeterministicTime ω
+  · intro ω
+    simp [brownianQuadraticVariation, brownianDeterministicTime]
+
+end UsualConditions
 
 /-- At each deterministic time, the Brownian quadratic variation is almost surely `t`. -/
 theorem quadraticVariation_brownian (t : ℝ≥0) :
     brownianQuadraticVariation t =ᵐ[gaussianLimit] fun _ => (t : ℝ) := by
-  letI : Approximable brownianNaturalFiltration gaussianLimit :=
-    brownianNaturalFiltration_approximable
-  let X2 : ℝ≥0 → (ℝ≥0 → ℝ) → ℝ := fun s ω => ‖brownian s ω‖ ^ 2
-  have hX2_cadlag : ∀ ω, IsCadlag (X2 · ω) := by
-    intro ω
-    simpa [X2, Function.comp_def] using
-      ((isCadlag_brownian ω).continuous_comp (continuous_norm.pow 2))
-  have hX_sub : IsLocalSubmartingale X2 brownianNaturalFiltration gaussianLimit := by
-    simpa [X2] using
-      (isLocalMartingale_brownian.isLocalSubmartingale_sq_norm isCadlag_brownian)
-  let M : ℝ≥0 → (ℝ≥0 → ℝ) → ℝ := fun s ω => brownian s ω ^ 2 - (s : ℝ)
-  have hM : IsLocalMartingale M brownianNaturalFiltration gaussianLimit := by
-    simpa [M] using
-      (Martingale.IsLocalMartingale martingale_brownian_sq_sub_time
-        isCadlag_brownian_sq_sub_time)
-  have hM_cadlag : ∀ ω, IsCadlag (M · ω) := by
-    intro ω
-    simpa [M, Function.comp_def] using isCadlag_brownian_sq_sub_time ω
-  have hX_decomp : X2 = M + brownianDeterministicTime := by
-    ext s ω
-    simp only [X2, M, Pi.add_apply, brownianDeterministicTime]
-    rw [Real.norm_eq_abs, sq_abs]
-    ring
-  have hcompare :
-      hX_sub.predictablePart X2 hX2_cadlag t =ᵐ[gaussianLimit]
-        brownianDeterministicTime t :=
-    hX_sub.predictablePart_eq_of_normalized_decomposition hX2_cadlag hX_decomp hM
-      hM_cadlag isStronglyPredictable_brownianDeterministicTime
-      isStronglyProgressive_brownianDeterministicTime isCadlag_brownianDeterministicTime
-      hasLocallyIntegrableSup_brownianDeterministicTime monotone_brownianDeterministicTime
-      brownianDeterministicTime_bot_eq_zero t
-  simpa [brownianQuadraticVariation, quadraticVariation, X2,
-    brownianDeterministicTime] using hcompare
-
-end UsualConditions
+  filter_upwards with ω
+  simp [brownianQuadraticVariation, brownianDeterministicTime]
 
 end ProbabilityTheory

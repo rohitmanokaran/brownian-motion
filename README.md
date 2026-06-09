@@ -1,3 +1,4 @@
+<!-- archon:readme -->
 # Lean formalization of Brownian motion and stochastic integrals
 
 This is an open, collaborative project with the goal of formalizing stochastic processes and stochastic integration in Lean.

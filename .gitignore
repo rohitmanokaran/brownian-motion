@@ -43,3 +43,12 @@ Manuscript/_minted/*
 *.synctex.gz
 *.synctex.gz(busy)
 *.pdfsync
+
+# Lake build artifacts
+.lake/
+
+# Archon state directory
+.archon/
+
+# Project-local agent helper tools
+.claude/
