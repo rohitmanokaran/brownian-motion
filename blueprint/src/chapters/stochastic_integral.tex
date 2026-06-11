@@ -962,19 +962,19 @@ Lemmas~\ref{lem:martingale_brownian} and \ref{lem:isCadlag_brownian}.
 \end{proof}
 
 \begin{definition}\label{def:brownianQuadraticVariation}
-  \uses{def:brownianDeterministicTime}
+  \uses{def:quadraticVariation, lem:isLocalMartingale_brownian}
   \lean{ProbabilityTheory.brownianQuadraticVariation}
   \leanok
-The Brownian quadratic variation process is the deterministic time process
+Under the usual hypotheses on the Brownian natural filtration, the Brownian
+quadratic variation process is the generic choice-based quadratic variation
+of the canonical Brownian local martingale:
 \[
-  \langle B\rangle_t(\omega) := t.
+  \langle B\rangle := \langle B\rangle^{\mathrm{DM}},
 \]
-This is a Brownian-specific canonical definition, not the generic choice-based
-quadratic variation from Definition~\ref{def:quadraticVariation}.  The generic
-comparison theorem, once its Doob--Meyer and finite-variation uniqueness inputs
-are available, should identify the generic choice representative with this
-explicit process.  Until then, the Brownian process itself is defined by the
-known formula.
+where Definition~\ref{def:quadraticVariation} takes the normalized
+Doob--Meyer predictable part of \(B^2\).  The theorem below identifies this
+choice representative at each deterministic time with the explicit
+deterministic-time process.
 \end{definition}
 
 \begin{lemma}\label{lem:martingale_brownian_sq_sub_time}
@@ -1147,39 +1147,13 @@ This is immediate from the definition and the fact that the bottom element of
 \(\mathbb R_{\ge 0}\) is \(0\).
 \end{proof}
 
-\begin{lemma}\label{lem:brownianQuadraticVariation_normalized_decomposition}
-  \uses{def:brownianQuadraticVariation, lem:martingale_brownian_sq_sub_time, lem:isCadlag_brownian_sq_sub_time, lem:brownianDeterministicTime_predictable, lem:brownianDeterministicTime_progressive, lem:brownianDeterministicTime_cadlag, lem:brownianDeterministicTime_hasLocallyIntegrableSup, lem:brownianDeterministicTime_monotone, lem:brownianDeterministicTime_bot_eq_zero}
-  \lean{ProbabilityTheory.brownianQuadraticVariation_normalized_decomposition}
-  \leanok
-The explicit Brownian quadratic variation has the normalized Brownian
-Doob--Meyer shape: the squared Brownian process decomposes as
-\[
-  B_t^2 = (B_t^2-t) + \langle B\rangle_t,
-\]
-where \(B_t^2-t\) is a càdlàg local martingale and
-\(\langle B\rangle\) is strongly predictable, strongly progressive, càdlàg,
-locally integrable, nondecreasing, and starts from zero.
-\end{lemma}
-
-\begin{proof}
-
-\leanok
-The pathwise identity follows from the definition
-\(\langle B\rangle_t=t\) and elementary algebra.  The first summand is a
-martingale by Lemma~\ref{lem:martingale_brownian_sq_sub_time}, hence a local
-martingale, and has càdlàg paths by
-Lemma~\ref{lem:isCadlag_brownian_sq_sub_time}.  The deterministic-time lemmas
-prove the remaining normalized predictable-part properties of
-\(\langle B\rangle\).
-\end{proof}
-
 \begin{lemma}\label{lem:quadraticVariation_brownian}
-  \uses{def:brownianQuadraticVariation, lem:brownianQuadraticVariation_normalized_decomposition}
+  \uses{def:brownianQuadraticVariation, def:quadraticVariation, lem:IsLocalMartingale.isLocalSubmartingale_sq_norm, lem:predictablePart_eq_of_normalized_decomposition, lem:martingale_brownian_sq_sub_time, lem:isCadlag_brownian_sq_sub_time, lem:brownianDeterministicTime_predictable, lem:brownianDeterministicTime_progressive, lem:brownianDeterministicTime_cadlag, lem:brownianDeterministicTime_hasLocallyIntegrableSup, lem:brownianDeterministicTime_monotone, lem:brownianDeterministicTime_bot_eq_zero}
   \lean{ProbabilityTheory.quadraticVariation_brownian}
   \leanok
-Let \(B\) be the canonical Brownian motion. Its Brownian quadratic variation is
-the deterministic time process at every deterministic time: for every
-\(t\in\mathbb R_{\ge 0}\),
+Let \(B\) be the canonical Brownian motion.  The generic Doob--Meyer
+quadratic variation chosen for \(B\) agrees with the deterministic time
+process at every deterministic time: for every \(t\in\mathbb R_{\ge 0}\),
 \[
   \langle B\rangle_t = t
 \]
@@ -1195,12 +1169,26 @@ promotes to \(\mathbb P\)-almost sure equality of the whole paths.
 \begin{proof}
 
 \leanok
-By definition, the Brownian quadratic variation is the deterministic time
-process, so for every sample point \(\omega\) its value at time \(t\) is
-\((t:\mathbb R)\).  This pointwise identity gives the stated almost-sure
-equality.  Lemma~\ref{lem:brownianQuadraticVariation_normalized_decomposition}
-records the nontrivial semantic content: the same explicit process is the
-predictable finite-variation part of the Brownian square decomposition.
+Let \(X_t=\|B_t\|^2\).  Since \(B\) is a càdlàg local martingale,
+Lemma~\ref{lem:IsLocalMartingale.isLocalSubmartingale_sq_norm} makes \(X\) a
+local submartingale, so Definition~\ref{def:quadraticVariation} identifies
+\(\langle B\rangle\) with the normalized Doob--Meyer predictable part of
+\(X\).
+
+Use the explicit decomposition
+\[
+  X_t = (B_t^2-t) + T_t,
+  \qquad T_t(\omega)=(t:\mathbb R).
+\]
+The first summand is a càdlàg local martingale by
+Lemmas~\ref{lem:martingale_brownian_sq_sub_time} and
+\ref{lem:isCadlag_brownian_sq_sub_time}.  The deterministic-time lemmas show
+that \(T\) is strongly predictable, strongly progressive, càdlàg, locally
+integrable, nondecreasing, and starts from zero.  Therefore
+Lemma~\ref{lem:predictablePart_eq_of_normalized_decomposition} identifies the
+chosen normalized predictable part with \(T\) at the fixed time \(t\), almost
+surely.  Since \(T_t(\omega)=(t:\mathbb R)\), the desired almost-sure equality
+follows.
 \end{proof}
 
 
