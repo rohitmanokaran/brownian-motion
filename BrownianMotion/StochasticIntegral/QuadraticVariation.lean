@@ -61,8 +61,13 @@ lemma Locally.isSquareIntegrable_submartingale_sq_norm [SigmaFiniteFiltration P 
   simpa [stoppedProcess_indicator_sq_norm] using
     (hX.stoppedProcess_localSeq n).submartingale_sq_norm
 
-lemma IsLocalMartingale.isLocalSubmartingale_sq_norm
-    (hX : IsLocalMartingale X 𝓕 P) (hX_cadlag : ∀ ω, IsCadlag (X · ω)) :
+omit [MeasurableSpace ι] in
+/-- A locally square-integrable local martingale has locally submartingale squared norm. -/
+lemma IsLocalMartingale.isLocalSubmartingale_sq_norm_of_localSquareIntegrable
+    [SigmaFiniteFiltration P 𝓕]
+    (_hX : IsLocalMartingale X 𝓕 P)
+    (hX_sq : Locally (fun Y : ι → Ω → E ↦ IsSquareIntegrable Y 𝓕 P) 𝓕 X P)
+    (hX_cadlag : ∀ ω, IsCadlag (X · ω)) :
     IsLocalSubmartingale (fun t ω ↦ ‖X t ω‖ ^ 2) 𝓕 P := by
   let X2 : ι → Ω → ℝ := fun t ω ↦ ‖X t ω‖ ^ 2
   have hX2_cadlag : ∀ ω, IsCadlag (X2 · ω) := by
@@ -73,19 +78,22 @@ lemma IsLocalMartingale.isLocalSubmartingale_sq_norm
   change Locally (fun Y : ι → Ω → ℝ ↦ Submartingale Y 𝓕 P ∧
       ∀ ω, IsCadlag (Y · ω)) 𝓕 X2 P
   have hX2_sub_local : Locally (fun Y : ι → Ω → ℝ ↦ Submartingale Y 𝓕 P) 𝓕 X2 P := by
-    -- A direct use of `IsSquareIntegrable.submartingale_sq_norm` requires a further
-    -- localization making the stopped local martingales square-integrable. After that,
-    -- `stoppedProcess_indicator_sq_norm` converts the localized square to the square of
-    -- the localized martingale.
-    -- The transport from a locally square-integrable process to the localized squared norm is
-    -- isolated in `Locally.isSquareIntegrable_submartingale_sq_norm`; the remaining gap is the
-    -- local square-integrability refinement (and the sigma-finite filtration needed for
-    -- conditional Jensen) under the current theorem's hypotheses.
-    sorry
+    simpa [X2] using hX_sq.isSquareIntegrable_submartingale_sq_norm
   refine ⟨hX2_sub_local.localSeq, hX2_sub_local.isLocalizingSequence_localSeq, fun n ↦ ?_⟩
   exact ⟨hX2_sub_local.stoppedProcess_localSeq n,
     isStable_isCadlag X2 hX2_cadlag (hX2_sub_local.localSeq n)
       (hX2_sub_local.isLocalizingSequence_localSeq.isStoppingTime n)⟩
+
+lemma IsLocalMartingale.isLocalSubmartingale_sq_norm
+    [SigmaFiniteFiltration P 𝓕]
+    (hX : IsLocalMartingale X 𝓕 P) (hX_cadlag : ∀ ω, IsCadlag (X · ω)) :
+    IsLocalSubmartingale (fun t ω ↦ ‖X t ω‖ ^ 2) 𝓕 P := by
+  have hX_sq : Locally (fun Y : ι → Ω → E ↦ IsSquareIntegrable Y 𝓕 P) 𝓕 X P := by
+    -- Remaining gap: refine the localizing sequence of the càdlàg local martingale to one whose
+    -- stopped pieces are square-integrable. The closed helper above shows this is the only missing
+    -- input for the square-norm submartingale proof.
+    sorry
+  exact hX.isLocalSubmartingale_sq_norm_of_localSquareIntegrable hX_sq hX_cadlag
 
 section QuadraticVariation
 
