@@ -61,7 +61,7 @@ lemma IsSquareIntegrable.add [CompleteSpace E] (hX : IsSquareIntegrable X 𝓕 P
         · exact le_iSup (fun i => eLpNorm (Y i) 2 P) i
     _ < ∞ := ENNReal.add_lt_top.mpr ⟨hX_bound, hY_bound⟩
 
-lemma IsSquareIntegrable.smul (hX : IsSquareIntegrable X 𝓕 P) (r : ℝ) :
+lemma IsSquareIntegrable.smul [CompleteSpace E] (hX : IsSquareIntegrable X 𝓕 P) (r : ℝ) :
     IsSquareIntegrable (fun i ω ↦ r • X i ω) 𝓕 P := by
   refine ⟨?_, ?_, ?_⟩
   · simpa [Pi.smul_apply] using hX.martingale.smul r
