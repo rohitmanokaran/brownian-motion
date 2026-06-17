@@ -7,6 +7,7 @@ module
 
 public import BrownianMotion.Auxiliary.Martingale
 public import BrownianMotion.StochasticIntegral.Cadlag
+public import BrownianMotion.StochasticIntegral.Locally
 
 /-! # Square integrable martingales
 
@@ -30,6 +31,18 @@ structure IsSquareIntegrable (X : ι → Ω → E) (𝓕 : Filtration ι mΩ) (P
   martingale : Martingale X 𝓕 P
   cadlag : ∀ ω, IsCadlag (X · ω)
   bounded : ⨆ i, eLpNorm (X i) 2 P < ∞
+
+section Local
+
+variable [OrderBot ι] [OrderTopology ι]
+
+/-- A stochastic process is locally square-integrable if it satisfies the square-integrable
+martingale property locally. -/
+def IsLocallySquareIntegrable (X : ι → Ω → E) (𝓕 : Filtration ι mΩ)
+    (P : Measure Ω := by volume_tac) : Prop :=
+  Locally (fun Y ↦ IsSquareIntegrable Y 𝓕 P) 𝓕 X P
+
+end Local
 
 lemma IsSquareIntegrable.integrable_sq (hX : IsSquareIntegrable X 𝓕 P) (i : ι) :
     Integrable (fun ω ↦ ‖X i ω‖ ^ 2) P := by
