@@ -28,17 +28,17 @@ the larger AI-generated proof attempt.
 | PR | Status | Description |
 | --- | --- | --- |
 | [#468](https://github.com/RemyDegenne/brownian-motion/pull/468) | Merged | Proves `IsSquareIntegrable.smul`: scalar multiplication preserves square-integrable martingales. |
-| [#469](https://github.com/RemyDegenne/brownian-motion/pull/469) | Open draft | Proves the generic quadratic-variation placeholders under the mathematically necessary local square-integrability hypothesis. |
+| [#471](https://github.com/RemyDegenne/brownian-motion/pull/471) | Merged | Adds càdlàg composition and norm-square helpers, and closes the squared-norm càdlàg proof in `quadraticVariation`. |
+| [#469](https://github.com/RemyDegenne/brownian-motion/pull/469) | Open | Proves the generic quadratic-variation placeholders under the mathematically necessary local square-integrability hypothesis. |
 
-PR #468 is small, but it went through several review iterations. A local Codex
-agent first produced compiling but rough Lean code. A web ChatGPT Pro model then
-suggested a more readable structure-style proof, which was adapted locally and
-accepted by Lean.
+For PR #468, a local Codex agent first produced compiling but rough Lean code. A
+web ChatGPT Pro model then suggested a more readable structure-style proof,
+which was adapted locally and accepted by Lean.
 
-PR #469 was split out of the larger Brownian quadratic-variation branch. It
-changes the generic quadratic-variation API to require local square-integrability
-instead of using a statement that only assumed a cadlag local martingale before
-applying Doob-Meyer to `‖X‖^2`.
+PR #471 was split from PR #469 to keep the càdlàg helper change reviewable on
+its own. PR #469 now contains the remaining API change: it requires local
+square-integrability instead of using a statement that only assumed a cadlag
+local martingale before applying Doob-Meyer to `‖X‖^2`.
 
 ## Larger exploratory work
 
