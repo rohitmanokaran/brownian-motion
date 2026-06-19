@@ -4,6 +4,8 @@ Repository: https://github.com/rohitmanokaran/brownian-motion
 
 Upstream project: https://github.com/RemyDegenne/brownian-motion
 
+Detailed write-up: [ASSIGNMENT3_WRITEUP.md](ASSIGNMENT3_WRITEUP.md)
+
 ## Project
 
 This project contributes to the Lean formalization of Brownian motion and
