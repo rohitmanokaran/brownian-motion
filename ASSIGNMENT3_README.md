@@ -29,16 +29,17 @@ the larger AI-generated proof attempt.
 | --- | --- | --- |
 | [#468](https://github.com/RemyDegenne/brownian-motion/pull/468) | Merged | Proves `IsSquareIntegrable.smul`: scalar multiplication preserves square-integrable martingales. |
 | [#471](https://github.com/RemyDegenne/brownian-motion/pull/471) | Merged | Adds càdlàg composition and norm-square helpers, and closes the squared-norm càdlàg proof in `quadraticVariation`. |
+| [#473](https://github.com/RemyDegenne/brownian-motion/pull/473) | Open | Defines locally square-integrable martingales, adds the global-to-local bridge, and proves their squared norm is a local submartingale. |
 | [#469](https://github.com/RemyDegenne/brownian-motion/pull/469) | Open | Proves the generic quadratic-variation placeholders under the mathematically necessary local square-integrability hypothesis. |
 
 For PR #468, a local Codex agent first produced compiling but rough Lean code. A
 web ChatGPT Pro model then suggested a more readable structure-style proof,
 which was adapted locally and accepted by Lean.
 
-PR #471 was split from PR #469 to keep the càdlàg helper change reviewable on
-its own. PR #469 now contains the remaining API change: it requires local
-square-integrability instead of using a statement that only assumed a cadlag
-local martingale before applying Doob-Meyer to `‖X‖^2`.
+PR #471 and PR #473 were split from PR #469 to keep reusable helper changes
+reviewable on their own. PR #469 now contains the remaining API change: it
+requires local square-integrability instead of using a statement that only
+assumed a cadlag local martingale before applying Doob-Meyer to `‖X‖^2`.
 
 ## Larger exploratory work
 
